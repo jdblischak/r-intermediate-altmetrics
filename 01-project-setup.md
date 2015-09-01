@@ -41,8 +41,8 @@ cd data
 Download the two data files using `wget`.
 
 ~~~{.bash}
-wget https://github.com/jdblischak/r-intermediate-altmetrics/blob/gh-pages/data/counts-raw.txt.gz
-wget https://github.com/jdblischak/r-intermediate-altmetrics/blob/gh-pages/data/counts-norm.txt.gz
+wget https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-raw.txt.gz
+wget https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-norm.txt.gz
 ~~~
 
 The first file, `counts-raw.txt.gz`, contains the raw counts for each of the articles across all the metrics.
