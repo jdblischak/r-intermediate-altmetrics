@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Setting up a project</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Create directories and files</li>
+<li>Understand the difference between absolute and relative paths</li>
+</ul>
+</div>
+</section>
+<p>Before we start using R, we will first review the basics of the Unix shell by setting up our project. Open the terminal in OS X or Linux, or Git Bash in Windows.</p>
+<p>Our project will explore the citations and alternative metrics (altmetrics) for articles published in the PLOS family of journals between 2003 and 2010. The data set was compiled by Priem et al. 2012 (<a href="http://arxiv.org/abs/1203.4745">publication</a>, <a href="https://github.com/jasonpriem/plos_altmetrics_study">code</a>).</p>
+<p>First create a new directory to store the project files called <code>altmetrics</code> and then change to that directory.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">mkdir</span> altmetrics
+<span class="kw">cd</span> altmetrics</code></pre>
+<p>Repeat this process to create a subdirectory to store the data files.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">mkdir</span> data
+<span class="kw">cd</span> data</code></pre>
+<aside class="callout panel panel-info">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pushpin"></span>Finding your location</h2>
+</div>
+<div class="panel-body">
+<p>Recall that you can always determine where you are by running the command <code>pwd</code>, which stands for “print working directory”. Also, if you run <code>cd</code> with no arguments, it takes you to your home directory.</p>
+</div>
+</aside>
+<p>Download the two data files using <code>wget</code>.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">wget</span> https://github.com/jdblischak/r-intermediate-altmetrics/blob/gh-pages/data/counts-raw.txt.gz
+<span class="kw">wget</span> https://github.com/jdblischak/r-intermediate-altmetrics/blob/gh-pages/data/counts-norm.txt.gz</code></pre>
+<p>The first file, <code>counts-raw.txt.gz</code>, contains the raw counts for each of the articles across all the metrics. The second file, <code>counts-norm.txt.gz</code>, contains the counts for each of the articles across all the metrics after they have been normalized across disciplines and years.</p>
+<p>Confirm that the files downloaded by listing the files in <code>data</code>.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">ls</span></code></pre>
+<pre class="output"><code>counts-norm.txt.gz counts-raw.txt.gz</code></pre>
+<p>Now move back up a directory to <code>altmetrics</code>. One option would be to specify the absolute path to this directory, e.g. <code>~/altmetrics/</code> if you created the directory in your home folder. However, an easier option is to use a relative path, which is dependent on the directory you are currently in. The shortcut to move to the directory above is two periods: <code>..</code>.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cd</span> ..</code></pre>
+<p>Now you should be in the <code>altmetrics</code> directory. If you ran the above command again, you would be moved to the directory where you created <code>altmetrics</code>.</p>
+<p>To create files, we’ll use the simple text editor <code>nano</code>. As an argument, you provide the name of an existing file to edit or the name of a new file to create. If you call <code>nano</code> without specifying a filename, it will prompt you for a filename when saving. Create a file to practice.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">nano</span> example-file</code></pre>
+<p>The commands are listed at the bottom of the screen. The <code>^</code> stands for <code>Ctrl</code>, thus to save type <code>Ctrl-W</code> and to exit type <code>Ctrl-X</code>.</p>
+<p>Remove the file with <code>rm</code>.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">rm</span> example-file</code></pre>
+<aside class="callout panel panel-info">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pushpin"></span>Organizing a larger project</h2>
+</div>
+<div class="panel-body">
+<p>Projects can grow quickly. For ideas on organizing your own projects, see <a href="http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1000424">A Quick Guide to Organizing Computational Biology Projects</a> by William Noble.</p>
+</div>
+</aside>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Create a README file</h2>
+</div>
+<div class="panel-body">
+<p>It is a convention to have a file named <code>README</code> in a project directory to explain what it contains (both for others and your future self). Use <code>nano</code> to create a README file. Include the date and explain that this directory was created for a Software Carpentry workshop.</p>
+</div>
+</section>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry/lesson-template">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Inspecting a file</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Inspect a file from the command line</li>
+<li>Chain Unix commands using pipes</li>
+<li>Search with <code>grep</code></li>
+<li>Redirect output to a new file</li>
+</ul>
+</div>
+</section>
+<p>Now let’s explore the data files we have downloaded. Inspecting data files with the Unix shell is a quick and easy way to learn about a data set before attempting to import it with R.</p>
+<p>Switch to the <code>data</code> directory.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">cd</span> data
+<span class="kw">ls</span></code></pre>
+<pre class="output"><code>counts-norm.txt.gz counts-raw.txt.gz</code></pre>
+<p>Inspect the first line of the raw counts file.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">head</span> -n 1 counts-raw.txt.gz</code></pre>
+<pre class="output"><code>��LOdf_all.txt�\�v��v#_��I���}�~x�E=l�ƴ�D��d�%W ��Cj����|��a������#�%٧</code></pre>
+<aside class="callout panel panel-info">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pushpin"></span>Tab completion</h2>
+</div>
+<div class="panel-body">
+<p>Recall that you can save typing by pressing the Tab character to auto-complete the names of directories and files.</p>
+</div>
+</aside>
+<p>It wasn’t very informative because the file is compressed to save space. You could de-compress it with <code>gunzip</code>, but instead use <code>zcat</code> to send the decompressed data to standard out. Pass standard out to the <code>head</code> function using the “pipe” command (it’s the vertical bar on your keyboard).</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">head</span> -n 1</code></pre>
+<pre class="output"><code>&quot;doi&quot;  &quot;pubDate&quot;    &quot;journal&quot;   &quot;title&quot; &quot;articleType&quot;   &quot;authorsCount&quot;  &quot;f1000Factor&quot;   &quot;backtweetsCount&quot;   &quot;deliciousCount&quot;    &quot;pmid&quot;  &quot;plosSubjectTags&quot;   &quot;plosSubSubjectTags&quot;    &quot;facebookShareCount&quot;    &quot;facebookLikeCount&quot; &quot;facebookCommentCount&quot;  &quot;facebookClickCount&quot;    &quot;mendeleyReadersCount&quot;  &quot;almBlogsCount&quot; &quot;pdfDownloadsCount&quot; &quot;xmlDownloadsCount&quot; &quot;htmlDownloadsCount&quot;    &quot;almCiteULikeCount&quot; &quot;almScopusCount&quot;    &quot;almPubMedCentralCount&quot; &quot;almCrossRefCount&quot;  &quot;plosCommentCount&quot;  &quot;plosCommentResponsesCount&quot; &quot;wikipediaCites&quot;    &quot;year&quot;  &quot;daysSincePublished&quot;    &quot;wosCountThru2010&quot;  &quot;wosCountThru2011&quot;</code></pre>
+<p>Now that worked as expected. From this header line, we observe that some columns contain descriptions of the publication, e.g. “journal” and “title”, and others contain the counts for the various metrics, e.g. “wosCountThru2011” is the number of citations the paper received thru 2011 according to Thomson Reuters’ Web of Science.</p>
+<p>Now check the number of articles in each of the files using <code>wc</code>.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">wc</span> -l</code></pre>
+<pre class="output"><code>24332</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-norm.txt.gz <span class="kw">|</span> <span class="kw">wc</span> -l</code></pre>
+<pre class="output"><code>21097</code></pre>
+<p>The normalized file contains data on fewer publications. According to their publication, they focus only on articles that are labeled “Research Articles”. Confirm that this is the reason for the difference between the two files by inspecting the 5th column, “articleType”. You can select specific columns (aka fields) using <code>cut</code>.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f5 <span class="kw">|</span> <span class="kw">head</span></code></pre>
+<pre class="output"><code>&quot;articleType&quot;
+&quot;Research Article&quot;
+&quot;Research Article&quot;
+&quot;Synopsis&quot;
+&quot;Synopsis&quot;
+&quot;Research Article&quot;
+&quot;Research Article&quot;
+&quot;Synopsis&quot;
+&quot;Feature&quot;
+&quot;Community Page&quot;</code></pre>
+<p>You can count the number of occurrences of each “articleType” using the function <code>uniq</code> and passing it the <code>-c</code> flag. However, <code>uniq</code> requires that the data is pre-sorted to work properly. Thus pipe the data through the command <code>sort</code> before passing it to <code>uniq</code>.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f5 <span class="kw">|</span> <span class="kw">sort</span> <span class="kw">|</span> <span class="kw">uniq</span> -c <span class="kw">|</span> <span class="kw">head</span></code></pre>
+<pre class="output"><code>      1 &quot;articleType&quot;
+      5 &quot;Best Practice&quot;
+     57 &quot;Book Review/Science in the Media&quot;
+     10 &quot;Case Report&quot;
+      1 &quot;Clinical Trial&quot;
+     56 &quot;Community Page&quot;
+    172 &quot;Correction&quot;
+    283 &quot;Correspondence&quot;
+     13 &quot;Correspondence and Other Communications&quot;
+    189 &quot;Editorial&quot;</code></pre>
+<p>We can see that the raw counts file contains many different types of articles.</p>
+<p>Perform the same operation on the normalized counts file.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-norm.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f5 <span class="kw">|</span> <span class="kw">sort</span> <span class="kw">|</span> <span class="kw">uniq</span> -c</code></pre>
+<pre class="output"><code>      1 &quot;articleType&quot;
+  21096 &quot;Research Article&quot;</code></pre>
+<p>And indeed that is the difference. The normalized counts file only contains data on research articles.</p>
+<p>Let’s keep exploring. What is the maximum number of citations for a single paper in this data set? Use the data from 2011 in column 32.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f32 <span class="kw">|</span> <span class="kw">sort</span> -n <span class="kw">|</span> <span class="kw">tail</span> -n 1</code></pre>
+<pre class="output"><code>737</code></pre>
+<p>The <code>-n</code> passed to sort is critical because it specifies the data is numeric. By default <code>sort</code> performs alphabetical sorting, in which case 9 would be greater than 100.</p>
+<p>The 11th columns contains the PLOS subject tags. How many articles have the subject tag “Evolutionary Biology”? Use <code>grep</code> to search for the term.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f11 <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Evolutionary Biology&quot;</span> <span class="kw">|</span> <span class="kw">wc</span> -l</code></pre>
+<pre class="output"><code>2864</code></pre>
+<p>How many articles have the subject tag “Evolutionary Biology” and “Cell Biology”?</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f11 <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Evolutionary Biology&quot;</span> <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Cell Biology&quot;</span> <span class="kw">|</span> <span class="kw">wc</span> -l</code></pre>
+<pre class="output"><code>153</code></pre>
+<p>Instead of simply counting the files that match the search criteria, save them to a new file. This is done with the redirection operator, <code>&gt;</code>.</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Evolutionary Biology&quot;</span> <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Cell Biology&quot;</span> <span class="kw">&gt;</span> evo-cell-bio.txt</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">wc</span> -l evo-cell-bio.txt</code></pre>
+<pre class="output"><code>170</code></pre>
+<p>What could be the reason for the discrepancy in the number of articles in our saved file?</p>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Largest number of Wikipedia cites</h2>
+</div>
+<div class="panel-body">
+<p>What is the largest number of Wikipedia cites that an article in this data set has received? Hint: The counts of Wikipedia cites are in column 28.</p>
+</div>
+</section>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Find articles in your field</h2>
+</div>
+<div class="panel-body">
+<p>Choose two PLOS subject tags to search for and save these articles to a new file. How many articles are there?</p>
+</div>
+</section>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/swcarpentry/lesson-template">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

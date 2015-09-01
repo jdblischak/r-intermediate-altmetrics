@@ -32,8 +32,8 @@ and programming with R.
 
 ## Topics
 
-1.  [Setting up a project](01-one.html)
-1.  [Inspecting a file](02-two.html)
+1.  [Setting up a project](01-project-setup.html)
+1.  [Inspecting a file](02-inspect-file.html)
 1.  [Using RStudio]()
 1.  [Importing data]()
 1.  [R objects]()
