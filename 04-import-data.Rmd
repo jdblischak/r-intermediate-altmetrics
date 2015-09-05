@@ -1,0 +1,48 @@
+---
+layout: page
+title: Intermediate programming with R
+subtitle: Importing and inspecting data
+minutes: 10
+---
+
+> ## Learning Objectives {.objectives}
+>
+> * Import tabular data
+> * Inspect objects
+> * Explain the different types of data in R
+
+
+```{r}
+counts_raw <- read.delim("data/counts-raw.txt.gz")
+```
+
+
+```{r}
+class(counts_raw)
+dim(counts_raw)
+head(counts_raw, 1)
+tail(counts_raw, 1)
+str(counts_raw)
+```
+
+```{r}
+typeof(counts_raw$doi)
+typeof(counts_raw$authorsCount)
+```
+
+
+```{r}
+counts_raw <- read.delim("data/counts-raw.txt.gz", stringsAsFactors = FALSE)
+str(counts_raw)
+```
+
+
+```{r}
+counts_norm <- read.delim("data/counts-norm.txt.gz", stringsAsFactors = FALSE)
+```
+
+```{r}
+str(counts_norm)
+```
+
+

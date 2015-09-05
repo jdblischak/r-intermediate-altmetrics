@@ -34,9 +34,8 @@ and programming with R.
 
 1.  [Setting up a project](01-project-setup.html)
 1.  [Inspecting a file](02-inspect-file.html)
-1.  [Using RStudio]()
-1.  [Importing data]()
-1.  [R objects]()
+1.  [Using RStudio](03-rstudio.html)
+1.  [Importing and exploring data](04-import-data.html)
 1.  [R conditional statements]()
 1.  [R loops]()
 1.  [Functions in R]()
@@ -46,10 +45,12 @@ and programming with R.
 1.  [Using knitr chunk options]()
 1.  [R Markdown output options]()
 
+1.  [dplyr](dplyr.html)
 1.  [Subsetting data with dplyr]()
 1.  [Using pipes with dplyr]()
 1.  [Summarizing data with dplyr]()
 
+1.  [ggplot2](ggplot2.html)
 1.  [ggplot2 geoms]()
 1.  [more ggplot2]()
 1.  [ggplot2 themes]()

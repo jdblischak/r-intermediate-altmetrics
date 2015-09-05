@@ -1,0 +1,57 @@
+---
+layout: page
+title: Intermediate programming with R
+subtitle: dplyr
+minutes: 10
+---
+
+> ## Learning Objectives {.objectives}
+>
+
+
+```{r}
+library("dplyr")
+```
+
+```{r echo = FALSE}
+counts_raw <- read.delim("data/counts-raw.txt.gz", stringsAsFactors = FALSE)
+```
+
+How does the total number of tweets change over the years?
+
+```{r}
+counts_raw %>%
+  group_by(year) %>%
+  summarize(total_tweets = sum(backtweetsCount))
+```
+
+And the Facebook likes?
+
+```{r}
+counts_raw %>%
+  group_by(year) %>%
+  summarize(total_tweets = sum(facebookLikeCount))
+```
+
+```{r}
+counts_raw %>%
+  group_by(year) %>%
+  summarize(total_tweets = sum(facebookLikeCount, na.rm = TRUE))
+```
+
+```{r}
+counts_raw %>%
+  group_by(journal, year) %>%
+  summarize(num = n())
+```
+
+```{r}
+immuno <- filter(counts_raw, grepl("Immunology", plosSubjectTags))
+```
+
+```{r}
+counts_raw %>%
+  filter(grepl("Immunology", plosSubjectTags)) %>%
+  group_by(journal, year) %>%
+  summarize(num = n())
+```

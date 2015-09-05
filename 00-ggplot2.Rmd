@@ -1,0 +1,71 @@
+---
+layout: page
+title: Intermediate programming with R
+subtitle: ggplot2
+minutes: 10
+---
+
+> ## Learning Objectives {.objectives}
+>
+
+
+```{r}
+library("dplyr")
+library("ggplot2")
+```
+
+```{r}
+counts_norm <- read.delim("data/counts-norm.txt.gz", stringsAsFactors = FALSE)
+```
+
+
+Do papers with more authors get more citations?
+
+```{r}
+ggplot(counts_norm, aes(x = authorsCount, y = wosCountThru2011)) +
+  geom_point()
+```
+
+Number of authors by journal.
+
+```{r}
+ggplot(counts_norm, aes(x = journal, y = authorsCount)) +
+  geom_boxplot()
+```
+
+Effect of time on number of citations.
+
+```{r}
+ggplot(counts_norm, aes(x = daysSincePublished, y = wosCountThru2011)) +
+  geom_point()
+```
+
+How do the experts do?
+
+```{r}
+ggplot(counts_norm, aes(x = f1000Factor, y = wosCountThru2011)) +
+  geom_point()
+```
+
+Compared to the masses?
+
+```{r}
+ggplot(counts_norm, aes(x = backtweetsCount, y = wosCountThru2011)) +
+  geom_point()
+```
+
+split by journal
+
+```{r}
+ggplot(counts_norm, aes(x = backtweetsCount, y = wosCountThru2011)) +
+  geom_point() +
+  facet_wrap(~journal)
+```
+
+split by year
+
+```{r}
+ggplot(counts_norm, aes(x = backtweetsCount, y = wosCountThru2011)) +
+  geom_point() +
+  facet_wrap(~year)
+```
