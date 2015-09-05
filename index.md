@@ -45,12 +45,12 @@ and programming with R.
 1.  [Using knitr chunk options]()
 1.  [R Markdown output options]()
 
-1.  [dplyr](dplyr.html)
+1.  [dplyr](00-dplyr.html)
 1.  [Subsetting data with dplyr]()
 1.  [Using pipes with dplyr]()
 1.  [Summarizing data with dplyr]()
 
-1.  [ggplot2](ggplot2.html)
+1.  [ggplot2](00-ggplot2.html)
 1.  [ggplot2 geoms]()
 1.  [more ggplot2]()
 1.  [ggplot2 themes]()
