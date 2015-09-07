@@ -56,7 +56,7 @@ and programming with R.
 1.  [ggplot2 themes]()
 
 1.  [Debugging with debug](00-debug.html)
-1.  [Debugging with browser]()
+1.  [Debugging with browser](00-browser.html)
 
 1.  [Defensive programming with stopifnot]()
 1.  [Defensive programming with testit]()

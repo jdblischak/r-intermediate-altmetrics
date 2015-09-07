@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Debugging with browser</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Use <code>browser</code> to set breakpoints</li>
+<li>Use <code>browser</code> to set conditional breakpoints</li>
+</ul>
+</div>
+</section>
+<p>In the last lesson we used <code>debug</code> to enter into a function’s environment for interactive debugging. However, if we have an idea where the bug is located, we can use the function <code>browser</code> to set a “breakpoint” in that location. This prevents us from having to step through each line of a function to reach the point where the problem is located. Furthermore, we can use a conditional statement to only activate the debugger when a certain condition is true (especially useful for long <code>for</code> loops).</p>
+<aside class="callout panel panel-info">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pushpin"></span>Turn off RStudio’s debugging features</h2>
+</div>
+<div class="panel-body">
+<p>Just like last lesson, make sure to turn of RStudio’s debugging features. In the menu, go to “Debug”. From the dropdown menu, go to “On Error” and choose the setting “Message Only”.</p>
+</div>
+</aside>
+<p>We’ll start with the function we updated in the last lesson.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+  if (!<span class="kw">is.factor</span>(variable)) {
+    variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
+  }
+  variable &lt;-<span class="st"> </span><span class="kw">droplevels</span>(variable)
+  result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
+  <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
+  for (v in <span class="kw">levels</span>(variable)) {
+    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+  }
+  <span class="kw">return</span>(result)
+}</code></pre>
+<p>And we’ll focus on fixing the following behavior:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="output"><code>pbio pcbi pgen pmed pntd pone ppat 
+ 529  293  355  449  176   NA  305 
+</code></pre>
+<p>Our function returns <code>NA</code> for the total number of Facebook likes for PLOS One. Why is this happening? Since we know that the problem is occuring during the <code>for</code> loop, we’ll set the breakpoint there with <code>browser</code> instead of starting from the beginning of the function using <code>debug</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+  if (!<span class="kw">is.factor</span>(variable)) {
+    variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
+  }
+  variable &lt;-<span class="st"> </span><span class="kw">droplevels</span>(variable)
+  result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
+  <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
+  for (v in <span class="kw">levels</span>(variable)) {
+    <span class="kw">browser</span>()
+    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+  }
+  <span class="kw">return</span>(result)
+}</code></pre>
+<p>Now the next time we call the function, we are dropped into the debugger at the breakpoint set by <code>browser</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="output"><code>Called from: sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span></code></pre>
+<p>Let’s confirm that the beginning of the function has already been run.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span><span class="kw">ls</span>()</code></pre>
+<pre class="output"><code>[1] &quot;metric&quot;   &quot;result&quot;   &quot;v&quot;        &quot;variable&quot;</code></pre>
+<p>Furthermore, we can check the current value of <code>v</code> in the <code>for</code> loop.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>v</code></pre>
+<pre class="output"><code>[1] &quot;pbio&quot;</code></pre>
+<aside class="callout panel panel-info">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pushpin"></span>Investigating variables with the same names as debugging commands</h2>
+</div>
+<div class="panel-body">
+<p>What if you use one of the debugging commands, e.g. <code>n</code>, <code>s</code>, <code>f</code>, as one of the names of your variables? If you type them into the debugger, they will be used as commands. If you want to view the value contained by the variable in the debugger, use <code>print</code>, e.g. <code>print(n)</code>.</p>
+</div>
+</aside>
+<p>We want to see what is happening when <code>v</code> is <code>&quot;pone&quot;</code>. As we did before we could step through line by line using <code>n</code>. But using this approach, each time through the loop we would have to type <code>n</code> multiple times to run the lines of code in the loop. This would be even worse if there were many lines of code inside. Instead, we can use <code>c</code> for “continue”, which continues running the code until the next time <code>browser</code> is called.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>c</code></pre>
+<pre class="output"><code>Called from: sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>v</code></pre>
+<pre class="output"><code>[1] &quot;pcbi&quot;</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>c</code></pre>
+<pre class="output"><code>Called from: sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span>v</code></pre>
+<pre class="output"><code>[1] &quot;pgen&quot;</code></pre>
+<p>But this really isn’t much better, especially if we run through the <code>for</code> loop multiple times as we attempt to debug the function. Let’s quit the debugger and try a new strategy.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span>Q</code></pre>
+<p>We can set a conditional breakpoint using an <code>if</code> statement. Then we will be dropped into the interactive debugger only when the condition is true. We want to enter the debugger when <code>v == &quot;pone&quot;</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+  if (!<span class="kw">is.factor</span>(variable)) {
+    variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
+  }
+  variable &lt;-<span class="st"> </span><span class="kw">droplevels</span>(variable)
+  result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
+  <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
+  for (v in <span class="kw">levels</span>(variable)) {
+    if (v ==<span class="st"> &quot;pone&quot;</span>) <span class="kw">browser</span>()
+    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+  }
+  <span class="kw">return</span>(result)
+}</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="output"><code>Called from: sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>v</code></pre>
+<pre class="output"><code>[1] &quot;pone&quot;</code></pre>
+<p>Now we entered into the debugger after the loop has reached “pone”. Let’s inspect the variable the values being passed to <code>sum</code>. Specifically, let’s see all the unique values.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span><span class="kw">unique</span>(metric[variable ==<span class="st"> </span>v])</code></pre>
+<pre class="output"><code> [1]   0   2   1   6   5   3  10   7   4   8  35  12  34   9  37  16  14  25 892  22
+[21]  11  19  18  13  21  49  15  41  50  17  51 104  23  20  26 151  30  39  NA  24
+[41]  95  44 109  66</code></pre>
+<p>Interestingly, at least one of the Facebook Like counts are NA. Is this different from the other journals? Let’s check “pbio”.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span><span class="kw">unique</span>(metric[variable ==<span class="st"> &quot;pbio&quot;</span>])</code></pre>
+<pre class="output"><code> [1]  0  1  2  3  4 12  8 39  7  5 10 45 11 18 44  6 14 13 43 19</code></pre>
+<p>It does not contain any <code>NA</code>s. So let’s check the help for <code>sum</code> to see if we can figure out what is going on (remember you can also press the <code>F1</code> key to see a function’s help page).</p>
+<pre class="sourceCode r"><code class="sourceCode r">?sum</code></pre>
+<p>From the help page, we see that <code>sum</code> has an argument <code>na.rm</code> to remove <code>NA</code>s.</p>
+<blockquote>
+<p>na.rm logical. Should missing values (including NaN) be removed?</p>
+</blockquote>
+<p>Furthermore, the function returns <code>NA</code> of any of the values are <code>NA</code>.</p>
+<blockquote>
+<p>If na.rm is FALSE an NA or NaN value in any of the arguments will cause a value of NA or NaN to be returned, otherwise NA and NaN values are ignored.</p>
+</blockquote>
+<p>Let’s update the function so that <code>sum</code> removes <code>NA</code> values before summing the vector. At this point we can also remove the call to <code>browser</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+  if (!<span class="kw">is.factor</span>(variable)) {
+    variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
+  }
+  variable &lt;-<span class="st"> </span><span class="kw">droplevels</span>(variable)
+  result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
+  <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
+  for (v in <span class="kw">levels</span>(variable)) {
+    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v], <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)
+  }
+  <span class="kw">return</span>(result)
+}</code></pre>
+<p>And now the function works properly when passed an <code>NA</code>!</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="output"><code>pbio pcbi pgen pmed pntd pone ppat 
+ 529  293  355  449  176 4962  305 
+</code></pre>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>
