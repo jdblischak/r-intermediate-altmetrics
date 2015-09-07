@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: </title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <h1 class="title"></h1>
+          <pre class="sourceCode r"><code class="sourceCode r">subdir &lt;-<span class="st"> &quot;data/&quot;</span>
+<span class="kw">dir.create</span>(subdir, <span class="dt">showWarnings =</span> <span class="ot">FALSE</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">base_url &lt;-<span class="st"> &quot;https://github.com/downloads/jasonpriem/plos_altmetrics_study/&quot;</span>
+files &lt;-<span class="st"> </span><span class="kw">c</span>(
+  <span class="co"># Article metadata and aggregated counts for all crawler-collected indicators</span>
+  <span class="st">&quot;raw_crawler_eventcounts.txt.gz&quot;</span>,
+  <span class="co"># all indicator eventcounts, normalized and transformed</span>
+  <span class="st">&quot;df_research_norm_transform.txt.gz&quot;</span>,
+  <span class="co"># all indicator eventcounts, unnormalized</span>
+  <span class="st">&quot;df_all.txt.gz&quot;</span>,
+  <span class="co"># Article metadata and counts of all alt-metrics event types</span>
+  <span class="st">&quot;raw_event_counts.txt.zip&quot;</span>,
+  <span class="co"># counts of events occuring within 90 days of the articles they point to, by year+quarter and journal</span>
+  <span class="st">&quot;event_trends.txt&quot;</span>,
+  <span class="co"># metadata for each event (tweet, bookmark, etc) </span>
+  <span class="st">&quot;raw_events.txt.zip&quot;</span>
+  )
+for (fname in files) {
+  fname_full &lt;-<span class="st"> </span><span class="kw">file.path</span>(subdir, fname)
+  if (!<span class="kw">file.exists</span>(fname_full)) {
+    <span class="kw">download.file</span>(<span class="dt">url =</span> <span class="kw">paste0</span>(base_url, fname),
+                  <span class="dt">destfile =</span> <span class="kw">file.path</span>(subdir, fname))
+  }
+}</code></pre>
+<h2 id="raw_crawler_eventcounts.txt.gz">raw_crawler_eventcounts.txt.gz</h2>
+<p>Article metadata and aggregated counts for all crawler-collected indicators “raw_crawler_eventcounts.txt.gz”,</p>
+<pre class="sourceCode r"><code class="sourceCode r">raw_crawler &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">gzfile</span>(<span class="kw">file.path</span>(subdir, <span class="st">&quot;raw_crawler_eventcounts.txt.gz&quot;</span>)),
+                          <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(raw_crawler)</code></pre>
+<pre><code>## [1] 24334    28</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(raw_crawler)</code></pre>
+<pre><code>##  [1] &quot;doi&quot;                       &quot;pubDate&quot;                  
+##  [3] &quot;journal&quot;                   &quot;title&quot;                    
+##  [5] &quot;articleType&quot;               &quot;authorsCount&quot;             
+##  [7] &quot;f1000Factor&quot;               &quot;backtweetsCount&quot;          
+##  [9] &quot;deliciousCount&quot;            &quot;pmid&quot;                     
+## [11] &quot;plosSubjectTags&quot;           &quot;plosSubSubjectTags&quot;       
+## [13] &quot;facebookShareCount&quot;        &quot;facebookLikeCount&quot;        
+## [15] &quot;facebookCommentCount&quot;      &quot;facebookClickCount&quot;       
+## [17] &quot;mendeleyReadersCount&quot;      &quot;almBlogsCount&quot;            
+## [19] &quot;pdfDownloadsCount&quot;         &quot;xmlDownloadsCount&quot;        
+## [21] &quot;htmlDownloadsCount&quot;        &quot;almCiteULikeCount&quot;        
+## [23] &quot;almScopusCount&quot;            &quot;almPubMedCentralCount&quot;    
+## [25] &quot;almCrossRefCount&quot;          &quot;plosCommentCount&quot;         
+## [27] &quot;plosCommentResponsesCount&quot; &quot;wikipediaCites&quot;</code></pre>
+<h2 id="df_research_norm_transform.txt.gz">df_research_norm_transform.txt.gz</h2>
+<p>This is the data set used for most of the publication.</p>
+<p>all indicator eventcounts, normalized and transformed</p>
+<p>df_research_norm_transform.txt.gz</p>
+<pre class="sourceCode r"><code class="sourceCode r">events_norm &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">gzfile</span>(<span class="kw">file.path</span>(subdir, <span class="st">&quot;df_research_norm_transform.txt.gz&quot;</span>)),
+                          <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(events_norm)</code></pre>
+<pre><code>## [1] 21096    32</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(events_norm)</code></pre>
+<pre><code>##  [1] &quot;doi&quot;                       &quot;pubDate&quot;                  
+##  [3] &quot;journal&quot;                   &quot;title&quot;                    
+##  [5] &quot;articleType&quot;               &quot;authorsCount&quot;             
+##  [7] &quot;f1000Factor&quot;               &quot;backtweetsCount&quot;          
+##  [9] &quot;deliciousCount&quot;            &quot;pmid&quot;                     
+## [11] &quot;plosSubjectTags&quot;           &quot;plosSubSubjectTags&quot;       
+## [13] &quot;facebookShareCount&quot;        &quot;facebookLikeCount&quot;        
+## [15] &quot;facebookCommentCount&quot;      &quot;facebookClickCount&quot;       
+## [17] &quot;mendeleyReadersCount&quot;      &quot;almBlogsCount&quot;            
+## [19] &quot;pdfDownloadsCount&quot;         &quot;xmlDownloadsCount&quot;        
+## [21] &quot;htmlDownloadsCount&quot;        &quot;almCiteULikeCount&quot;        
+## [23] &quot;almScopusCount&quot;            &quot;almPubMedCentralCount&quot;    
+## [25] &quot;almCrossRefCount&quot;          &quot;plosCommentCount&quot;         
+## [27] &quot;plosCommentResponsesCount&quot; &quot;wikipediaCites&quot;           
+## [29] &quot;year&quot;                      &quot;daysSincePublished&quot;       
+## [31] &quot;wosCountThru2010&quot;          &quot;wosCountThru2011&quot;</code></pre>
+<h2 id="df_all.txt.gz">df_all.txt.gz</h2>
+<p>This file contains all the altmetrics event counts prior to filtering out non-research articles.</p>
+<p>all indicator eventcounts, unnormalized</p>
+<p>df_all.txt.gz</p>
+<pre class="sourceCode r"><code class="sourceCode r">df_all &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">gzfile</span>(<span class="kw">file.path</span>(subdir, <span class="st">&quot;df_all.txt.gz&quot;</span>)),
+                     <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(df_all)</code></pre>
+<pre><code>## [1] 24331    32</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(df_all)</code></pre>
+<pre><code>##  [1] &quot;doi&quot;                       &quot;pubDate&quot;                  
+##  [3] &quot;journal&quot;                   &quot;title&quot;                    
+##  [5] &quot;articleType&quot;               &quot;authorsCount&quot;             
+##  [7] &quot;f1000Factor&quot;               &quot;backtweetsCount&quot;          
+##  [9] &quot;deliciousCount&quot;            &quot;pmid&quot;                     
+## [11] &quot;plosSubjectTags&quot;           &quot;plosSubSubjectTags&quot;       
+## [13] &quot;facebookShareCount&quot;        &quot;facebookLikeCount&quot;        
+## [15] &quot;facebookCommentCount&quot;      &quot;facebookClickCount&quot;       
+## [17] &quot;mendeleyReadersCount&quot;      &quot;almBlogsCount&quot;            
+## [19] &quot;pdfDownloadsCount&quot;         &quot;xmlDownloadsCount&quot;        
+## [21] &quot;htmlDownloadsCount&quot;        &quot;almCiteULikeCount&quot;        
+## [23] &quot;almScopusCount&quot;            &quot;almPubMedCentralCount&quot;    
+## [25] &quot;almCrossRefCount&quot;          &quot;plosCommentCount&quot;         
+## [27] &quot;plosCommentResponsesCount&quot; &quot;wikipediaCites&quot;           
+## [29] &quot;year&quot;                      &quot;daysSincePublished&quot;       
+## [31] &quot;wosCountThru2010&quot;          &quot;wosCountThru2011&quot;</code></pre>
+<p>Need to use this file to get <code>df_research</code>.</p>
+<p>https://github.com/jasonpriem/plos_altmetrics_study/blob/master/stats/scripts/create_df_research.R</p>
+<h2 id="raw_event_counts.txt.zip">raw_event_counts.txt.zip</h2>
+<p>Article metadata and counts of all alt-metrics event types</p>
+<p>“raw_event_counts.txt.zip”</p>
+<pre class="sourceCode r"><code class="sourceCode r">raw_event_counts &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">unz</span>(<span class="kw">file.path</span>(subdir, <span class="st">&quot;raw_event_counts.txt.zip&quot;</span>),
+                                   <span class="dt">filename =</span> <span class="st">&quot;raw_event_counts.txt&quot;</span>),
+                          <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(raw_event_counts)</code></pre>
+<pre><code>## [1] 24334    28</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(raw_event_counts)</code></pre>
+<pre><code>##  [1] &quot;doi&quot;                       &quot;pubDate&quot;                  
+##  [3] &quot;journal&quot;                   &quot;title&quot;                    
+##  [5] &quot;articleType&quot;               &quot;authorsCount&quot;             
+##  [7] &quot;f1000Factor&quot;               &quot;backtweetsCount&quot;          
+##  [9] &quot;deliciousCount&quot;            &quot;pmid&quot;                     
+## [11] &quot;plosSubjectTags&quot;           &quot;plosSubSubjectTags&quot;       
+## [13] &quot;facebookShareCount&quot;        &quot;facebookLikeCount&quot;        
+## [15] &quot;facebookCommentCount&quot;      &quot;facebookClickCount&quot;       
+## [17] &quot;mendeleyReadersCount&quot;      &quot;almBlogsCount&quot;            
+## [19] &quot;pdfDownloadsCount&quot;         &quot;xmlDownloadsCount&quot;        
+## [21] &quot;htmlDownloadsCount&quot;        &quot;almCiteULikeCount&quot;        
+## [23] &quot;almScopusCount&quot;            &quot;almPubMedCentralCount&quot;    
+## [25] &quot;almCrossRefCount&quot;          &quot;plosCommentCount&quot;         
+## [27] &quot;plosCommentResponsesCount&quot; &quot;wikipediaCites&quot;</code></pre>
+<h2 id="event_trends.txt">event_trends.txt</h2>
+<p>counts of events occuring within 90 days of the articles they point to, by year+quarter and journal</p>
+<p>“event_trends.txt”</p>
+<pre class="sourceCode r"><code class="sourceCode r">event_trends &lt;-<span class="st"> </span><span class="kw">read.table</span>(<span class="kw">file.path</span>(subdir, <span class="st">&quot;event_trends.txt&quot;</span>),
+                          <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(event_trends)</code></pre>
+<pre><code>## [1] 196  23</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(event_trends)</code></pre>
+<pre><code>##  [1] &quot;qtr&quot;                                     
+##  [2] &quot;journal&quot;                                 
+##  [3] &quot;articles.published&quot;                      
+##  [4] &quot;articles.with.backtweets&quot;                
+##  [5] &quot;total.backtweets&quot;                        
+##  [6] &quot;articles.with.citeulike&quot;                 
+##  [7] &quot;total.citeulike&quot;                         
+##  [8] &quot;articles.with.delicious&quot;                 
+##  [9] &quot;total.delicious&quot;                         
+## [10] &quot;articles.with.html.views&quot;                
+## [11] &quot;total.html.views&quot;                        
+## [12] &quot;articles.with.native.comments&quot;           
+## [13] &quot;total.native.comments&quot;                   
+## [14] &quot;articles.with.Nature.via.Plos&quot;           
+## [15] &quot;total.Nature.via.Plos&quot;                   
+## [16] &quot;articles.with.pdf.views&quot;                 
+## [17] &quot;total.pdf.views&quot;                         
+## [18] &quot;articles.with.Postgenomic.via.Plos&quot;      
+## [19] &quot;total.Postgenomic.via.Plos&quot;              
+## [20] &quot;articles.with.Research.Blogging.via.Plos&quot;
+## [21] &quot;total.Research.Blogging.via.Plos&quot;        
+## [22] &quot;articles.with.xml.views&quot;                 
+## [23] &quot;total.xml.views&quot;</code></pre>
+<h1 id="raw_events.txt.zip">raw_events.txt.zip</h1>
+<p>metadata for each event (tweet, bookmark, etc)</p>
+<p>“raw_events.txt.zip”</p>
+<pre class="sourceCode r"><code class="sourceCode r">raw_events &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="kw">unz</span>(<span class="kw">file.path</span>(subdir, <span class="st">&quot;raw_events.txt.zip&quot;</span>),
+                             <span class="dt">filename =</span> <span class="st">&quot;raw_events.txt&quot;</span>),
+                          <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(raw_events)</code></pre>
+<pre><code>## [1] 1816131       7</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">colnames</span>(raw_events)</code></pre>
+<pre><code>## [1] &quot;eventType&quot; &quot;doi&quot;       &quot;creator&quot;   &quot;date&quot;      &quot;latency&quot;   &quot;value&quot;    
+## [7] &quot;count&quot;</code></pre>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

@@ -1,0 +1,138 @@
+
+```{r setup}
+subdir <- "data/"
+dir.create(subdir, showWarnings = FALSE)
+```
+
+
+```{r}
+base_url <- "https://github.com/downloads/jasonpriem/plos_altmetrics_study/"
+files <- c(
+  # Article metadata and aggregated counts for all crawler-collected indicators
+  "raw_crawler_eventcounts.txt.gz",
+  # all indicator eventcounts, normalized and transformed
+  "df_research_norm_transform.txt.gz",
+  # all indicator eventcounts, unnormalized
+  "df_all.txt.gz",
+  # Article metadata and counts of all alt-metrics event types
+  "raw_event_counts.txt.zip",
+  # counts of events occuring within 90 days of the articles they point to, by year+quarter and journal
+  "event_trends.txt",
+  # metadata for each event (tweet, bookmark, etc) 
+  "raw_events.txt.zip"
+  )
+for (fname in files) {
+  fname_full <- file.path(subdir, fname)
+  if (!file.exists(fname_full)) {
+    download.file(url = paste0(base_url, fname),
+                  destfile = file.path(subdir, fname))
+  }
+}
+```
+
+## raw_crawler_eventcounts.txt.gz
+ 
+Article metadata and aggregated counts for all crawler-collected indicators
+  "raw_crawler_eventcounts.txt.gz",
+  
+```{r}
+raw_crawler <- read.delim(gzfile(file.path(subdir, "raw_crawler_eventcounts.txt.gz")),
+                          stringsAsFactors = FALSE)
+```
+
+```{r}
+dim(raw_crawler)
+colnames(raw_crawler)
+```
+
+## df_research_norm_transform.txt.gz
+
+This is the data set used for most of the publication.
+
+all indicator eventcounts, normalized and transformed
+
+df_research_norm_transform.txt.gz
+
+```{r}
+events_norm <- read.delim(gzfile(file.path(subdir, "df_research_norm_transform.txt.gz")),
+                          stringsAsFactors = FALSE)
+```
+
+```{r}
+dim(events_norm)
+colnames(events_norm)
+```
+
+## df_all.txt.gz
+
+This file contains all the altmetrics event counts prior to filtering out non-research articles.
+
+all indicator eventcounts, unnormalized
+
+df_all.txt.gz
+
+```{r}
+df_all <- read.delim(gzfile(file.path(subdir, "df_all.txt.gz")),
+                     stringsAsFactors = FALSE)
+```
+
+```{r}
+dim(df_all)
+colnames(df_all)
+```
+
+Need to use this file to get `df_research`.
+
+https://github.com/jasonpriem/plos_altmetrics_study/blob/master/stats/scripts/create_df_research.R
+
+## raw_event_counts.txt.zip
+
+Article metadata and counts of all alt-metrics event types
+
+"raw_event_counts.txt.zip"
+
+```{r}
+raw_event_counts <- read.delim(unz(file.path(subdir, "raw_event_counts.txt.zip"),
+                                   filename = "raw_event_counts.txt"),
+                          stringsAsFactors = FALSE)
+```
+
+```{r}
+dim(raw_event_counts)
+colnames(raw_event_counts)
+```
+
+## event_trends.txt
+
+counts of events occuring within 90 days of the articles they point to, by year+quarter and journal
+
+"event_trends.txt"
+
+```{r}
+event_trends <- read.table(file.path(subdir, "event_trends.txt"),
+                          header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+```
+
+```{r}
+dim(event_trends)
+colnames(event_trends)
+```
+
+# raw_events.txt.zip
+
+metadata for each event (tweet, bookmark, etc) 
+
+"raw_events.txt.zip"
+
+```{r}
+raw_events <- read.delim(unz(file.path(subdir, "raw_events.txt.zip"),
+                             filename = "raw_events.txt"),
+                          stringsAsFactors = FALSE)
+
+```
+
+```{r}
+dim(raw_events)
+colnames(raw_events)
+```
+

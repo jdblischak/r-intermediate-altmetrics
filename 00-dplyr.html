@@ -91,6 +91,12 @@
 ## 6 2008          131
 ## 7 2009         1785
 ## 8 2010         4933</code></pre>
+<p>In a function? How hard is it to convert this to use standard evaluation?</p>
+<pre class="sourceCode r"><code class="sourceCode r">test_se &lt;-<span class="st"> </span>function(df, column) {
+  x &lt;-<span class="st"> </span>counts_raw %&gt;%
+<span class="st">  </span><span class="kw">group_by_</span>(~year) %&gt;%
+<span class="st">  </span><span class="kw">summarize_</span>(<span class="dt">total_tweets =</span> <span class="kw">sum</span>(facebookLikeCount, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>))
+}</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%
 <span class="st">  </span><span class="kw">group_by</span>(journal, year) %&gt;%
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>())</code></pre>

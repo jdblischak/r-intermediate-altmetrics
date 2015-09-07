@@ -96,6 +96,19 @@ counts_raw %>%
 ## 8 2010         4933
 ```
 
+In a function? How hard is it to convert this to use standard evaluation?
+
+
+```r
+test_se <- function(df, column) {
+  x <- counts_raw %>%
+  group_by_(~year) %>%
+  summarize_(total_tweets = sum(facebookLikeCount, na.rm = TRUE))
+}
+```
+
+
+
 
 ```r
 counts_raw %>%
