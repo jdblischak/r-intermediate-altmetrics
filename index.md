@@ -57,6 +57,7 @@ and programming with R.
 
 1.  [Debugging with debug](00-debug.html)
 1.  [Debugging with browser](00-browser.html)
+1.  [Debugging with recover](00-recover.html)
 
 1.  [Defensive programming with stopifnot]()
 1.  [Defensive programming with testit]()

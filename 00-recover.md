@@ -1,0 +1,220 @@
+---
+layout: page
+title: Intermediate programming with R
+subtitle: Debugging with recover
+minutes: 30
+---
+
+
+
+> ## Learning Objectives {.objectives}
+> *  Use `recover` to debug when code crashes
+
+
+> ## Turn off RStudio's debugging features {.callout}
+>
+> Just like last lesson, make sure to turn of RStudio's debugging features.
+> In the menu, go to "Debug".
+> From the dropdown menu, go to "On Error" and choose the setting "Message Only".
+
+
+
+
+Recall the function we wrote earlier to calculate a summary statistic which was the average of multiple specified metric columns.
+
+
+~~~{.r}
+calc_sum_stat <- function(df, cols) {
+  df_sub <- df[, cols]
+  sum_stat <- apply(df_sub, 1, mean)
+  return(sum_stat)
+}
+~~~
+
+Then we could create new metric columns, for example, the average of the multiple Facebook metrics or the average of the download metrics.
+
+
+~~~{.r}
+counts_raw$facebookAverageCount <- calc_sum_stat(counts_raw, grep("facebook",
+                                                                  colnames(counts_raw),
+                                                                  value = TRUE))
+counts_raw$downloadsAverageCount <- calc_sum_stat(counts_raw, grep("Downloads",
+                                                             colnames(counts_raw),
+                                                             value = TRUE))
+~~~
+
+Now what do we expect would happen if we passed only one column name to the function?
+While this would not be very informative since taking the average of one metric would return the same metric.
+But there is no reason to think it should not work.
+Let's try it.
+
+
+~~~{.r}
+calc_sum_stat(counts_raw, "mendeleyReadersCount")
+~~~
+
+
+
+~~~{.output}
+Error in apply(df_sub, 1, mean): dim(X) must have a positive length
+
+~~~
+
+But in fact this does fail.
+The error message informs us that the error occurs during the call to `apply`.
+While we could use `debug` or `browser` to investigate this error, a convenient way to interrogate an error is to use the function `recover`.
+Specifically, we can set the option `error` so that the function `recover` is called any time there is an error.
+
+
+~~~{.r}
+options(error = recover)
+~~~
+
+Now let's run the function again to produce the error:
+
+
+~~~{.r}
+calc_sum_stat(counts_raw, "mendeleyReadersCount")
+~~~
+
+
+
+~~~{.output}
+Error in apply(df_sub, 1, mean): dim(X) must have a positive length
+
+~~~
+~~~ {.output}
+
+Enter a frame number, or 0 to exit   
+
+1: calc_sum_stat(counts_raw, "mendeleyReadersCount")
+2: #3: apply(df_sub, 1, mean)
+
+~~~
+~~~ {.r}
+Selection:
+~~~
+
+Essentially, `recover` allows us to explore the state of the code right before the error was thrown.
+It first asks us to select a frame number.
+The frames refer to the different environments that were created.
+First we called our function `calc_sum_stat` which has its own environment.
+But within that function, `apply` was called creating an additional environment within the environment of `calc_sum_stat`.
+These frames make up the call stack, which we can visualize as the list of sub-functions that have been called.
+
+Since we know the error occured in `apply`, we'll choose frame #2.
+
+~~~ {.r}
+Selection: 2
+~~~
+~~~ {.output}
+Called from: calc_sum_stat(counts_raw, "mendeleyReadersCount")
+~~~
+~~~ {.r}
+Browse[2]> 
+~~~
+
+This brings us to the familiar debugger environment.
+Since the state is frozen we can't actually use these commands, but in fact typing one of these commands will bring us back to the frame menu (simply hitting the `Enter` key works as well).
+But we can investigate the state of the variables.
+
+~~~ {.r}
+Browse[1]> ls()
+~~~
+~~~ {.output}
+[1] "dl"     "FUN"    "MARGIN" "X"  
+~~~
+
+To remind ourselves of the argument names of `apply`, we can open the help page.
+
+~~~ {.r}
+Browse[1]> ?apply
+~~~
+
+This opens the Help tab, where we can read that `X` contains the data passed to `apply`:
+
+> X	an array, including a matrix.
+
+Investigating what X is, we see that is a vector instead of a one-column data frame.
+
+~~~ {.r}
+Browse[1]> str(X)
+~~~
+~~~ {.output}
+ int [1:24331] 4 17 0 0 32 10 0 6 2 24 ... 
+~~~
+
+This is strange.
+Let's confirm this is what we passed to `apply`.
+Type `c` to exit the debugger and return to the frame menu.
+
+~~~ {.r}
+Browse[1]> c
+~~~
+~~~ {.output}
+Enter a frame number, or 0 to exit   
+
+1: calc_sum_stat(counts_raw, "mendeleyReadersCount")
+2: #3: apply(df_sub, 1, mean)
+~~~
+~~~ {.r}
+Selection:
+~~~
+
+Now we'll enter frame #1 to investigate `df_sub`.
+
+~~~ {.r}
+Selection: 1
+~~~
+~~~ {.r}
+Browse[3]> str(df_sub)
+~~~
+~~~ {.output}
+ int [1:24331] 4 17 0 0 32 10 0 6 2 24 ... 
+~~~
+
+So it turns out that the first line that selects the one column returns a vector and not a data frame.
+This is actually the default behavior of R's extract function (yes, the brackets are actually a function, try `?"["` to learn more).
+
+Let's exit `recover` so that we can return to fix our function.
+
+~~~ {.r}
+Browse[1]> c
+~~~
+~~~ {.output}
+
+Enter a frame number, or 0 to exit   
+
+1: calc_sum_stat(counts_raw, "mendeleyReadersCount")
+2: #3: apply(df_sub, 1, mean)
+
+~~~
+~~~ {.r}
+Selection: 0
+~~~
+
+To fix this problem, we need to pass a third argmument when subsetting a data frame.
+If we set `drop = FALSE`, then it will remain a one column data frame instead of being converted to a vector.
+
+
+~~~{.r}
+calc_sum_stat <- function(df, cols) {
+  df_sub <- df[, cols, drop = FALSE]
+  sum_stat <- apply(df_sub, 1, mean)
+  return(sum_stat)
+}
+~~~
+
+And now it works.
+
+
+~~~{.r}
+head(calc_sum_stat(counts_raw, "mendeleyReadersCount"))
+~~~
+
+
+
+~~~{.output}
+[1]  4 17  0  0 32 10
+
+~~~
