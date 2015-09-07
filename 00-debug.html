@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Debugging with debug</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Use <code>print</code> statements to debug a function</li>
+<li>Use <code>debug</code> to interactively enter a function environment for debugging</li>
+<li>Use <code>n</code> to step through a function and <code>Q</code> to quit debugging</li>
+</ul>
+</div>
+</section>
+<p>As we’ve seen, reducing code repetition is generally a good thing. It reduces the chance of introducing errors while copy-pasting, and it makes it easier to understand and/or update code when a routine is written only once. However, the downside is that it can be harder to determine what the code is doing when an error occurs when the code is contained inside a function. Since the function environment is separated from the global environment, we cannot observe the values of the variables inside the function after it has failed. Fortunately, R has multiple tools for debugging functions.</p>
+<p>Before starting this lesson, you’ll need to change some RStudio settings. RStudio has made R’s debugging tools easier to use by automatically invoking them when an error occurs. In order to understand what RStudio is doing behind the scenes, we need to deactivate this behavior. In the menu, go to “Debug”. From the dropdown menu, go to “On Error” and choose the setting “Message Only”.</p>
+<p>Recall the function we wrote earlier to sum a metric for each level of a factor.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+  result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
+  <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
+  for (v in <span class="kw">levels</span>(variable)) {
+    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+  }
+  <span class="kw">return</span>(result)
+}</code></pre>
+<p>And recall we invoke it as follows.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$journal)</code></pre>
+<pre class="output"><code>pbio pcbi pgen pmed pntd pone ppat 
+ 144  317  113  442   24 6968   62 
+</code></pre>
+<p>However, what can we do if we obtain an unexpected result? For example, let’s sum the number of tweets per year.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
+<pre class="output"><code>numeric(0)
+</code></pre>
+<p>Strange. But how do we figure out what exactly is happening? Recall that the variables defined inside the function are not available outside in the global environment.</p>
+<pre class="sourceCode r"><code class="sourceCode r">result</code></pre>
+<pre class="output"><code>Error in eval(expr, envir, enclos): object &#39;result&#39; not found
+</code></pre>
+<p>One option is to add <code>print</code> statements to the function to inform us the values of the variables in inside the function.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+  result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
+  <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
+  <span class="kw">print</span>(result)
+  for (v in <span class="kw">levels</span>(variable)) {
+    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+    <span class="kw">print</span>(result)
+  }
+  <span class="kw">return</span>(result)
+}</code></pre>
+<p>And then re-run the function.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
+<pre class="output"><code>numeric(0)
+</code></pre>
+<pre class="output"><code>numeric(0)
+</code></pre>
+<p>While this strategy can often be effective, in this case it was not very informative. Also, we had to edit our function and all we got was a glimpse at what was happening while the function was running. Let’s remove the <code>print</code> statements, and re-define the function before trying a new strategy.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+  result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
+  <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
+  for (v in <span class="kw">levels</span>(variable)) {
+    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+  }
+  <span class="kw">return</span>(result)
+}</code></pre>
+<p>We’ll use the R function <code>debug</code>. As an argument, we pass the function that we wish to debug.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">debug</span>(sum_metric_per_var)</code></pre>
+<p>Now everytime we run the function <code>sum_metric_per_var</code>, we will be entered into R’s interactive debugging environment.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
+<pre class="output"><code>debugging in: sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+debug at #1: {
+    result &lt;- numeric(length = length(levels(variable)))
+    names(result) &lt;- levels(variable)
+    for (v in levels(variable)) {
+        result[v] &lt;- sum(metric[variable == v])
+    }
+    return(result)
+}</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span></code></pre>
+<p>In the console, we are now in the debugging environment. Furthermore, RStudio opens the “Source Viewer”, which conveniently shows us where in the function we are. Inside the function, we can run R commands to investigate what is happening, which is much more flexible than having to write multiple <code>print</code> statements. For example, let’s list the defined variables.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span><span class="kw">ls</span>()</code></pre>
+<pre class="output"><code>[1] &quot;metric&quot;   &quot;variable&quot;</code></pre>
+<p>Since we are at the beginning of the function, the only variables defined are the two arguments that were passed to the function. To continue with the debugging, we need to learn the debugging commands, which we can see by running <code>help</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span>help</code></pre>
+<pre class="output"><code>n          next
+s          step into
+f          finish
+c or cont  continue
+Q          quit
+where      show stack
+help       show help
+&lt;expr&gt;     evaluate expression</code></pre>
+<p>The most useful command is <code>n</code> for “next” because we can use it to step through the function line by line.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span>n</code></pre>
+<pre class="output"><code>debug at #2: result &lt;- numeric(length = length(levels(variable)))</code></pre>
+<p>The output tells us that the next line of code to be executed is #2. Typing <code>n</code> again will execute line #2 and similarly provide a preview of line #3.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span>n</code></pre>
+<pre class="output"><code>debug at #3: names(result) &lt;- levels(variable)</code></pre>
+<p>Now that <code>result</code> has been defined. Let’s inspect it.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span>result</code></pre>
+<pre class="output"><code>numeric(0)</code></pre>
+<p>As we learned from our earlier <code>print</code> statement, <code>result</code> is a numeric vector of length 0. We expect its length to be the number of levels of <code>variable</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span><span class="kw">levels</span>(variable)</code></pre>
+<pre class="output"><code>NULL</code></pre>
+<p>The levels for <code>variable</code> are not defined. Let’s run <code>str</code> on <code>variable</code> to learn how R is storing it.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span><span class="kw">str</span>(variable)</code></pre>
+<pre class="output"><code>int [1:24331] 2003 2003 2003 2003 2003 2003 2003 2003 2003 2003 ...</code></pre>
+<p>Now we have found the problem! Levels are only defined for a factor variable, but <code>year</code> was stored as an integer (or numeric) vector. When R imported the data, it saw only numbers in this column, and therefore did not anticipate our use of this column as a factor.</p>
+<p>Now that we have identified the problem, we want to exit the debugger. One option would be to use <code>f</code> for “finish”, which will run the rest of the function and then exit. But since we know it won’t work anyways, let’s use <code>Q</code> for “quit”.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span>Q</code></pre>
+<p>Now we’ll update the function so that if <code>variable</code> is not a factor, the function will convert it. To do this we use a conditional statement to check if <code>variable</code> is a factor with <code>is.factor</code>, and then if needed convert it with <code>as.factor</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+  if (!<span class="kw">is.factor</span>(variable)) {
+    variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
+  }
+  result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
+  <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
+  for (v in <span class="kw">levels</span>(variable)) {
+    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+  }
+  <span class="kw">return</span>(result)
+}</code></pre>
+<p>Since we have re-defined the function, we will no longer be entered into the debugger when we run the function.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
+<pre class="output"><code>2003 2004 2005 2006 2007 2008 2009 2010 
+   0    5   58   25  105  209 2246 5422 
+</code></pre>
+<aside class="callout panel panel-info">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pushpin"></span>Stopping debugging</h2>
+</div>
+<div class="panel-body">
+<p>If we hadn’t re-defined the function, but still wanted to stop the debugger from starting everytime the function was called, we could have run <code>undebug(sum_metric_per_year)</code>.</p>
+</div>
+</aside>
+<p>And now the function works as expected.</p>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Limit to a subset of levels</h2>
+</div>
+<div class="panel-body">
+<p>What if we were only interested in the sum of the number of tweets in the journals PLOS Biology (pbio) and PLOS One (pone)? We could subset to only pass values for these journals to the function <code>sum_metric_per_var</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$backtweetsCount[counts_raw$journal %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pbio&quot;</span>, <span class="st">&quot;pone&quot;</span>)],
+                   counts_raw$journal[counts_raw$journal %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pbio&quot;</span>, <span class="st">&quot;pone&quot;</span>)])</code></pre>
+<pre class="output"><code>pbio pcbi pgen pmed pntd pone ppat 
+ 144    0    0    0    0 6968    0 
+</code></pre>
+<p>Unfortunately this still gives us results for the other journals. And misleadlingly, they have counts of zero, but this is purely artificial.</p>
+<p>Use <code>debug</code> to isolate and diagnose the problem.</p>
+<p>As an added challenge, can you fix the bug?</p>
+</div>
+</section>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>
