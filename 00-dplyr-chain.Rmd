@@ -1,0 +1,115 @@
+---
+layout: page
+title: Intermediate programming with R
+subtitle: Chaining commands with dplyr
+minutes: 30
+---
+
+```{r, include = FALSE}
+source("tools/chunk-options.R")
+```
+
+> ## Learning Objectives {.objectives}
+>
+> *  Chain commands together using `%>%`
+> *  Sort rows using `arrange`
+
+```{r echo = FALSE}
+counts_raw <- read.delim("data/counts-raw.txt.gz")
+```
+
+```{r}
+library("dplyr")
+```
+
+
+~~~ {.bash}
+zcat counts-raw.txt.gz | head -n 1
+~~~
+
+```{r}
+counts_raw %>% head(n = 1)
+```
+
+~~~ {.bash}
+zcat counts-raw.txt.gz | wc -l
+~~~
+
+```{r}
+counts_raw %>% nrow
+```
+
+~~~ {.bash}
+zcat counts-raw.txt.gz | cut -f5 | head
+~~~
+
+```{r}
+counts_raw %>% select(5) %>% head
+```
+
+```{r}
+counts_raw %>% select(articleType) %>% head
+```
+
+~~~ {.bash}
+zcat counts-raw.txt.gz | cut -f5 | sort | uniq -c | head
+~~~
+
+Not exactly the same because haven't done grouping.
+
+```{r}
+counts_raw %>% select(articleType) %>% arrange(articleType) %>% distinct %>% nrow
+```
+
+~~~ {.bash}
+zcat counts-raw.txt.gz | cut -f32 | sort -n | tail -n 1
+~~~
+
+```{r}
+counts_raw %>% select(32) %>% tail(n = 1)
+```
+
+```{r}
+counts_raw %>% select(wosCountThru2011) %>% arrange(wosCountThru2011) %>% tail(n = 1)
+```
+
+```{r}
+counts_raw %>% arrange(wosCountThru2011) %>% tail(n = 1) %>% select(title)
+```
+
+```{r}
+counts_raw %>% arrange(wosCountThru2011) %>% tail(n = 1) %>% select(doi:authorsCount)
+```
+
+~~~ {.bash}
+zcat counts-raw.txt.gz | cut -f11 | grep "Evolutionary Biology" | wc -l
+~~~
+
+```{r}
+counts_raw %>% filter(grepl("Evolutionary Biology", plosSubjectTags)) %>% nrow
+```
+
+~~~ {.bash}
+zcat counts-raw.txt.gz | cut -f11 | grep "Evolutionary Biology" | grep "Cell Biology" | wc -l
+~~~
+
+```{r}
+counts_raw %>% filter(grepl("Evolutionary Biology", plosSubjectTags),
+                      grepl("Cell Biology", plosSubjectTags)) %>% nrow
+```
+
+~~~ {.bash}
+zcat counts-raw.txt.gz | grep "Evolutionary Biology" | grep "Cell Biology" > evo-cell-bio.txt
+~~~
+
+```{r}
+evo_cell_bio <- counts_raw %>% filter(grepl("Evolutionary Biology", plosSubjectTags),
+                                      grepl("Cell Biology", plosSubjectTags))
+```
+
+
+> ## {.callout}
+> 
+
+> ##  {.challenge}
+>

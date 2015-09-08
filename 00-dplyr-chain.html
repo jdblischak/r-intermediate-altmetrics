@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Chaining commands with dplyr</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Chain commands together using <code>%&gt;%</code></li>
+<li>Sort rows using <code>arrange</code></li>
+</ul>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;dplyr&quot;</span>)</code></pre>
+<pre class="output"><code>
+Attaching package: &#39;dplyr&#39;
+
+The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag
+
+The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union
+</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">head</span> -n 1</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">head</span>(<span class="dt">n =</span> <span class="dv">1</span>)</code></pre>
+<pre class="output"><code>                           doi    pubDate journal
+1 10.1371/journal.pbio.0000001 2003-10-13    pbio
+                                                                        title
+1 A Functional Analysis of the Spacer of V(D)J Recombination Signal Sequences
+       articleType authorsCount f1000Factor backtweetsCount deliciousCount
+1 Research Article            6           6               0              0
+      pmid                           plosSubjectTags plosSubSubjectTags
+1 14551903 Cell Biology|Immunology|Molecular Biology                   
+  facebookShareCount facebookLikeCount facebookCommentCount
+1                  0                 0                    0
+  facebookClickCount mendeleyReadersCount almBlogsCount pdfDownloadsCount
+1                  0                    4             0               348
+  xmlDownloadsCount htmlDownloadsCount almCiteULikeCount almScopusCount
+1                71               6131                 0             28
+  almPubMedCentralCount almCrossRefCount plosCommentCount
+1                     7                5                0
+  plosCommentResponsesCount wikipediaCites year daysSincePublished
+1                         0              0 2003               2628
+  wosCountThru2010 wosCountThru2011
+1               29               33
+</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">wc</span> -l</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span>nrow</code></pre>
+<pre class="output"><code>[1] 24331
+</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f5 <span class="kw">|</span> <span class="kw">head</span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">select</span>(<span class="dv">5</span>) %&gt;%<span class="st"> </span>head</code></pre>
+<pre class="output"><code>       articleType
+1 Research Article
+2 Research Article
+3         Synopsis
+4         Synopsis
+5 Research Article
+6 Research Article
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">select</span>(articleType) %&gt;%<span class="st"> </span>head</code></pre>
+<pre class="output"><code>       articleType
+1 Research Article
+2 Research Article
+3         Synopsis
+4         Synopsis
+5 Research Article
+6 Research Article
+</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f5 <span class="kw">|</span> <span class="kw">sort</span> <span class="kw">|</span> <span class="kw">uniq</span> -c <span class="kw">|</span> <span class="kw">head</span></code></pre>
+<p>Not exactly the same because haven’t done grouping.</p>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">select</span>(articleType) %&gt;%<span class="st"> </span><span class="kw">arrange</span>(articleType) %&gt;%<span class="st"> </span>distinct %&gt;%<span class="st"> </span>nrow</code></pre>
+<pre class="output"><code>[1] 48
+</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f32 <span class="kw">|</span> <span class="kw">sort</span> -n <span class="kw">|</span> <span class="kw">tail</span> -n 1</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">select</span>(<span class="dv">32</span>) %&gt;%<span class="st"> </span><span class="kw">tail</span>(<span class="dt">n =</span> <span class="dv">1</span>)</code></pre>
+<pre class="output"><code>      wosCountThru2011
+24331                6
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">select</span>(wosCountThru2011) %&gt;%<span class="st"> </span><span class="kw">arrange</span>(wosCountThru2011) %&gt;%<span class="st"> </span><span class="kw">tail</span>(<span class="dt">n =</span> <span class="dv">1</span>)</code></pre>
+<pre class="output"><code>      wosCountThru2011
+24331              737
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">arrange</span>(wosCountThru2011) %&gt;%<span class="st"> </span><span class="kw">tail</span>(<span class="dt">n =</span> <span class="dv">1</span>) %&gt;%<span class="st"> </span><span class="kw">select</span>(title)</code></pre>
+<pre class="output"><code>                                                 title
+24331 Relaxed Phylogenetics and Dating with Confidence
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">arrange</span>(wosCountThru2011) %&gt;%<span class="st"> </span><span class="kw">tail</span>(<span class="dt">n =</span> <span class="dv">1</span>) %&gt;%<span class="st"> </span><span class="kw">select</span>(doi:authorsCount)</code></pre>
+<pre class="output"><code>                               doi    pubDate journal
+24331 10.1371/journal.pbio.0040088 2006-03-14    pbio
+                                                 title      articleType
+24331 Relaxed Phylogenetics and Dating with Confidence Research Article
+      authorsCount
+24331            4
+</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f11 <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Evolutionary Biology&quot;</span> <span class="kw">|</span> <span class="kw">wc</span> -l</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">filter</span>(<span class="kw">grepl</span>(<span class="st">&quot;Evolutionary Biology&quot;</span>, plosSubjectTags)) %&gt;%<span class="st"> </span>nrow</code></pre>
+<pre class="output"><code>[1] 2864
+</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f11 <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Evolutionary Biology&quot;</span> <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Cell Biology&quot;</span> <span class="kw">|</span> <span class="kw">wc</span> -l</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">filter</span>(<span class="kw">grepl</span>(<span class="st">&quot;Evolutionary Biology&quot;</span>, plosSubjectTags),
+                      <span class="kw">grepl</span>(<span class="st">&quot;Cell Biology&quot;</span>, plosSubjectTags)) %&gt;%<span class="st"> </span>nrow</code></pre>
+<pre class="output"><code>[1] 153
+</code></pre>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Evolutionary Biology&quot;</span> <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Cell Biology&quot;</span> <span class="kw">&gt;</span> evo-cell-bio.txt</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">evo_cell_bio &lt;-<span class="st"> </span>counts_raw %&gt;%<span class="st"> </span><span class="kw">filter</span>(<span class="kw">grepl</span>(<span class="st">&quot;Evolutionary Biology&quot;</span>, plosSubjectTags),
+                                      <span class="kw">grepl</span>(<span class="st">&quot;Cell Biology&quot;</span>, plosSubjectTags))</code></pre>
+<aside class="callout panel panel-info">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pushpin"></span></h2>
+</div>
+<div class="panel-body">
+
+</div>
+</aside>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span></h2>
+</div>
+<div class="panel-body">
+
+</div>
+</section>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

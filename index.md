@@ -46,9 +46,9 @@ and programming with R.
 1.  [R Markdown output options]()
 
 1.  [dplyr](00-dplyr.html)
-1.  [Subsetting data with dplyr]()
-1.  [Using pipes with dplyr]()
-1.  [Summarizing data with dplyr]()
+1.  [Subsetting data with dplyr](00-dplyr-subset.html)
+1.  [Using pipes with dplyr](00-dplyr-chain.html)
+1.  [Summarizing data with dplyr](00-dplyr-summarize.html)
 
 1.  [ggplot2](00-ggplot2.html)
 1.  [ggplot2 geoms]()

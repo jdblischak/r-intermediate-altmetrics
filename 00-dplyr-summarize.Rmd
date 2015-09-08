@@ -1,0 +1,33 @@
+---
+layout: page
+title: Intermediate programming with R
+subtitle: Summarizing with dplyr
+minutes: 30
+---
+
+```{r, include = FALSE}
+source("tools/chunk-options.R")
+```
+
+> ## Learning Objectives {.objectives}
+>
+> *  Summarize data using `summarize`
+> *  Count number of observations using `n()`
+> *  Group data by variable(s) with `group_by`
+
+
+```{r echo = FALSE}
+counts_raw <- read.delim("data/counts-raw.txt.gz")
+```
+
+```{r}
+library("dplyr")
+```
+
+
+
+> ## {.callout}
+> 
+
+> ##  {.challenge}
+>
