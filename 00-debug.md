@@ -26,6 +26,8 @@ In order to understand what RStudio is doing behind the scenes, we need to deact
 In the menu, go to "Debug".
 From the dropdown menu, go to "On Error" and choose the setting "Message Only".
 
+![Configure RStudio debugging options](figure/rstudio-debug-options.png)
+
 
 
 Recall the function we wrote earlier to sum a metric for each level of a factor.
