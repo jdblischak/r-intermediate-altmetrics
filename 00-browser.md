@@ -170,7 +170,9 @@ sum_metric_per_var <- function(metric, variable) {
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   for (v in levels(variable)) {
-    if (v == "pone") browser()
+    if (v == "pone") {
+      browser()
+    }
     result[v] <- sum(metric[variable == v])
   }
   return(result)

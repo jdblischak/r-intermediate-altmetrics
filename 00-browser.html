@@ -118,7 +118,9 @@
   result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
   <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
   for (v in <span class="kw">levels</span>(variable)) {
-    if (v ==<span class="st"> &quot;pone&quot;</span>) <span class="kw">browser</span>()
+    if (v ==<span class="st"> &quot;pone&quot;</span>) {
+      <span class="kw">browser</span>()
+    }
     result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
   }
   <span class="kw">return</span>(result)
