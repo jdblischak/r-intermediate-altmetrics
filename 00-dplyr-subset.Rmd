@@ -19,7 +19,7 @@ counts_raw <- read.delim("data/counts-raw.txt.gz")
 ```
 
 In a previous lesson, we reviewed how to subset vectors and data frames in R.
-Now we wil learn how to perform similar operations on data frames using functions from the dplyr package.
+Now we will learn how to perform similar operations on data frames using functions from the dplyr package.
 A short-term advantage of these functions is that they are faster to type, which facilitates interactive, exploratory analysis.
 However, the true advantage of learning these subsetting functions is to combine them with dplyr's more powerful capabilities.
 
@@ -27,11 +27,13 @@ Subsetting alone is not the most exciting task, but it provides a gentle introdu
 We'll use subsetting to explore the data and learn about the general trends and to identify outliers.
 And we'll explore these ideas further as we learn more dplyr functions.
 
-First we need to load the package.
+Before we begin we need to load the package.
 
 ```{r}
 library("dplyr")
 ```
+
+### Subsetting rows with `filter`
 
 Let's start by limiting our analysis to only include research articles.
 To subset the rows, we use the function `filter`.
@@ -96,12 +98,103 @@ research_2006_fb_tweet_disease <- filter(research, year == 2006,
 nrow(research_2006_fb_tweet_disease)
 ```
 
+### Subsetting columns with `select`
+
+Switching from rows to columns, dplyr provides the function `select` for subsetting the columns of a data frame.
+This is especially useful with a larger data set like ours which has `r ncol(counts_raw)` columns.
+
+```{r}
+colnames(research)
+```
+
+Let's create two new new data frames that are a subset of the original `research`.
+`article_info` will contain columns describing the article,
+and `metrics` will contain the count data.
+First we'll select some columns that specifically describe the article.
+To do this, we simply list each column we want separated by commas.
+
+```{r}
+article_info <- select(research, doi, pubDate, journal, title, articleType, authorsCount)
+head(article_info)
+```
+
+Note again that we did not need to use quotation marks when writing the columns names.
+However, since these columns are adjacent in the data frame, we can write the command in an even more compact way.
+Using a colon, `:`, we can specify the first and last column we want, and all intervening columns will be selected as well.
+
+```{r}
+article_info <- select(research, doi:journal)
+head(article_info)
+```
+
+Now we'll select the columns which contain the count data.
+Luckily we do not have to type all of those columns!
+`select` has multiple special functions that help subset columns (see `?select` for all the options).
+One versatile special function is `contains`, which works similar to `grep`.
+It selects a column if it contains the search string provided.
+We can 
+
+```{r}
+metrics <- select(research, contains("Count"))
+head(metrics)
+```
+
+> ## Case sensitivity {.callout}
+>
+> By default, most of the special functions for `select` are not case sensitive.
+> Thus we could have written "count" and received the same result.
+> In general, it is better to be as specific as possible.
+> If we needed to differentiate between "Count" and "count", we could set the argument `ignore.case = FALSE` when calling `contains`.
+
+This is almost what we want.
+The first problem is that the column `authorsCount` was included.
+We can specifically exclude a column by inserting a minus sign before it.
+
+```{r}
+metrics <- select(research, contains("Count"), -authorsCount)
+head(metrics)
+```
+
+The second problem is that we are missing the columns `f1000Factor` and `wikipediaCites`.
+Let's include them by listing them.
+
+```{r}
+metrics <- select(research, contains("Count"), -authorsCount, f1000Factor, wikipediaCites)
+head(metrics)
+```
+
+Notice that this also rearranges the columns.
+
+### Keeping it simple
+
+We have observed how we can more conveniently perform complex subsetting operations with dplyr.
+But what if we want to do something simple like subset rows or columns by position?
+
+This is very simple for columns.
+Instead of naming the columns we want, we can use the column numbers with `select`.
+Thus the following are equivalent.
+
+```{r}
+head(select(research, journal))
+head(select(research, 3))
+```
+
+For rows, we need to use a different function, `slice`.
+We can subset the first three rows of `article_info` like this:
+
+```{r}
+slice(article_info, 1:3)
+```
+
+Therefore we can use dplyr whether our subsetting operations are basic or complex.
+
+### Challenges
 
 > ## How much did altmetrics numbers change by 2009? {.challenge}
 >
 > How many articles were published in 2009?
 > How many of these had at least one Tweet or Facebook comment?
-> How many were in at least one Mendeley user's library (mendeleyReadersCount)?
+> How many were in at least one Mendeley library (`mendeleyReadersCount`)?
 
 ```{r include=FALSE}
 research_2009 <- filter(research, year == 2009)
@@ -113,3 +206,24 @@ research_2009_mendeley <- filter(research, year == 2009, mendeleyReadersCount > 
 nrow(research_2009_mendeley)
 ```
 
+> ## What are people reading but not citing? {.challenge}
+>
+> One potential use of altmetrics data is recognizing articles that are widely read among the scientific community but are not cited as highly as similarly influential papers.
+> Compile a data set named `low_cite` that contains the journal, title, and year of each research article that meets the following criteria:
+>
+> *  Published in 2008 or prior
+> *  Has more than 1,000 pdf downloads
+> *  Is contained in more than 15 Mendeley libraries
+> *  Has fewer than 10 citations as of 2011
+>
+> How many articles did you find?
+
+```{r include=FALSE}
+summary(research$pdfDownloadsCount)
+summary(research$mendeleyReadersCount)
+summary(research$wosCountThru2011)
+low_cite <- filter(research, pdfDownloadsCount > 1000, mendeleyReadersCount > 15,
+                   year < 2009, wosCountThru2011 < 10)
+low_cite <- select(low_cite, journal, title, year)
+nrow(low_cite)
+```
