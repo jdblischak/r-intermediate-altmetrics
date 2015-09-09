@@ -12,245 +12,158 @@ minutes: 30
 > *  Chain commands together using `%>%`
 > *  Sort rows using `arrange`
 
+The Unix design philosophy is to create small tools that do one thing well and can be chained together to perform more complex operations.
+In an earlier lesson on the Unix shell, we reviewed how to chain multiple Unix commands together using the pipe operator `|`.
+dplyr provides similar functionality in R by utilizing the pipe operator `%>%`, which is implemented in the [maggrittr][] package.
 
+[maggrittr]: https://cran.r-project.org/web/packages/magrittr/index.html
+
+
+
+
+
+
+
+### How to use the pipe `%>%`
+
+In the previous lesson, we learned how to subset rows and columns using `filter` and `select`, respectively.
+Instead of performing these operations separately, we can combine them into one expression.
+Below we subset to include the Facebook data for all the articles in the published in 2006.
 
 
 ~~~{.r}
-library("dplyr")
+facebook_2006 <- research %>% filter(year == 2006) %>% select(contains("facebook"))
+head(facebook_2006)
 ~~~
 
 
 
 ~~~{.output}
-
-Attaching package: 'dplyr'
-
-The following objects are masked from 'package:stats':
-
-    filter, lag
-
-The following objects are masked from 'package:base':
-
-    intersect, setdiff, setequal, union
-
-~~~
-
-
-~~~ {.bash}
-zcat counts-raw.txt.gz | head -n 1
-~~~
-
-
-~~~{.r}
-counts_raw %>% head(n = 1)
-~~~
-
-
-
-~~~{.output}
-                           doi    pubDate journal
-1 10.1371/journal.pbio.0000001 2003-10-13    pbio
-                                                                        title
-1 A Functional Analysis of the Spacer of V(D)J Recombination Signal Sequences
-       articleType authorsCount f1000Factor backtweetsCount deliciousCount
-1 Research Article            6           6               0              0
-      pmid                           plosSubjectTags plosSubSubjectTags
-1 14551903 Cell Biology|Immunology|Molecular Biology                   
   facebookShareCount facebookLikeCount facebookCommentCount
 1                  0                 0                    0
-  facebookClickCount mendeleyReadersCount almBlogsCount pdfDownloadsCount
-1                  0                    4             0               348
-  xmlDownloadsCount htmlDownloadsCount almCiteULikeCount almScopusCount
-1                71               6131                 0             28
-  almPubMedCentralCount almCrossRefCount plosCommentCount
-1                     7                5                0
-  plosCommentResponsesCount wikipediaCites year daysSincePublished
-1                         0              0 2003               2628
-  wosCountThru2010 wosCountThru2011
-1               29               33
+2                  0                 0                    0
+3                  0                 0                    0
+4                  0                 0                    0
+5                  0                 0                    0
+6                  0                 0                    0
+  facebookClickCount
+1                  0
+2                  0
+3                  0
+4                  0
+5                  0
+6                  0
 
 ~~~
 
-~~~ {.bash}
-zcat counts-raw.txt.gz | wc -l
-~~~
+This is equivalent to the following:
 
 
 ~~~{.r}
-counts_raw %>% nrow
+research_2006 <- filter(research, year == 2006)
+facebook_2006 <- select(research_2006, contains("facebook"))
+~~~
+
+Comparing the more verbose version to the version with pipes, we can see how `%>%` passes the output of one function to the next function:
+the output from the previous function becomes the first positional argument to the next function.
+Thus `research %>% filter(year == 2006)` is converted to `filter(research, year == 2006)`.
+
+And this feature is not limited to dplyr functions.
+We can pipe the output to other R functions as well.
+For example, instead of saving the output as a new data frame and then inspecting it with `head`, we can just pipe the output directly to head.
+
+
+~~~{.r}
+research %>% filter(year == 2006) %>% select(contains("facebook")) %>% head
 ~~~
 
 
 
 ~~~{.output}
-[1] 24331
+  facebookShareCount facebookLikeCount facebookCommentCount
+1                  0                 0                    0
+2                  0                 0                    0
+3                  0                 0                    0
+4                  0                 0                    0
+5                  0                 0                    0
+6                  0                 0                    0
+  facebookClickCount
+1                  0
+2                  0
+3                  0
+4                  0
+5                  0
+6                  0
 
 ~~~
 
-~~~ {.bash}
-zcat counts-raw.txt.gz | cut -f5 | head
-~~~
+Ths is especially useful for providing quick feedback while iteratively developing code.
+
+### Sort rows using `arrange`
+
+To practice using `%>%`, we'll utitlize an additional dplyr function, `arrange`.
+It sorts the rows by the values in the specified columns, using subsequent columns to break ties in the previous column.
+This is similar to the R function `order`.
+For example, here are the first 10 rows after sorting by number of authors and the 2011 citation count.
+Since these commands are starting to get longer, we'll put each function on its own line.
 
 
 ~~~{.r}
-counts_raw %>% select(5) %>% head
+research %>%
+  arrange(authorsCount, wosCountThru2011) %>%
+  select(authorsCount, wosCountThru2011) %>%
+  slice(1:10)
 ~~~
 
 
 
 ~~~{.output}
-       articleType
-1 Research Article
-2 Research Article
-3         Synopsis
-4         Synopsis
-5 Research Article
-6 Research Article
+   authorsCount wosCountThru2011
+1             1                0
+2             1                0
+3             1                0
+4             1                0
+5             1                0
+6             1                0
+7             1                0
+8             1                0
+9             1                0
+10            1                0
 
 ~~~
 
+This isn't very interesting because it sorts from lowest to highest.
+We can reverse this sorting using the function `desc`, for descending.
+
 
 ~~~{.r}
-counts_raw %>% select(articleType) %>% head
+research %>%
+  arrange(desc(authorsCount), desc(wosCountThru2011)) %>%
+  select(authorsCount, wosCountThru2011) %>%
+  slice(1:10)
 ~~~
 
 
 
 ~~~{.output}
-       articleType
-1 Research Article
-2 Research Article
-3         Synopsis
-4         Synopsis
-5 Research Article
-6 Research Article
+   authorsCount wosCountThru2011
+1           158              196
+2           144                0
+3           120                7
+4           117              300
+5           114              119
+6            82                6
+7            80                3
+8            74                5
+9            71               25
+10           67               16
 
 ~~~
 
-~~~ {.bash}
-zcat counts-raw.txt.gz | cut -f5 | sort | uniq -c | head
-~~~
+### Challenges
 
-Not exactly the same because haven't done grouping.
-
-
-~~~{.r}
-counts_raw %>% select(articleType) %>% arrange(articleType) %>% distinct %>% nrow
-~~~
-
-
-
-~~~{.output}
-[1] 48
-
-~~~
-
-~~~ {.bash}
-zcat counts-raw.txt.gz | cut -f32 | sort -n | tail -n 1
-~~~
-
-
-~~~{.r}
-counts_raw %>% select(32) %>% tail(n = 1)
-~~~
-
-
-
-~~~{.output}
-      wosCountThru2011
-24331                6
-
-~~~
-
-
-~~~{.r}
-counts_raw %>% select(wosCountThru2011) %>% arrange(wosCountThru2011) %>% tail(n = 1)
-~~~
-
-
-
-~~~{.output}
-      wosCountThru2011
-24331              737
-
-~~~
-
-
-~~~{.r}
-counts_raw %>% arrange(wosCountThru2011) %>% tail(n = 1) %>% select(title)
-~~~
-
-
-
-~~~{.output}
-                                                 title
-24331 Relaxed Phylogenetics and Dating with Confidence
-
-~~~
-
-
-~~~{.r}
-counts_raw %>% arrange(wosCountThru2011) %>% tail(n = 1) %>% select(doi:authorsCount)
-~~~
-
-
-
-~~~{.output}
-                               doi    pubDate journal
-24331 10.1371/journal.pbio.0040088 2006-03-14    pbio
-                                                 title      articleType
-24331 Relaxed Phylogenetics and Dating with Confidence Research Article
-      authorsCount
-24331            4
-
-~~~
-
-~~~ {.bash}
-zcat counts-raw.txt.gz | cut -f11 | grep "Evolutionary Biology" | wc -l
-~~~
-
-
-~~~{.r}
-counts_raw %>% filter(grepl("Evolutionary Biology", plosSubjectTags)) %>% nrow
-~~~
-
-
-
-~~~{.output}
-[1] 2864
-
-~~~
-
-~~~ {.bash}
-zcat counts-raw.txt.gz | cut -f11 | grep "Evolutionary Biology" | grep "Cell Biology" | wc -l
-~~~
-
-
-~~~{.r}
-counts_raw %>% filter(grepl("Evolutionary Biology", plosSubjectTags),
-                      grepl("Cell Biology", plosSubjectTags)) %>% nrow
-~~~
-
-
-
-~~~{.output}
-[1] 153
-
-~~~
-
-~~~ {.bash}
-zcat counts-raw.txt.gz | grep "Evolutionary Biology" | grep "Cell Biology" > evo-cell-bio.txt
-~~~
-
-
-~~~{.r}
-evo_cell_bio <- counts_raw %>% filter(grepl("Evolutionary Biology", plosSubjectTags),
-                                      grepl("Cell Biology", plosSubjectTags))
-~~~
-
-
-> ## {.callout}
-> 
-
-> ##  {.challenge}
+> ## Title of most cited articles {.challenge}
 >
+> Using a chain of pipes, output the titles of the three research articles with the largest 2011 citation count.
+
+
