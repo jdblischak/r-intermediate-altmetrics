@@ -164,3 +164,65 @@ counts_raw %>%
 ## 10    pcbi 2006  14
 ## ..     ...  ... ...
 ```
+
+mean +/- sem
+
+
+```r
+tweets_per_journal <- counts_raw %>%
+  group_by(journal) %>%
+  summarize(mean = mean(backtweetsCount),
+            sem = sd(backtweetsCount) / sqrt(n()),
+            num = n())
+```
+
+
+```r
+library("ggplot2")
+```
+
+```
+## Loading required package: methods
+```
+
+```r
+ggplot(tweets_per_journal, aes(x = journal, y = mean)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - sem, ymax = mean + sem)) +
+  geom_text(aes(label = num), hjust = 1)
+```
+
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
+
+
+```r
+tweets_per_journal <- counts_raw %>%
+  group_by(journal, year) %>%
+  summarize(mean = mean(backtweetsCount),
+            sem = sd(backtweetsCount) / sqrt(n()),
+            num = n())
+```
+
+
+```r
+library("ggplot2")
+ggplot(tweets_per_journal, aes(x = journal, y = mean)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - sem, ymax = mean + sem)) +
+  geom_text(aes(label = num), hjust = 1) +
+  facet_wrap(~year)
+```
+
+![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-1.png) 
+
+
+```r
+ggplot(tweets_per_journal, aes(x = journal, y = mean)) +
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = mean - sem, ymax = mean + sem)) +
+  geom_text(aes(label = num), hjust = 1) +
+  facet_wrap(~year)
+```
+
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png) 
+

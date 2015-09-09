@@ -67,3 +67,47 @@ counts_raw %>%
   group_by(journal, year) %>%
   summarize(num = n())
 ```
+
+mean +/- sem
+
+```{r}
+tweets_per_journal <- counts_raw %>%
+  group_by(journal) %>%
+  summarize(mean = mean(backtweetsCount),
+            sem = sd(backtweetsCount) / sqrt(n()),
+            num = n())
+```
+
+```{r}
+library("ggplot2")
+ggplot(tweets_per_journal, aes(x = journal, y = mean)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - sem, ymax = mean + sem)) +
+  geom_text(aes(label = num), hjust = 1)
+```
+
+```{r}
+tweets_per_journal <- counts_raw %>%
+  group_by(journal, year) %>%
+  summarize(mean = mean(backtweetsCount),
+            sem = sd(backtweetsCount) / sqrt(n()),
+            num = n())
+```
+
+```{r}
+library("ggplot2")
+ggplot(tweets_per_journal, aes(x = journal, y = mean)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = mean - sem, ymax = mean + sem)) +
+  geom_text(aes(label = num), hjust = 1) +
+  facet_wrap(~year)
+```
+
+```{r}
+ggplot(tweets_per_journal, aes(x = journal, y = mean)) +
+  geom_bar(stat = "identity") +
+  geom_errorbar(aes(ymin = mean - sem, ymax = mean + sem)) +
+  geom_text(aes(label = num), hjust = 1) +
+  facet_wrap(~year)
+```
+

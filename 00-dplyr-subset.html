@@ -40,6 +40,7 @@
 </div>
 </section>
 <p>In a previous lesson, we reviewed how to subset vectors and data frames in R. Now we wil learn how to perform similar operations on data frames using functions from the dplyr package. A short-term advantage of these functions is that they are faster to type, which facilitates interactive, exploratory analysis. However, the true advantage of learning these subsetting functions is to combine them with dplyr’s more powerful capabilities.</p>
+<p>Subsetting alone is not the most exciting task, but it provides a gentle introduction to the dplyr approach. We’ll use subsetting to explore the data and learn about the general trends and to identify outliers. And we’ll explore these ideas further as we learn more dplyr functions.</p>
 <p>First we need to load the package.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;dplyr&quot;</span>)</code></pre>
 <pre class="output"><code>
@@ -53,7 +54,7 @@ The following objects are masked from &#39;package:base&#39;:
 
     intersect, setdiff, setequal, union
 </code></pre>
-<p>To subset the rows, we use the function <code>filter</code>. Thus to only include the research articles, we can run the following:</p>
+<p>Let’s start by limiting our analysis to only include research articles. To subset the rows, we use the function <code>filter</code>. Thus to only include the research articles, we can run the following:</p>
 <pre class="sourceCode r"><code class="sourceCode r">research &lt;-<span class="st"> </span><span class="kw">filter</span>(counts_raw, articleType ==<span class="st"> &quot;Research Article&quot;</span>)</code></pre>
 <p>The first argument supplied to <code>filter</code> is the original data frame. The second argument is the criteria for filtering: <code>articleType == &quot;Research Article&quot;</code>. This is the general format for all dplyr functions: the first argument is always the data frame followed by the arguments specific to that function. Also notice that we referred to the column name <code>articleType</code> without using quotation marks or indexing the data frame, i.e. <code>counts_raw$articleType</code>. This is a convenience feature available for all dplyr functions.</p>
 <aside class="callout panel panel-info">
@@ -64,14 +65,40 @@ The following objects are masked from &#39;package:base&#39;:
 <p>The functions in dplyr allow you to refer directly to column names using what is called non-standard evaluation. The function <code>subset</code> from base R uses a similar trick to reduce typing. Using non-standard evaluation is extremely convenient for interactive programming but introduces many complications when writing functions. See the chapter in <a href="http://adv-r.had.co.nz/Computing-on-the-language.html">Advanced R</a> by Hadley Wickham to learn about this topic in general or the <a href="https://cran.r-project.org/web/packages/dplyr/vignettes/nse.html">dplyr documentation</a> to learn how it specifically applies to dplyr.</p>
 </div>
 </aside>
-<p>To include additional filters, we simply list them</p>
-<pre class="sourceCode r"><code class="sourceCode r">research &lt;-<span class="st"> </span><span class="kw">filter</span>(counts_raw, articleType ==<span class="st"> &quot;Research Article&quot;</span>, journal ==<span class="st"> &quot;pone&quot;</span>)</code></pre>
+<p>How many research articles were published in PLOS journals in 2006?</p>
+<pre class="sourceCode r"><code class="sourceCode r">research_2006 &lt;-<span class="st"> </span><span class="kw">filter</span>(research, year ==<span class="st"> </span><span class="dv">2006</span>)
+<span class="kw">nrow</span>(research_2006)</code></pre>
+<pre class="output"><code>[1] 873
+</code></pre>
+<p>And how many of the these articles from 2006 were mentioned in at least one tweet?</p>
+<pre class="sourceCode r"><code class="sourceCode r">research_2006_tweet &lt;-<span class="st"> </span><span class="kw">filter</span>(research_2006, backtweetsCount &gt;<span class="st"> </span><span class="dv">0</span>)
+<span class="kw">nrow</span>(research_2006_tweet)</code></pre>
+<pre class="output"><code>[1] 10
+</code></pre>
+<p>And we aren’t limited to one filtering condition at a time. We can list an arbitrary number of filtering conditions separated by commas. For example, how many of these 2006 articles received at least one Facebook comment?</p>
+<pre class="sourceCode r"><code class="sourceCode r">research_2006_fb &lt;-<span class="st"> </span><span class="kw">filter</span>(research, year ==<span class="st"> </span><span class="dv">2006</span>, facebookCommentCount &gt;<span class="st"> </span><span class="dv">0</span>)
+<span class="kw">nrow</span>(research_2006_fb)</code></pre>
+<pre class="output"><code>[1] 5
+</code></pre>
+<p>Furthermore, we can create even more complex filters using the <code>&amp;</code> (“and”) and <code>|</code> (“or”) operators. How many of the articles in 2006 had at least one Tweet or Facebook comment?</p>
+<pre class="sourceCode r"><code class="sourceCode r">research_2006_fb_tweet &lt;-<span class="st"> </span><span class="kw">filter</span>(research, year ==<span class="st"> </span><span class="dv">2006</span>,
+                                 facebookCommentCount &gt;<span class="st"> </span><span class="dv">0</span> |<span class="st"> </span>backtweetsCount &gt;<span class="st"> </span><span class="dv">0</span>)
+<span class="kw">nrow</span>(research_2006_fb_tweet)</code></pre>
+<pre class="output"><code>[1] 13
+</code></pre>
+<p>As we have seen, <code>filter</code> works with any expression that evaluates to a logical vector. Thus we can use <code>grepl</code> to search for patterns. How many of these articles with early social media coverage in 2006 involved infectious disease research?</p>
+<pre class="sourceCode r"><code class="sourceCode r">research_2006_fb_tweet_disease &lt;-<span class="st"> </span><span class="kw">filter</span>(research, year ==<span class="st"> </span><span class="dv">2006</span>,
+                                 facebookCommentCount &gt;<span class="st"> </span><span class="dv">0</span> |<span class="st"> </span>backtweetsCount &gt;<span class="st"> </span><span class="dv">0</span>,
+                                 <span class="kw">grepl</span>(<span class="st">&quot;Infectious Diseases&quot;</span>, plosSubjectTags))
+<span class="kw">nrow</span>(research_2006_fb_tweet_disease)</code></pre>
+<pre class="output"><code>[1] 3
+</code></pre>
 <section class="challenge panel panel-success">
 <div class="panel-heading">
 <h2><span class="glyphicon glyphicon-pencil"></span></h2>
 </div>
 <div class="panel-body">
-
+<p>How many articles were published in 2009? How many of these had at least one Tweet or Facebook comment? How many were in at least one Mendeley user’s library (mendeleyReadersCount)?</p>
 </div>
 </section>
         </div>

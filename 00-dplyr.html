@@ -135,6 +135,43 @@
 ## 9     pcbi 2005   1
 ## 10    pcbi 2006  14
 ## ..     ...  ... ...</code></pre>
+<p>mean +/- sem</p>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_per_journal &lt;-<span class="st"> </span>counts_raw %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(journal) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(backtweetsCount),
+            <span class="dt">sem =</span> <span class="kw">sd</span>(backtweetsCount) /<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">n</span>()),
+            <span class="dt">num =</span> <span class="kw">n</span>())</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;ggplot2&quot;</span>)</code></pre>
+<pre><code>## Loading required package: methods</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tweets_per_journal, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> mean)) +
+<span class="st">  </span><span class="kw">geom_point</span>() +
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> mean -<span class="st"> </span>sem, <span class="dt">ymax =</span> mean +<span class="st"> </span>sem)) +
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> num), <span class="dt">hjust =</span> <span class="dv">1</span>)</code></pre>
+<div class="figure">
+<img src="figure/unnamed-chunk-11-1.png" alt="plot of chunk unnamed-chunk-11" /><p class="caption">plot of chunk unnamed-chunk-11</p>
+</div>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_per_journal &lt;-<span class="st"> </span>counts_raw %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(journal, year) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">mean =</span> <span class="kw">mean</span>(backtweetsCount),
+            <span class="dt">sem =</span> <span class="kw">sd</span>(backtweetsCount) /<span class="st"> </span><span class="kw">sqrt</span>(<span class="kw">n</span>()),
+            <span class="dt">num =</span> <span class="kw">n</span>())</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;ggplot2&quot;</span>)
+<span class="kw">ggplot</span>(tweets_per_journal, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> mean)) +
+<span class="st">  </span><span class="kw">geom_point</span>() +
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> mean -<span class="st"> </span>sem, <span class="dt">ymax =</span> mean +<span class="st"> </span>sem)) +
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> num), <span class="dt">hjust =</span> <span class="dv">1</span>) +
+<span class="st">  </span><span class="kw">facet_wrap</span>(~year)</code></pre>
+<div class="figure">
+<img src="figure/unnamed-chunk-13-1.png" alt="plot of chunk unnamed-chunk-13" /><p class="caption">plot of chunk unnamed-chunk-13</p>
+</div>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tweets_per_journal, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> mean)) +
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> mean -<span class="st"> </span>sem, <span class="dt">ymax =</span> mean +<span class="st"> </span>sem)) +
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> num), <span class="dt">hjust =</span> <span class="dv">1</span>) +
+<span class="st">  </span><span class="kw">facet_wrap</span>(~year)</code></pre>
+<div class="figure">
+<img src="figure/unnamed-chunk-14-1.png" alt="plot of chunk unnamed-chunk-14" /><p class="caption">plot of chunk unnamed-chunk-14</p>
+</div>
         </div>
       </div>
       </article>
