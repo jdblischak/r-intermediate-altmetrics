@@ -28,7 +28,7 @@ and programming with R.
 
 > ## Getting ready {.getready}
 >
-> You'll need to install the following packages: dplyr, ggplot2, and testit.
+> You'll need to install the following packages: rmarkdown, dplyr, ggplot2, and testit.
 
 ## Topics
 
