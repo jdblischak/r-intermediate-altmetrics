@@ -66,7 +66,7 @@
 <pre class="output"><code>pbio pcbi pgen pmed pntd pone ppat 
  529  293  355  449  176   NA  305 
 </code></pre>
-<p>Our function returns <code>NA</code> for the total number of Facebook likes for PLOS One. Why is this happening? Since we know that the problem is occuring during the <code>for</code> loop, we’ll set the breakpoint there with <code>browser</code> instead of starting from the beginning of the function using <code>debug</code>.</p>
+<p>Our function returns <code>NA</code> for the total number of Facebook likes for PLOS One. Why is this happening? It is correctly identifying all the journals, so the first section of code appears to be working correctly. The totals per journal are computed within the <code>for</code> loop, so that is likely where the problem is originating. Since we suspect the problem is occuring during the <code>for</code> loop, we’ll set the breakpoint there with <code>browser</code> instead of starting from the beginning of the function using <code>debug</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   if (!<span class="kw">is.factor</span>(variable)) {
     variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)

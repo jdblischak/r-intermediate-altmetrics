@@ -61,7 +61,9 @@ pbio pcbi pgen pmed pntd pone ppat
 
 Our function returns `NA` for the total number of Facebook likes for PLOS One.
 Why is this happening?
-Since we know that the problem is occuring during the `for` loop, we'll set the breakpoint there with `browser` instead of starting from the beginning of the function using `debug`.
+It is correctly identifying all the journals, so the first section of code appears to be working correctly.
+The totals per journal are computed within the `for` loop, so that is likely where the problem is originating.
+Since we suspect the problem is occuring during the `for` loop, we'll set the breakpoint there with `browser` instead of starting from the beginning of the function using `debug`.
 
 
 ~~~{.r}
