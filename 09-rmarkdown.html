@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Writing in R Markdown</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2 id="learning-objectives"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<p>Learn how to generate reproducible reports that display your code and results.</p>
+</div>
+</section>
+<p>When you perform wet lab experiments, what information do you put in your lab notebook? You probably include the protocol you used to run the experiment, information about the samples and reagents used in the protocol, and at the end you’ll likely include your results (for instance, a picture of a gel). This essentially creates a report of your experiment.</p>
+<p>You can do the same with your dry lab analyses using a tool called R Markdown. Why would we want to do this?</p>
+<ul>
+<li>Your method, results, and interpretation are stored in one place<br />
+</li>
+<li>If you update your methodology, you can easily update your results with the click of a button, rather than copying and pasting.<br />
+</li>
+<li>You <em>could</em> cut and paste your code and results into Word or Power Point, but that will make rerunning your code challenging, as Word often introduces hidden characters.</li>
+</ul>
+<p>R Markdown is a fairly simple language you can use to generate reports that incorporate bits of R code along with the output they produce. There are two steps to generating reports with R Markdown and RStudio:</p>
+<ol style="list-style-type: decimal">
+<li>Write your code in R Markdown.</li>
+<li>Assemble your report as either HTML or a PDF using the package knitr.</li>
+</ol>
+<p>Next, let’s run through the demo for knitr to see some of the options. Go up to <code>File</code> -&gt; <code>New File</code> -&gt; <code>R Markdown</code>.</p>
+<div class="figure">
+<img src="figure/start_rmarkdown_doc.png" alt="Set up new R Markdown file" />
+<p class="caption">Set up new R Markdown file</p>
+</div>
+<p>A screen will pop up asking us what kind of document we wish to create. Let’s name our demo report “Trial Report” and fill in your name. Ensure that “Document” is highlighted to the left and that “HTML” is chosen. Click “Ok”.</p>
+<div class="figure">
+<img src="figure/rmarkdown_document_info.png" alt="Choose HTML" />
+<p class="caption">Choose HTML</p>
+</div>
+<p>Now we have the example R Markdown file open. The first thing you’ll notice at the top is a header which includes your name, the title of the document, the date, and a field called output. This header tells the package knitr some information it might need about your document, including what format you want the final report rendered in.</p>
+<p>The next thing you’ll notice is white space with some text describing an R Markdown document. White space in this document represents text of the report you would like to display. You can put anything here describing your analysis, results, etc. and it will be recognized as text and not R code. This white space is interpreted as Markdown language, so you can use any of the tricks we learned in the last lesson to make lists, bold certain words, or create headers in your document.</p>
+<p>In this trial script, you’ll see some of these markdown elements are used. For example, the word knit is in bolded (using asterisks), and there are code chucks near the bottom that say echo = FALSE.</p>
+<div class="figure">
+<img src="figure/rmarkdown-demo-doc.png" alt="Demo R Markdown Document" />
+<p class="caption">Demo R Markdown Document</p>
+</div>
+<p>In addition to the white space, you’ll gray blocks that have ``` at the top and bottom. These are called chunks. If the start of a chunk has {r} at the end of the ticks, knitr will recognize the code in that chunk as R code and run it when rendering the HTML. In your R Markdown, the code will look like:</p>
+<pre><code>```{r}
+summary(cars)
+```</code></pre>
+<p>In your final report, the code will look like:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(cars)</code></pre></div>
+<pre><code>##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00</code></pre>
+<p>These are the basics of writing R Markdown, but we still need to generate a report. To do this, click on the button on the top bar that says “Knit HMTL”. This will prompt you to save the file. Go ahead and save this file as <code>Rmarkdown_demo.Rmd</code> in the altmetrics directory. The ending of the file <code>.Rmd</code> indicates that this is an R Markdown file.</p>
+<div class="figure">
+<img src="figure/knit_rmarkdown.png" alt="Knit R Markdown" />
+<p class="caption">Knit R Markdown</p>
+</div>
+<p>When you click on this link, you see in the console that RStudio is running and rendering your R Markdown file. An HMTL file will pop up where you’ll see the report. You can see the header has been rendered, there are code and results chunks displayed, and even plots are shown right in the report.</p>
+<p>Also, if you now look in the altmetrics folder, you’ll see an HTML file of the name Rmarkdown_demo.html. When knitr is run, it saves the current version of the .Rmd file and the generated HTML file in the directory it is stored in.</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>
