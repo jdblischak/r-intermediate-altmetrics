@@ -11,23 +11,141 @@ source("tools/chunk-options.R")
 
 > ## Learning Objectives {.objectives}
 >
+> *  Create new columns using `mutate`
 > *  Summarize data using `summarize`
 > *  Count number of observations using `n()`
 > *  Group data by variable(s) with `group_by`
 
 
-```{r echo = FALSE}
+```{r echo=FALSE}
 counts_raw <- read.delim("data/counts-raw.txt.gz")
 ```
 
-```{r}
+```{r echo=FALSE, message=FALSE}
 library("dplyr")
 ```
 
+```{r echo=FALSE}
+research <- filter(counts_raw, articleType == "Research Article")
+```
 
+At this point we have only used dplyr to subset and organize our data.
+But of course we can also create new data.
+And the true power of dplyr is revealed when we perform these operations by groups.
 
-> ## {.callout}
-> 
+### Create new columns with `mutate`
 
-> ##  {.challenge}
+To create a new column in the data frame, we use `mutate`.
+Let's create a new column that is the number of weeks since the article was published.
+
+```{r}
+research <- mutate(research, weeksSincePublished = daysSincePublished / 7)
+```
+
+As before, the dplyr version is quicker to type than the traditional R version.
+
+```{r}
+research$weeksSincePublished <- research$daysSincePublished / 7
+```
+
+Another benefit is that we can instantly reference the new variables we have created.
+For example, we can create a variable `yearsSincePublished` referencing the newly created `weeksSincePublished`.
+
+```{r}
+research <- mutate(research, weeksSincePublished = daysSincePublished / 7,
+                             yearsSincePublished = weeksSincePublished / 52)
+select(research, contains("Since")) %>% slice(1:10)
+```
+
+### Summarize data using `summarize`
+
+We use `mutate` when the result has the same number of rows as the original data.
+When we need to reduce the data to a single summary statistic, we can use `summarize`.
+For example, let's calculate a summary statistic which is the mean number of PLOS comments.
+
+```{r}
+summarize(research, plosMean = mean(plosCommentCount))
+```
+
+And we can additional statistics, like the standard deviation:
+
+```{r}
+summarize(research, plosMean = mean(plosCommentCount), plosSD = sd(plosCommentCount))
+```
+
+Notice that this creates a second column in the data frame result.
+
+And of course we can pipe input to `summarize`.
+Let's calculate these statistics specifically for the articles in PLOS One published in 2007.
+
+```{r}
+research %>% filter(journal == "pone", year == 2007) %>%
+  summarize(plosMean = mean(plosCommentCount), plosSD = sd(plosCommentCount))
+```
+
+Lastly, since it is often useful to know how many observations, in this case articles, are present in a given subset, dplyr provides the convenience function `n()`.
+
+```{r}
+research %>% filter(journal == "pone", year == 2007) %>%
+  summarize(plosMean = mean(plosCommentCount), plosSD = sd(plosCommentCount),
+            num = n())
+```
+
+### Summarizing per group with `group_by`
+
+The function `summarize` is most powerful when applied to grouping of the data.
+dplyr makes the code much easier to write, understand, and extend.
+
+Recall the function we wrote earlier to sum a metric for each level of a factor.
+
+```{r}
+sum_metric_per_var <- function(metric, variable) {
+  result <- numeric(length = length(levels(variable)))
+  names(result) <- levels(variable)
+  for (v in levels(variable)) {
+    result[v] <- sum(metric[variable == v])
+  }
+  return(result)
+}
+```
+
+Which we ran as the following.
+
+```{r}
+sum_metric_per_var(research$backtweetsCount, research$journal)
+```
+
+We can perform the same operation by combining `summarize` with `group_by`
+
+```{r}
+research %>% group_by(journal) %>% summarize(tweetsSum = sum(backtweetsCount))
+```
+
+Conveniently it returns the result as a data frame.
+And if we want to further group it by another factor, we can just add it to the `group_by` function.
+
+```{r}
+research %>% group_by(journal, year) %>% summarize(tweetsSum = sum(backtweetsCount))
+```
+
+In the function we wrote to do this manually, we would have had to write another `for` loop!
+
+### Challenges
+
+> ## Summarizing the number of tweets per journal {.challenge}
 >
+> Create a new data frame, `tweets_per_journal`, that for each journal contains
+> the total number of articles,
+> the mean number of tweets received by articles in that journal,
+> and the standard error of the mean (SEM) of the number of tweets.
+> The SEM is the standard deviation divided by the square root of the sample size (i.e. the number of articles).
+
+
+```{r include=FALSE}
+tweets_per_journal <- counts_raw %>%
+  group_by(journal) %>%
+  summarize(num = n(),
+            mean = mean(backtweetsCount),
+            sem = sd(backtweetsCount) / sqrt(num))
+tweets_per_journal
+```

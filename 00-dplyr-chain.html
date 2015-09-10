@@ -39,116 +39,98 @@
 </ul>
 </div>
 </section>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;dplyr&quot;</span>)</code></pre>
-<pre class="output"><code>
-Attaching package: &#39;dplyr&#39;
-
-The following objects are masked from &#39;package:stats&#39;:
-
-    filter, lag
-
-The following objects are masked from &#39;package:base&#39;:
-
-    intersect, setdiff, setequal, union
-</code></pre>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">head</span> -n 1</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">head</span>(<span class="dt">n =</span> <span class="dv">1</span>)</code></pre>
-<pre class="output"><code>                           doi    pubDate journal
-1 10.1371/journal.pbio.0000001 2003-10-13    pbio
-                                                                        title
-1 A Functional Analysis of the Spacer of V(D)J Recombination Signal Sequences
-       articleType authorsCount f1000Factor backtweetsCount deliciousCount
-1 Research Article            6           6               0              0
-      pmid                           plosSubjectTags plosSubSubjectTags
-1 14551903 Cell Biology|Immunology|Molecular Biology                   
-  facebookShareCount facebookLikeCount facebookCommentCount
+<p>The Unix design philosophy is to create small tools that do one thing well and can be chained together to perform more complex operations. In an earlier lesson on the Unix shell, we reviewed how to chain multiple Unix commands together using the pipe operator <code>|</code>. dplyr provides similar functionality in R by utilizing the pipe operator <code>%&gt;%</code>, which is implemented in the <a href="https://cran.r-project.org/web/packages/magrittr/index.html">maggrittr</a> package.</p>
+<h3 id="how-to-use-the-pipe">How to use the pipe <code>%&gt;%</code></h3>
+<p>In the previous lesson, we learned how to subset rows and columns using <code>filter</code> and <code>select</code>, respectively. Instead of performing these operations separately, we can combine them into one expression. Below we subset to include the Facebook data for all the articles in the published in 2006.</p>
+<pre class="sourceCode r"><code class="sourceCode r">facebook_2006 &lt;-<span class="st"> </span>research %&gt;%<span class="st"> </span><span class="kw">filter</span>(year ==<span class="st"> </span><span class="dv">2006</span>) %&gt;%<span class="st"> </span><span class="kw">select</span>(<span class="kw">contains</span>(<span class="st">&quot;facebook&quot;</span>))
+<span class="kw">head</span>(facebook_2006)</code></pre>
+<pre class="output"><code>  facebookShareCount facebookLikeCount facebookCommentCount
 1                  0                 0                    0
-  facebookClickCount mendeleyReadersCount almBlogsCount pdfDownloadsCount
-1                  0                    4             0               348
-  xmlDownloadsCount htmlDownloadsCount almCiteULikeCount almScopusCount
-1                71               6131                 0             28
-  almPubMedCentralCount almCrossRefCount plosCommentCount
-1                     7                5                0
-  plosCommentResponsesCount wikipediaCites year daysSincePublished
-1                         0              0 2003               2628
-  wosCountThru2010 wosCountThru2011
-1               29               33
+2                  0                 0                    0
+3                  0                 0                    0
+4                  0                 0                    0
+5                  0                 0                    0
+6                  0                 0                    0
+  facebookClickCount
+1                  0
+2                  0
+3                  0
+4                  0
+5                  0
+6                  0
 </code></pre>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">wc</span> -l</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span>nrow</code></pre>
-<pre class="output"><code>[1] 24331
+<p>This is equivalent to the following:</p>
+<pre class="sourceCode r"><code class="sourceCode r">research_2006 &lt;-<span class="st"> </span><span class="kw">filter</span>(research, year ==<span class="st"> </span><span class="dv">2006</span>)
+facebook_2006 &lt;-<span class="st"> </span><span class="kw">select</span>(research_2006, <span class="kw">contains</span>(<span class="st">&quot;facebook&quot;</span>))</code></pre>
+<p>Comparing the more verbose version to the version with pipes, we can see how <code>%&gt;%</code> passes the output of one function to the next function: the output from the previous function becomes the first positional argument to the next function. Thus <code>research %&gt;% filter(year == 2006)</code> is converted to <code>filter(research, year == 2006)</code>.</p>
+<p>And this feature is not limited to dplyr functions. We can pipe the output to other R functions as well. For example, instead of saving the output as a new data frame and then inspecting it with <code>head</code>, we can just pipe the output directly to head.</p>
+<pre class="sourceCode r"><code class="sourceCode r">research %&gt;%<span class="st"> </span><span class="kw">filter</span>(year ==<span class="st"> </span><span class="dv">2006</span>) %&gt;%<span class="st"> </span><span class="kw">select</span>(<span class="kw">contains</span>(<span class="st">&quot;facebook&quot;</span>)) %&gt;%<span class="st"> </span>head</code></pre>
+<pre class="output"><code>  facebookShareCount facebookLikeCount facebookCommentCount
+1                  0                 0                    0
+2                  0                 0                    0
+3                  0                 0                    0
+4                  0                 0                    0
+5                  0                 0                    0
+6                  0                 0                    0
+  facebookClickCount
+1                  0
+2                  0
+3                  0
+4                  0
+5                  0
+6                  0
 </code></pre>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f5 <span class="kw">|</span> <span class="kw">head</span></code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">select</span>(<span class="dv">5</span>) %&gt;%<span class="st"> </span>head</code></pre>
-<pre class="output"><code>       articleType
-1 Research Article
-2 Research Article
-3         Synopsis
-4         Synopsis
-5 Research Article
-6 Research Article
+<p>Ths is especially useful for providing quick feedback while iteratively developing code.</p>
+<h3 id="sort-rows-using-arrange">Sort rows using <code>arrange</code></h3>
+<p>To practice using <code>%&gt;%</code>, we’ll utitlize an additional dplyr function, <code>arrange</code>. It sorts the rows by the values in the specified columns, using subsequent columns to break ties in the previous column. This is similar to the R function <code>order</code>. For example, here are the first 10 rows after sorting by number of authors and the 2011 citation count. Since these commands are starting to get longer, we’ll put each function on its own line.</p>
+<pre class="sourceCode r"><code class="sourceCode r">research %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(authorsCount, wosCountThru2011) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(authorsCount, wosCountThru2011) %&gt;%
+<span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span>:<span class="dv">10</span>)</code></pre>
+<pre class="output"><code>   authorsCount wosCountThru2011
+1             1                0
+2             1                0
+3             1                0
+4             1                0
+5             1                0
+6             1                0
+7             1                0
+8             1                0
+9             1                0
+10            1                0
 </code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">select</span>(articleType) %&gt;%<span class="st"> </span>head</code></pre>
-<pre class="output"><code>       articleType
-1 Research Article
-2 Research Article
-3         Synopsis
-4         Synopsis
-5 Research Article
-6 Research Article
+<p>This isn’t very interesting because it sorts from lowest to highest. We can reverse this sorting using the function <code>desc</code>, for descending.</p>
+<pre class="sourceCode r"><code class="sourceCode r">research %&gt;%
+<span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(authorsCount), <span class="kw">desc</span>(wosCountThru2011)) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(authorsCount, wosCountThru2011) %&gt;%
+<span class="st">  </span><span class="kw">slice</span>(<span class="dv">1</span>:<span class="dv">10</span>)</code></pre>
+<pre class="output"><code>   authorsCount wosCountThru2011
+1           158              196
+2           144                0
+3           120                7
+4           117              300
+5           114              119
+6            82                6
+7            80                3
+8            74                5
+9            71               25
+10           67               16
 </code></pre>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f5 <span class="kw">|</span> <span class="kw">sort</span> <span class="kw">|</span> <span class="kw">uniq</span> -c <span class="kw">|</span> <span class="kw">head</span></code></pre>
-<p>Not exactly the same because haven’t done grouping.</p>
-<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">select</span>(articleType) %&gt;%<span class="st"> </span><span class="kw">arrange</span>(articleType) %&gt;%<span class="st"> </span>distinct %&gt;%<span class="st"> </span>nrow</code></pre>
-<pre class="output"><code>[1] 48
-</code></pre>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f32 <span class="kw">|</span> <span class="kw">sort</span> -n <span class="kw">|</span> <span class="kw">tail</span> -n 1</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">select</span>(<span class="dv">32</span>) %&gt;%<span class="st"> </span><span class="kw">tail</span>(<span class="dt">n =</span> <span class="dv">1</span>)</code></pre>
-<pre class="output"><code>      wosCountThru2011
-24331                6
-</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">select</span>(wosCountThru2011) %&gt;%<span class="st"> </span><span class="kw">arrange</span>(wosCountThru2011) %&gt;%<span class="st"> </span><span class="kw">tail</span>(<span class="dt">n =</span> <span class="dv">1</span>)</code></pre>
-<pre class="output"><code>      wosCountThru2011
-24331              737
-</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">arrange</span>(wosCountThru2011) %&gt;%<span class="st"> </span><span class="kw">tail</span>(<span class="dt">n =</span> <span class="dv">1</span>) %&gt;%<span class="st"> </span><span class="kw">select</span>(title)</code></pre>
-<pre class="output"><code>                                                 title
-24331 Relaxed Phylogenetics and Dating with Confidence
-</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">arrange</span>(wosCountThru2011) %&gt;%<span class="st"> </span><span class="kw">tail</span>(<span class="dt">n =</span> <span class="dv">1</span>) %&gt;%<span class="st"> </span><span class="kw">select</span>(doi:authorsCount)</code></pre>
-<pre class="output"><code>                               doi    pubDate journal
-24331 10.1371/journal.pbio.0040088 2006-03-14    pbio
-                                                 title      articleType
-24331 Relaxed Phylogenetics and Dating with Confidence Research Article
-      authorsCount
-24331            4
-</code></pre>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f11 <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Evolutionary Biology&quot;</span> <span class="kw">|</span> <span class="kw">wc</span> -l</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">filter</span>(<span class="kw">grepl</span>(<span class="st">&quot;Evolutionary Biology&quot;</span>, plosSubjectTags)) %&gt;%<span class="st"> </span>nrow</code></pre>
-<pre class="output"><code>[1] 2864
-</code></pre>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f11 <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Evolutionary Biology&quot;</span> <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Cell Biology&quot;</span> <span class="kw">|</span> <span class="kw">wc</span> -l</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">counts_raw %&gt;%<span class="st"> </span><span class="kw">filter</span>(<span class="kw">grepl</span>(<span class="st">&quot;Evolutionary Biology&quot;</span>, plosSubjectTags),
-                      <span class="kw">grepl</span>(<span class="st">&quot;Cell Biology&quot;</span>, plosSubjectTags)) %&gt;%<span class="st"> </span>nrow</code></pre>
-<pre class="output"><code>[1] 153
-</code></pre>
-<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">zcat</span> counts-raw.txt.gz <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Evolutionary Biology&quot;</span> <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Cell Biology&quot;</span> <span class="kw">&gt;</span> evo-cell-bio.txt</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">evo_cell_bio &lt;-<span class="st"> </span>counts_raw %&gt;%<span class="st"> </span><span class="kw">filter</span>(<span class="kw">grepl</span>(<span class="st">&quot;Evolutionary Biology&quot;</span>, plosSubjectTags),
-                                      <span class="kw">grepl</span>(<span class="st">&quot;Cell Biology&quot;</span>, plosSubjectTags))</code></pre>
-<aside class="callout panel panel-info">
-<div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pushpin"></span></h2>
-</div>
-<div class="panel-body">
-
-</div>
-</aside>
+<h3 id="challenges">Challenges</h3>
 <section class="challenge panel panel-success">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pencil"></span></h2>
+<h2><span class="glyphicon glyphicon-pencil"></span>Titles of most cited articles</h2>
 </div>
 <div class="panel-body">
-
+<p>Using a chain of pipes, output the titles of the three research articles with the largest 2011 citation count.</p>
+</div>
+</section>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Lots of authors</h2>
+</div>
+<div class="panel-body">
+<p>Using a chain of pipes, output the author count, title, journal, and subject tags (<code>plosSubjectTags</code>) of the three research articles with the largest number of authors.</p>
 </div>
 </section>
         </div>

@@ -61,7 +61,9 @@ pbio pcbi pgen pmed pntd pone ppat
 
 Our function returns `NA` for the total number of Facebook likes for PLOS One.
 Why is this happening?
-Since we know that the problem is occuring during the `for` loop, we'll set the breakpoint there with `browser` instead of starting from the beginning of the function using `debug`.
+It is correctly identifying all the journals, so the first section of code appears to be working correctly.
+The totals per journal are computed within the `for` loop, so that is likely where the problem is originating.
+Since we suspect the problem is occuring during the `for` loop, we'll set the breakpoint there with `browser` instead of starting from the beginning of the function using `debug`.
 
 
 ~~~{.r}
@@ -168,7 +170,9 @@ sum_metric_per_var <- function(metric, variable) {
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   for (v in levels(variable)) {
-    if (v == "pone") browser()
+    if (v == "pone") {
+      browser()
+    }
     result[v] <- sum(metric[variable == v])
   }
   return(result)
@@ -213,8 +217,15 @@ Browse[1]> unique(metric[variable == "pbio"])
  [1]  0  1  2  3  4 12  8 39  7  5 10 45 11 18 44  6 14 13 43 19
 ~~~
 
-It does not contain any `NA`s.
-So let's check the help for `sum` to see if we can figure out what is going on (remember you can also press the `F1` key to see a function's help page).
+It does not contain any `NA`s, so this is likely the problem.
+
+Let's first exit the debugging environment.
+
+~~~ {.r}
+Browse[1]> Q
+~~~
+
+And then check the help for `sum` to see if we can figure out what is going on (remember you can also press the `F1` key to see a function's help page).
 
 
 ~~~{.r}
