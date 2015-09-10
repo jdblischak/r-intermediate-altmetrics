@@ -15,10 +15,10 @@ In this lesson, we'll learn the basics of Markdown syntax.
 Markdown is a language that provides some basic text upgrades over just plain text when rendered, including bolding and italicizing text.
 Understanding the basics of writing in Markdown will be helpful for the next few lessons, when we go over the basics of writing reports using R Markdown. 
 
-To make sure we can get started, let's make sure everyone has the knitr package installed:
+To make sure we can get started, let's make sure everyone has the rmarkdown package installed:
 
 ```{r eval=FALSE}
-install.packages('knitr')
+install.packages('rmarkdown')
 ```
 
 Let's make a new README file for the almetrics project using the markdown language.
@@ -149,7 +149,91 @@ This directory contains information from the **altmetrics** study, _including_:
 To view this README, type `cat README.md`.
 ```
 
-We've now generated a slightly more stylized version of a README using Markdown.
+In addition to inline code, which can be useful for highlighting when a word is a program or function, you can include code blocks. 
+Code blocks can be useful for either separating single line commands from description or for including multiline commands. 
+A code block starts and ends with three backticks, with every line in between being included in the code block. 
+For instance, let's add instructions on how to install the rmarkdown package to our readme:
+
+~~~
+# README
+
+9/17/15 Emily Davenport
+
+This directory contains information from the **altmetrics** study, _including_:
+
+*  data files  
+*  scripts  
+*  results  
+
+To view this README, type `cat README.md`.
+
+To ensure the rmarkdown package is installed, in R type the following:
+
+```
+install.packages("rmarkdown")
+```
+~~~
+
+Finally, it's always useful to explain when and where you downloaded your data from in your readme. 
+We can include hyperlinks in markdown in two ways. 
+First, you can enclose the words that you want to be hyperlinked in brackets, and include the URL in parenthases immediately behind it. 
+Let's add the original source of our data to our README using this method:
+
+~~~
+# README
+
+9/17/15 Emily Davenport
+
+This directory contains information from the **altmetrics** study, _including_:
+
+*  data files  
+*  scripts  
+*  results  
+
+To view this README, type `cat README.md`.
+
+To ensure the rmarkdown package is installed, in R type the following:
+
+```
+install.packages("rmarkdown")
+```
+
+The data for this project originally came from [Priem et al. 2012](http://arxiv.org/abs/1203.4745)
+~~~
+
+The second method is helpful if you have many links in your document or want to reference the same URL multiple times. 
+You can create reference-style links, where you create a tag for each link that you then include in brackets after the words you wish to hyperlink. 
+We downloaded two datasets for this workshop from the workshop repository. 
+Let's include links to that data using reference style hyperlinking:
+
+~~~
+# README
+
+9/17/15 Emily Davenport
+
+This directory contains information from the **altmetrics** study, _including_:
+
+*  data files  
+*  scripts  
+*  results  
+
+To view this README, type `cat README.md`.
+
+To ensure the rmarkdown package is installed, in R type the following:
+
+```
+install.packages("rmarkdown")
+```
+
+The data for this project originally came from [Priem et al. 2012](http://arxiv.org/abs/1203.4745)
+
+The processed data files were downloaded 8/17/15, including both [raw count data][link1] and [normalized data][link2]
+
+[link1]: https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-raw.txt.gz
+[link2]: https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-norm.txt.gz
+~~~
+
+We've now generated a slightly more stylized version of a README using Markdown, which includes useful information about when and where we downloaded our data.
 Markdown needs to be rendered into HTML to properly be viewed and today we used RStudio to do that. 
 The plus of using a language like Markdown to spruce up your text files is that it is still very readable through all of the Markdown syntax.
 Even if the document is not rendered, you can view this file on your computer and easily read through it. 
