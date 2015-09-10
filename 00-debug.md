@@ -26,7 +26,7 @@ In order to understand what RStudio is doing behind the scenes, we need to deact
 In the menu, go to "Debug".
 From the dropdown menu, go to "On Error" and choose the setting "Message Only".
 
-![Configure RStudio debugging options](figure/rstudio-debug-options.png)
+![Configure RStudio debugging options](fig/rstudio-debug-options.png)
 
 
 
