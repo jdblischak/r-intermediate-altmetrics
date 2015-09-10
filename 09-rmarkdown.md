@@ -78,6 +78,25 @@ summary(cars)
 ##  Max.   :25.0   Max.   :120.00
 ```
 
+
+
+Let's add a new chunk to end this demo document. 
+To do so, either you can enter three backticks in a row, followed by {r}, or you can click on the green `Chunks` button and chose `Insert Chunk`.
+Additionally, there's a keyboard short cut which is `ctrl`+`alt`+`i` which will also pop up a chunk in an R Markdown document. 
+
+![Insert Chunk](figure/insert-chunk.png)
+
+In the chunk, let's just examine the dimensions of the `car` dataset:
+
+<pre><code>```{r}
+dim(cars)
+```</code></pre>
+
+You can actually send the code straight from the chunks over to console to be evaluated in two ways. 
+First, you can highlight the code you want to run in the chunk and hit the `Run` button, which is located in the top right corner of the pane.
+Additionally, you can use the keyboard shortcut `ctrl`+`alt`+`c` (if you're using Windows/Linux) or `command`+`option`+`c` (if you're using a Mac).
+This allows you to iteratively write an test code in RStudio, rather than having to render the full report everytime you at a bit of new code.
+
 These are the basics of writing R Markdown, but we still need to generate a report. 
 To do this, click on the button on the top bar that says "Knit HMTL". 
 This will prompt you to save the file. 
