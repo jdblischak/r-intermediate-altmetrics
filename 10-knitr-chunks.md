@@ -12,6 +12,7 @@ You've learned the basics of how to incorporate markdown syntax with code chunks
 
 The first thing you may want to consider is naming your code chunks, which makes degubbing easier, especially if you have a long script.
 Chunk names must be unique to each chunk.
+
 Write the name of your chunk after the {r}, like: `{r chunk_name}`
 
 R Markdown:
@@ -35,6 +36,11 @@ summary(cars)
 ##  3rd Qu.:19.0   3rd Qu.: 56.00  
 ##  Max.   :25.0   Max.   :120.00
 ```
+
+You can use RStudio to navigate to chunks based on their names, which can be especially useful as your script gets long.
+Click on the bottom left bar where it says `(Top Level)` and you'll see all of the chunk names in your script appear.
+Additionally, naming your chunks will be beneficial to identify errors in your code or slow sections when knitting your report. 
+
 
 Sometimes you may not want to see the code that produced a particular result in your report.
 You can have codeblocks in your R Markdown that are evaluated, but the code is not displayed in the final report by including echo=FALSE after the `{r chunk_name}`.
