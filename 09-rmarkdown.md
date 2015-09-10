@@ -106,7 +106,12 @@ The ending of the file `.Rmd` indicates that this is an R Markdown file.
 ![Knit R Markdown](figure/knit_rmarkdown.png)
 
 When you click on this link, you see in the console that RStudio is running and rendering your R Markdown file. 
-An HMTL file will pop up where you'll see the report. 
+What is actually happening is RStudio is running the function `render`, which is part of the `rmarkdown` package. 
+There are two things the command render does. 
+First, it converts the R Markdown file to a Markdown file using the command `knit` from the `knitr` package (hence why rendering is called knitting).
+The second step is then the Markdown file is converted to the final file format (HTML, PDF, or Word).
+
+The final result is that an HMTL file will pop up where you'll see the report. 
 You can see the header has been rendered, there are code and results chunks displayed, and even plots are shown right in the report. 
 
 Also, if you now look in the altmetrics folder, you'll see an HTML file of the name Rmarkdown_demo.html.

@@ -95,7 +95,8 @@ dim(cars)
 <img src="figure/knit_rmarkdown.png" alt="Knit R Markdown" />
 <p class="caption">Knit R Markdown</p>
 </div>
-<p>When you click on this link, you see in the console that RStudio is running and rendering your R Markdown file. An HMTL file will pop up where you’ll see the report. You can see the header has been rendered, there are code and results chunks displayed, and even plots are shown right in the report.</p>
+<p>When you click on this link, you see in the console that RStudio is running and rendering your R Markdown file. What is actually happening is RStudio is running the function <code>render</code>, which is part of the <code>rmarkdown</code> package. There are two things the command render does. First, it converts the R Markdown file to a Markdown file using the command <code>knit</code> from the <code>knitr</code> package (hence why rendering is called knitting). The second step is then the Markdown file is converted to the final file format (HTML, PDF, or Word).</p>
+<p>The final result is that an HMTL file will pop up where you’ll see the report. You can see the header has been rendered, there are code and results chunks displayed, and even plots are shown right in the report.</p>
 <p>Also, if you now look in the altmetrics folder, you’ll see an HTML file of the name Rmarkdown_demo.html. When knitr is run, it saves the current version of the .Rmd file and the generated HTML file in the directory it is stored in.</p>
         </div>
       </div>
