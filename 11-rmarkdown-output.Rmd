@@ -11,16 +11,13 @@ minutes: 10
 Let's start assembling our altmetrics code into a R Markdown file so we can generate a report of some of our analyses. 
 First, let's create a new R Markdown document with the title "On the origin of citations".
 Once you create the R Marktown document, delete all of the demo contents below the header information. 
+Let's save this file as `altmetrics_analyses.Rmd` in the altmetrics directory.
 
 ![Start of New R Markdown Document](figure/start-of-rmd.png)
 
 Let's start by loading our data. 
 First, using a single hashtag header level, let's indicate we're going to load data in Markdown.
 Next, let's create a new chunk that loads the data. 
-To do so, either you can enter three backticks in a row, followed by {r}, or you can click on the green `Chunks` button and chose `Insert Chunk`:
-
-![Insert Chunk](figure/insert-chunk.png)
-
 In this chunk, let's load our data.
 Additionally, let's name the chunk `data_load`.
 
@@ -187,6 +184,27 @@ You can see there is a folder called `altmetrics_analyses_files`.
 In that folder is another directory called `figure-html`.
 In that folder you will see a file called `author_histogram-1.png`, which is the name of the chunk that held the code to create the histogram followed by `-1`. 
 Although low resolution, this image could be emailed to collaborators or put in a presentation. 
+
+Finally, sometimes we may want to initiate the report rendering from command line rather than using the knit button in RStudio. 
+
+To do so, make sure the rmarkdown library is loaded and use the `render` command:
+
+```
+library("rmarkdown")
+render("filename.Rmd")
+```
+
+This can be particularly useful for automatically generating reports. 
+
+Additionally, we can output our report to a word file in two ways. 
+First, we can click the arrow next to the `Knit HTML` button and chose `Knit Word`. 
+We can also render it from command line with the following command:
+
+```
+render("filename.Rmd", word_document())
+```
+
+
 
 > ## Update analysis file {.challenge}
 >
