@@ -63,12 +63,23 @@ summary(cars)
 
 In your final report, the code will look like:
 
-```{r}
+
+```r
 summary(cars)
 ```
 
-These are the basics of writing R Markdown, but the fun comes in by actually generating a report. 
-To generate a report, click on the button on the top bar that says "Knit HMTL". 
+```
+##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00
+```
+
+These are the basics of writing R Markdown, but we still need to generate a report. 
+To do this, click on the button on the top bar that says "Knit HMTL". 
 This will prompt you to save the file. 
 Go ahead and save this file as `Rmarkdown_demo.Rmd` in the altmetrics directory. 
 The ending of the file `.Rmd` indicates that this is an R Markdown file. 
@@ -76,7 +87,7 @@ The ending of the file `.Rmd` indicates that this is an R Markdown file.
 ![Knit R Markdown](figure/knit_rmarkdown.png)
 
 When you click on this link, you see in the console that RStudio is running and rendering your R Markdown file. 
-An HMTL file will pop up where you'll see the rendered report. 
+An HMTL file will pop up where you'll see the report. 
 You can see the header has been rendered, there are code and results chunks displayed, and even plots are shown right in the report. 
 
 Also, if you now look in the altmetrics folder, you'll see an HTML file of the name Rmarkdown_demo.html.

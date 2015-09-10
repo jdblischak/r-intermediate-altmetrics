@@ -21,8 +21,19 @@ summary(cars)
 ```</code></pre>
 
 Rendered:
-```{r chunky_monkey}
+
+```r
 summary(cars)
+```
+
+```
+##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00
 ```
 
 Sometimes you may not want to see the code that produced a particular result in your report.
@@ -34,8 +45,15 @@ summary(cars)
 ```</code></pre>
 
 Rendered:
-```{r funky_monkey, echo=FALSE}
-summary(cars)
+
+```
+##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00
 ```
 
 Conversely, sometimes you may want to see the code, but not the output once the code is evalutated. 
@@ -47,7 +65,8 @@ summary(cars)
 ```</code></pre>
 
 Rendered:
-```{r brass_monkey, results="hide"}
+
+```r
 summary(cars)
 ```
 
@@ -62,22 +81,20 @@ summary(cars)
 ```</code></pre>
 
 Rendered (I swear there's a chunk after this! It's just invisible!):
-```{r brass_section, include=FALSE}
-summary(cars)
-```
+
 
 There are tons of other options you can include in your chunks: sizing your figures and whether or not to display error or warning messages. 
 As you write reports of your own data analysis, you can look up these options to create a report formatted in the way you want.
 
-In addition to code chunks, you may want to include the results of an evaluation in line with regular text. For instance, you may want to describe the data in a paragraph, and include the number of individuals in that paragraph. To do so, you can indicate that a code box should be evaluated as R by including a lowercase r, such as `` `r '\x60r evaluate_me\x60'` ``
+In addition to code chunks, you may want to include the results of an evaluation in line with regular text. For instance, you may want to describe the data in a paragraph, and include the number of individuals in that paragraph. To do so, you can indicate that a code box should be evaluated as R by including a lowercase r, such as `` `r evaluate_me` ``
 
 R Markdown:
 ```
-The cars dataset included in this analysis contains records for `` `r '\x60r dim(cars)[1]\x60'` `` cars. 
+The _cars_ dataset included in this analysis contains records for `r dim(cars)[1]` cars. 
 ```
 
 Rendered:
 
-The cars dataset included in this analysis contains records for `r dim(cars)[1]` cars. 
+The _cars_ dataset included in this analysis contains records for 50 cars. 
 
 

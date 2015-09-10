@@ -12,12 +12,13 @@ layout: page
 So far, we've written a README.txt file for our project, which is just plain text.
 There's nothing wrong with a plain text README, but we can spice it up a little. 
 In this lesson, we'll learn the basics of Markdown syntax. 
-Markdown is a language that provides some basic text upgrades over just plain text, including bolding and italicizing text.
+Markdown is a language that provides some basic text upgrades over just plain text when rendered, including bolding and italicizing text.
 Understanding the basics of writing in Markdown will be helpful for the next few lessons, when we go over the basics of writing reports using R Markdown. 
 
 To make sure we can get started, let's make sure everyone has the knitr package installed:
 
-```{r eval=FALSE}
+
+```r
 install.packages('knitr')
 ```
 
