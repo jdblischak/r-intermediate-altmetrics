@@ -8,7 +8,10 @@ minutes: 10
 > ## Learning Objectives {.objectives}
 > Learn how format chunks in R Markdown to display only the information you want to display. 
 
-You've learned the basics of how to incorporate markdown syntax with code chunks in an R Markdown file. Let's explore some additional options for making your code chunks appear the way you want them to appear in your reports. 
+You've learned the basics of how to incorporate markdown syntax with code chunks in an R Markdown file. 
+Let's explore some additional options for making your code chunks appear the way you want them to appear in your reports.
+There are many ways to customize your chunks and you can explore all of the options by examining the [documentation](http://yihui.name/knitr/options/#chunk_options).
+Here, we'll introduce you to some of the most useful options that you might use frequently.
 
 The first thing you may want to consider is naming your code chunks, which makes degubbing easier, especially if you have a long script.
 Chunk names must be unique to each chunk.
