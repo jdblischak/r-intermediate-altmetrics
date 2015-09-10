@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Conditional statements</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Filter using logical vectors created with conditional statements</li>
+<li>Search for patterns with <code>grepl</code></li>
+<li>Make decisions with <code>if</code> and <code>else</code> statements</li>
+</ul>
+</div>
+</section>
+<p>In the previous lesson, we were introduced to logical vectors with the functions <code>is.na</code> and <code>anyNA</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw$authorsCount[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre>
+<pre class="output"><code> [1]  6 14 NA NA  6 10 NA NA NA  5
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is.na</span>(counts_raw$authorsCount[<span class="dv">1</span>:<span class="dv">10</span>])</code></pre>
+<pre class="output"><code> [1] FALSE FALSE  TRUE  TRUE FALSE FALSE  TRUE  TRUE  TRUE FALSE
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">anyNA</span>(counts_raw$authorsCount[<span class="dv">1</span>:<span class="dv">10</span>])</code></pre>
+<pre class="output"><code>[1] TRUE
+</code></pre>
+<p>In this lesson we will learn how these types of logical vectors can be used for filtering data and making decisions.</p>
+<h3 id="filtering-with-logical-vectors">Filtering with logical vectors</h3>
+<p>Instead of providing the numbers of the rows we want, we can filter with a logical vector.</p>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw$authorsCount[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre>
+<pre class="output"><code> [1]  6 14 NA NA  6 10 NA NA NA  5
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw$authorsCount[<span class="dv">1</span>:<span class="dv">10</span>] &gt;<span class="st"> </span><span class="dv">7</span></code></pre>
+<pre class="output"><code> [1] FALSE  TRUE    NA    NA FALSE  TRUE    NA    NA    NA FALSE
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(counts_raw[counts_raw$authorsCount &gt;<span class="st"> </span><span class="dv">7</span>, ])</code></pre>
+<pre class="output"><code>[1] 10348    32
+</code></pre>
+<p>Here we filtered the data to only include the 10348 rows where the number of authors was greater than 7.</p>
+<p>To filter for equality or non-equality, use <code>==</code> or <code>!=</code>:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># All the articles published in the journal PLOS One</span>
+<span class="kw">dim</span>(counts_raw[counts_raw$journal ==<span class="st"> &quot;pone&quot;</span>, ])</code></pre>
+<pre class="output"><code>[1] 14099    32
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># All the articles NOT published in the journal PLOS One</span>
+<span class="kw">dim</span>(counts_raw[counts_raw$journal !=<span class="st"> &quot;pone&quot;</span>, ])</code></pre>
+<pre class="output"><code>[1] 10232    32
+</code></pre>
+<p>Here are the other possibilities:</p>
+<ul>
+<li><code>&gt;</code> - “greater than”</li>
+<li><code>&lt;</code> - “less than”</li>
+<li><code>&gt;=</code> - “greater than or equal to”</li>
+<li><code>&lt;=</code> - “less than or equal to”</li>
+<li><code>==</code> - “equal to”</li>
+<li><code>!=</code> - “not equal to”</li>
+</ul>
+<p>These logical conditions can be combined into more complex filters using the ampersand <code>&amp;</code> (“and”) or vertical bar <code>|</code> (“or”) operators.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># All the articles published in the journal PLOS One AND with more than 7 authors</span>
+<span class="kw">dim</span>(counts_raw[counts_raw$journal ==<span class="st"> &quot;pone&quot;</span> &amp;<span class="st"> </span>counts_raw$authorsCount &gt;<span class="st"> </span><span class="dv">7</span>, ])</code></pre>
+<pre class="output"><code>[1] 4697   32
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># All the articles published in the journal PLOS One OR the journal PLOS Biology</span>
+<span class="kw">dim</span>(counts_raw[counts_raw$journal ==<span class="st"> &quot;pone&quot;</span> |<span class="st"> </span>counts_raw$journal ==<span class="st"> &quot;pbio&quot;</span>, ])</code></pre>
+<pre class="output"><code>[1] 16690    32
+</code></pre>
+<p>When we are checking one vector for multiple possibilities, it is more convenient to use the operator <code>%in%</code> instead of creating multiple “or” conditions.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># All the articles published in the journals PLOS One, PLOS Biology, or PLOS Genetics</span>
+<span class="kw">dim</span>(counts_raw[counts_raw$journal %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pone&quot;</span>, <span class="st">&quot;pbio&quot;</span>, <span class="st">&quot;pgen&quot;</span>), ])</code></pre>
+<pre class="output"><code>[1] 18459    32
+</code></pre>
+<p>Lastly, to reverse any logical vector, we can append the exclamation point <code>!</code> for “NOT”.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># All the articles NOT published in the journals PLOS One, PLOS Biology, or PLOS Genetics</span>
+<span class="kw">dim</span>(counts_raw[!(counts_raw$journal %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pone&quot;</span>, <span class="st">&quot;pbio&quot;</span>, <span class="st">&quot;pgen&quot;</span>)), ])</code></pre>
+<pre class="output"><code>[1] 5872   32
+</code></pre>
+<h3 id="finding-patterns-with-grepl">Finding patterns with <code>grepl</code></h3>
+<p>We saw in the Unix shell that we could search for lines in a file that contain a specific pattern using <code>grep</code>. R provides similar functionality. <code>grepl</code> searches each element of a vector for a given pattern and returns <code>TRUE</code> if it finds it, and <code>FALSE</code> otherwise. Let’s try it out using the column <code>plosSubjectTags</code>, which describes the scientific discipline(s) of the article.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(counts_raw$plosSubjectTags)</code></pre>
+<pre class="output"><code>[1] Cell Biology|Immunology|Molecular Biology                                             
+[2] Biotechnology|Genetics and Genomics|Infectious Diseases|Virology                      
+[3] Computational Biology|Biotechnology|Genetics and Genomics|Infectious Diseases|Virology
+[4] Cell Biology|Immunology|Molecular Biology                                             
+[5] Genetics and Genomics|Infectious Diseases|Microbiology                                
+[6] Ecology|Evolutionary Biology|Genetics and Genomics                                    
+6715 Levels: Anesthesiology and Pain Management ...
+</code></pre>
+<p>How many of the articles have to do with “Immunology”?</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(counts_raw[<span class="kw">grepl</span>(<span class="st">&quot;Immunology&quot;</span>, counts_raw$plosSubjectTags), ])</code></pre>
+<pre class="output"><code>[1] 2708   32
+</code></pre>
+<p>The first argument <code>grepl</code> was the string we were searching for, and the second argument was the vector to be searched.</p>
+<p>How many of the immunology articles were published in PLOS Medicine.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(counts_raw[<span class="kw">grepl</span>(<span class="st">&quot;Immunology&quot;</span>, counts_raw$plosSubjectTags) &amp;
+<span class="st">                 </span>counts_raw$journal ==<span class="st"> &quot;pmed&quot;</span>, ])</code></pre>
+<pre class="output"><code>[1] 194  32
+</code></pre>
+<blockquote>
+<h2><code>grepl</code> vs. <code class="callout">grep</code></h2>
+<p><code>grepl</code> returns a logical vector. Another option is to use <code>grep</code>. Instead it returns the indices of the elements that contain the pattern. In most cases the result will be the same, but you’ll have to use the correct one if you find a situation that requires only logical vectors or index positions.</p>
+</blockquote>
+<h3 id="making-decisions">Making decisions</h3>
+<p>In addition to filtering, we can use conditional statements to adapt the behavior of the code based on the input data. We do this using <code>if</code> and <code>else</code> statements. The basic structure is the following:</p>
+<pre class="sourceCode r"><code class="sourceCode r">if (condition is <span class="ot">TRUE</span>) {
+  do something
+} else {
+  do a different thing
+}</code></pre>
+<p>For example, we can check whether a vector contains any missing values.</p>
+<pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span>counts_raw$authorsCount
+if (<span class="kw">anyNA</span>(x)) {
+  <span class="kw">print</span>(<span class="st">&quot;Be careful! The data contains missing values.&quot;</span>)
+} else {
+  <span class="kw">print</span>(<span class="st">&quot;Looks good. The data does NOT contain missing values.&quot;</span>)
+}</code></pre>
+<pre class="output"><code>[1] &quot;Be careful! The data contains missing values.&quot;
+</code></pre>
+<p>Or we can check if an object is a specific data type, and convert it to the one we need. Here we convert the column <code>title</code> from a factor to a character vector.</p>
+<pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span>counts_raw$title
+if (!<span class="kw">is.character</span>(x)) {
+  x &lt;-<span class="st"> </span><span class="kw">as.character</span>(x)
+}</code></pre>
+<h3 id="challenges">Challenges</h3>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Filtering articles</h2>
+</div>
+<div class="panel-body">
+<p>How many articles with the subject tag (<code>plosSubjectTags</code>) “Evolutionary Biology” were published in either PLOS One, PLOS Biology, or PLOS Medicine?</p>
+</div>
+</section>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>
