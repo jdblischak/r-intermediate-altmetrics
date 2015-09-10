@@ -5,8 +5,36 @@ subtitle: Using RStudio
 minutes: 10
 ---
 
+```{r, include = FALSE}
+source("tools/chunk-options.R")
+opts_chunk$set(fig.path = "fig/05-conditionals-")
+```
+
 > ## Learning Objectives {.objectives}
 >
 > * Understand the different panels
 > * Send code from file to console
 > * Create RStudio project
+
+
+![RStudio IDE](fig/rstudio-full.png)
+
+![RStudio editor](fig/rstudio-editor.png)
+
+![RStudio Console](fig/rstudio-console.png)
+
+![RStudio Environment](fig/rstudio-environment.png)
+
+![RStudio History](fig/rstudio-history.png)
+
+![RStudio Files](fig/rstudio-environment.png)
+
+![RStudio Help](fig/rstudio-help.png)
+
+![Start new project](fig/start-new-project.png)
+
+![Start new project](fig/start-new-project.png)
+
+![Start from existing directory](fig/project-exisiting-directory.png)
+
+![Choose existing directory](fig/project-choose-directory.png)
