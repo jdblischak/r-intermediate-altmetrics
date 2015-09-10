@@ -12,6 +12,7 @@ minutes: 30
 > * Import tabular data
 > * Inspect objects
 > * Explain the different types of data in R
+> * Explore data with basic summary statistics and visualizations
 
 Using the Unix shell, we were able to obtain quick summaries of the data set.
 Importing the data into R will enable us more thoroughly analyze the data.
