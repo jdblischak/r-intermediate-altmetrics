@@ -43,7 +43,7 @@
 <p>As we’ve seen, reducing code repetition is generally a good thing. It reduces the chance of introducing errors while copy-pasting, and it makes it easier to understand and/or update code when a routine is written only once. However, the downside is that it can be harder to determine what the code is doing when an error occurs when the code is contained inside a function. Since the function environment is separated from the global environment, we cannot observe the values of the variables inside the function after it has failed. Fortunately, R has multiple tools for debugging functions.</p>
 <p>Before starting this lesson, you’ll need to change some RStudio settings. RStudio has made R’s debugging tools easier to use by automatically invoking them when an error occurs. In order to understand what RStudio is doing behind the scenes, we need to deactivate this behavior. In the menu, go to “Debug”. From the dropdown menu, go to “On Error” and choose the setting “Message Only”.</p>
 <div class="figure">
-<img src="figure/rstudio-debug-options.png" alt="Configure RStudio debugging options" /><p class="caption">Configure RStudio debugging options</p>
+<img src="fig/rstudio-debug-options.png" alt="Configure RStudio debugging options" /><p class="caption">Configure RStudio debugging options</p>
 </div>
 <p>Recall the function we wrote earlier to sum a metric for each level of a factor.</p>
 <pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
