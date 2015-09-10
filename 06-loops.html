@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Loops</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Use a <code>for</code> loop to repeat operations</li>
+<li>Avoid writing slow loops</li>
+<li>Use <code>apply</code> as an alternative to <code>for</code> loops</li>
+</ul>
+</div>
+</section>
+<p>Using looping structures allows us to repeat operations, e.g. do something to every row of a data frame. In this lesson we will focus specifically on <code>for</code> loops. Here is the basic structure of a <code>for</code> loop:</p>
+<pre class="sourceCode r"><code class="sourceCode r">for (variable in vector) {
+  do something
+}</code></pre>
+<p>The loop is repeated for every element of the vector. Using the names above, in each iteration <code>variable</code> takes the value of one of the elements of <code>vector</code>. Here is a simple example:</p>
+<pre class="sourceCode r"><code class="sourceCode r">for (i in <span class="dv">1</span>:<span class="dv">10</span>) {
+  <span class="kw">print</span>(i)
+}</code></pre>
+<pre class="output"><code>[1] 1
+[1] 2
+[1] 3
+[1] 4
+[1] 5
+[1] 6
+[1] 7
+[1] 8
+[1] 9
+[1] 10
+</code></pre>
+<p>Loops have a bad reputation in R, and a common myth is that “loops in R are slow.” However, it would be more accurate to say that “poorly written loops in R are slow.”</p>
+<p>We’ll start with a trivial example of a poorly written for loop to review the basics before we move on to more interesting examples. In a previous lesson we added a pseudocount of 1 to every citation count before taking the log. Here’s one way we could do that using a <code>for</code> loop.</p>
+<pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">numeric</span>()
+for (i in <span class="dv">1</span>:<span class="kw">length</span>(counts_raw$wosCountThru2011)) {
+  x &lt;-<span class="st"> </span><span class="kw">c</span>(x, counts_raw$wosCountThru2011[i] +<span class="st"> </span><span class="dv">1</span>)
+}</code></pre>
+<p>The function <code>length</code> returns the total number of elements in the vector. Each time through the loop, the variable <code>i</code> increases by 1. Furthermore, <code>i</code> is used to index the vector of citation counts. Thus each time through the loop, the next element of vector gets 1 added to it, and this new value is appended to <code>x</code>.</p>
+<p>This is incredibly slow. The main culprit is because each time through the loop, the new vector <code>x</code> grows in size. It is more memory-efficient to pre-allocate the new vector to a given size before starting the loop. To create a numeric vector of a given size, we use the function <code>numeric</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(counts_raw$wosCountThru2011))
+for (i in <span class="dv">1</span>:<span class="kw">length</span>(counts_raw$wosCountThru2011)) {
+  x[i] &lt;-<span class="st"> </span>counts_raw$wosCountThru2011[i] +<span class="st"> </span><span class="dv">1</span>
+}</code></pre>
+<p>This was much faster because the new vector <code>x</code> did not grow in each iteration. Instead we used <code>i</code> to index both the new vector and the old vector.</p>
+<p>Lastly, you can avoid slow loops by using vectorized operations whenever possible. This is what we had done in the previous lesson. Because R is vectorized by default, we do not need to use a <code>for</code> loop when doing something simple like adding a number to a vector. Many times the vectorized version is optimized to be faster than any loop you could write yourself.</p>
+<pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span>counts_raw$wosCountThru2011 +<span class="st"> </span><span class="dv">1</span></code></pre>
+<p>So in summary, avoid slow loops by:</p>
+<ul>
+<li>Using vectorized operations when possible</li>
+<li>Pre-allocating the size of the new object before the loop begins</li>
+</ul>
+<p>As a more useful example, let´s calculate the mean number of citations for articles in the different PLOS journals. There are seven journals in our data set, and they are stored as a factor in the column <code>journal</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">levels</span>(counts_raw$journal)</code></pre>
+<pre class="output"><code>[1] &quot;pbio&quot; &quot;pcbi&quot; &quot;pgen&quot; &quot;pmed&quot; &quot;pntd&quot; &quot;pone&quot; &quot;ppat&quot;
+</code></pre>
+<p>Thus our result will need to be pre-allocated to a size of 7.</p>
+<pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(counts_raw$journal)))</code></pre>
+<p>In the first example, we used <code>i</code> as the looping variable, and it took on the values from 1 to the length of the vector. Since we want to loop through the seven journals, this time our looping variable will take on these values. In order to index <code>result</code> using this indexing variable, we need to name each element of <code>result</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(counts_raw$journal)
+result</code></pre>
+<pre class="output"><code>pbio pcbi pgen pmed pntd pone ppat 
+   0    0    0    0    0    0    0 
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">result[<span class="st">&quot;pone&quot;</span>]</code></pre>
+<pre class="output"><code>pone 
+   0 
+</code></pre>
+<p>Now we construct the <code>for</code> loop.</p>
+<pre class="sourceCode r"><code class="sourceCode r">for (j in <span class="kw">levels</span>(counts_raw$journal)) {
+  <span class="kw">print</span>(j)
+}</code></pre>
+<pre class="output"><code>[1] &quot;pbio&quot;
+[1] &quot;pcbi&quot;
+[1] &quot;pgen&quot;
+[1] &quot;pmed&quot;
+[1] &quot;pntd&quot;
+[1] &quot;pone&quot;
+[1] &quot;ppat&quot;
+</code></pre>
+<p>Lastly, we need to calculate the mean number of citations, using a conditional statement to keep only citation counts for articles in a specific journal.</p>
+<pre class="sourceCode r"><code class="sourceCode r">for (j in <span class="kw">levels</span>(counts_raw$journal)) {
+  result[j] &lt;-<span class="st"> </span><span class="kw">mean</span>(counts_raw$wosCountThru2011[counts_raw$journal ==<span class="st"> </span>j])
+}
+result</code></pre>
+<pre class="output"><code>     pbio      pcbi      pgen      pmed      pntd      pone      ppat 
+28.705905 14.219258 22.928208 18.148110  7.348564  8.306972 20.892613 
+</code></pre>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Alternative options</h2>
+</div>
+<div class="panel-body">
+<p>Because performing analyses on each level of a factor is such a common practice, R has built-in functions to do this like <code>tapply</code> and <code>aggregate</code>. Also, packages like dplyr, which we will see in future lessons, also provide this functionality.</p>
+</div>
+</section>
+<h3 id="using-apply-statements">Using <code>apply</code> statements</h3>
+<p>R provides other methods for repeating operations. One useful function is <code>apply</code>, which performs the same operation across all the rows or columns of a data frame.</p>
+<p>Let’s create a new summary statistic for the articles that is the average of their citation count in 2011 (<code>wosCountThru2011</code>), the number of tweets (<code>backtweetsCount</code>), and the number of PLOS comments (<code>plosCommentCount</code>). We subset the data frame by listing the 3 columns we want:</p>
+<pre class="sourceCode r"><code class="sourceCode r">counts_sub &lt;-<span class="st"> </span>counts_raw[, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2011&quot;</span>, <span class="st">&quot;backtweetsCount&quot;</span>, <span class="st">&quot;plosCommentCount&quot;</span>)]
+counts_sub[<span class="dv">1</span>:<span class="dv">5</span>, ]</code></pre>
+<pre class="output"><code>  wosCountThru2011 backtweetsCount plosCommentCount
+1               33               0                0
+2              181               0                0
+3                0               0                0
+4                0               0                0
+5              371               0                0
+</code></pre>
+<p><code>apply</code> takes 3 arguments. The first is the name of the data frame, the second is the number 1 to specify rows or 2 to specify columns, and the third is the function to be applied. We’ll name the new summary statistic <code>sum_stat</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">sum_stat &lt;-<span class="st"> </span><span class="kw">apply</span>(counts_sub, <span class="dv">1</span>, mean)
+<span class="kw">summary</span>(sum_stat)</code></pre>
+<pre class="output"><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+  0.0000   0.6667   2.0000   4.7060   5.0000 245.7000 
+</code></pre>
+<p>Thus with just one line of code we were able to compute the mean across every row of the data frame.</p>
+<h3 id="challenges">Challenges</h3>
+<blockquote>
+<h2>Using <code class="challenge">apply</code></h2>
+<p>Using <code>apply</code> and <code>sd</code>, calculate the standard deviation of each row of <code>counts_sub</code>. Using <code>apply</code> and <code>max</code>, calculate the maximum of each column of <code>counts_sub</code>.</p>
+</blockquote>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>
