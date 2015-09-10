@@ -162,8 +162,14 @@ research %>%
 
 ### Challenges
 
-> ## Title of most cited articles {.challenge}
+> ## Titles of most cited articles {.challenge}
 >
 > Using a chain of pipes, output the titles of the three research articles with the largest 2011 citation count.
+
+
+
+> ##  Lots of authors {.challenge}
+>
+> Using a chain of pipes, output the author count, title, journal, and subject tags (`plosSubjectTags`) of the three research articles with the largest number of authors.
 
 
