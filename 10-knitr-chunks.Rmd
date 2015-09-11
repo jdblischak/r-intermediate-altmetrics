@@ -1,0 +1,92 @@
+---
+layout: page
+title: Intermediate programming with R
+subtitle: Knitr Chunk Options
+minutes: 10
+---
+
+> ## Learning Objectives {.objectives}
+> Learn how format chunks in R Markdown to display only the information you want to display. 
+
+You've learned the basics of how to incorporate markdown syntax with code chunks in an R Markdown file. 
+Let's explore some additional options for making your code chunks appear the way you want them to appear in your reports.
+There are many ways to customize your chunks and you can explore all of the options by examining the [documentation](http://yihui.name/knitr/options/#chunk_options).
+Here, we'll introduce you to some of the most useful options that you might use frequently.
+
+The first thing you may want to consider is naming your code chunks, which makes degubbing easier, especially if you have a long script.
+Chunk names must be unique to each chunk.
+
+Write the name of your chunk after the {r}, like: `{r chunk_name}`
+
+R Markdown:
+
+<pre><code>```{r chunky_monkey}
+summary(cars)
+```</code></pre>
+
+Rendered:
+```{r chunky_monkey}
+summary(cars)
+```
+
+You can use RStudio to navigate to chunks based on their names, which can be especially useful as your script gets long.
+Click on the bottom left bar where it says `(Top Level)` and you'll see all of the chunk names in your script appear.
+Additionally, naming your chunks will be beneficial to identify errors in your code or slow sections when knitting your report. 
+
+
+Sometimes you may not want to see the code that produced a particular result in your report.
+You can have codeblocks in your R Markdown that are evaluated, but the code is not displayed in the final report by including echo=FALSE after the `{r chunk_name}`.
+
+R Markdown:
+<pre><code>```{r funky_monkey, echo=FALSE}
+summary(cars)
+```</code></pre>
+
+Rendered:
+```{r funky_monkey, echo=FALSE}
+summary(cars)
+```
+
+Conversely, sometimes you may want to see the code, but not the output once the code is evalutated. 
+To do so, you can include `results="hide"` after the chunk_name:
+
+R Markdown:
+<pre><code>```{r brass_monkey, results="hide"}
+summary(cars)
+```</code></pre>
+
+Rendered:
+```{r brass_monkey, results="hide"}
+summary(cars)
+```
+
+Sometimes, you may want to write a report where both the code and the output are suppressed. 
+Why would you want to do that?
+Perhaps you're sending a report to a collaborator and you only want them to see the final figures, but not any data manipulation steps in the middle. 
+To include a chunk that is evaluated, but no output is displayed - neither the code nor the results - put `include=FALSE` after the chunk_name:
+
+R Markdown:
+<pre><code>```{r brass_section, include=FALSE}
+summary(cars)
+```</code></pre>
+
+Rendered (I swear there's a chunk after this! It's just invisible!):
+```{r brass_section, include=FALSE}
+summary(cars)
+```
+
+There are tons of other options you can include in your chunks: sizing your figures and whether or not to display error or warning messages. 
+As you write reports of your own data analysis, you can look up these options to create a report formatted in the way you want.
+
+In addition to code chunks, you may want to include the results of an evaluation in line with regular text. For instance, you may want to describe the data in a paragraph, and include the number of individuals in that paragraph. To do so, you can indicate that a code box should be evaluated as R by including a lowercase r, such as `` `r '\x60r evaluate_me\x60'` ``
+
+R Markdown:
+```
+The _cars_ dataset included in this analysis contains records for `r '\x60r dim(cars)[1]\x60'` cars. 
+```
+
+Rendered:
+
+The _cars_ dataset included in this analysis contains records for `r dim(cars)[1]` cars. 
+
+

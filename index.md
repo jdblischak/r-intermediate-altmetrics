@@ -40,10 +40,10 @@ and programming with R.
 1.  [R loops](06-loops.html)
 1.  [Functions in R]()
 
-1.  [Writing in Markdown]()
-1.  [Writing in R Markdown]()
-1.  [Using knitr chunk options]()
-1.  [R Markdown output options]()
+1.  [Writing in Markdown](08-markdown.html)
+1.  [Writing in R Markdown](09-rmarkdown.html)
+1.  [Using knitr chunk options](10-knitr-chunks.html)
+1.  [R Markdown output options](11-rmarkdown-output.html)
 
 1.  [dplyr](00-dplyr.html)
 1.  [Subsetting data with dplyr](00-dplyr-subset.html)
