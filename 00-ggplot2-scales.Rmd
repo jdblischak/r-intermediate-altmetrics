@@ -1,0 +1,134 @@
+---
+layout: page
+title: Intermediate programming with R
+subtitle: Controlling the plot scales
+minutes: 30
+---
+
+```{r, include = FALSE}
+source("tools/chunk-options.R")
+opts_chunk$set(fig.path = "fig/00-ggplot2-scales-")
+```
+
+> ## Learning Objectives {.objectives}
+>
+> * Scales affect how data is mapped to aesthetics
+> * Use variants of `scale_x_*` and `scale_y_*` to control axes
+> * Use variants of `scale_color_*` to control color scheme
+
+```{r echo=FALSE}
+counts_raw <- read.delim("data/counts-raw.txt.gz")
+```
+
+```{r echo=FALSE, message=FALSE}
+library("dplyr")
+```
+
+```{r echo=FALSE}
+research <- filter(counts_raw, articleType == "Research Article")
+```
+
+
+```{r echo=FALSE, message=FALSE}
+library("ggplot2")
+```
+
+### Scales that affect mapping to x and y
+
+```{r}
+p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+  geom_point(aes(color = journal)) +
+  geom_smooth()
+p
+```
+
+```{r}
+p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+  geom_point(aes(color = journal)) +
+  geom_smooth() +
+  scale_x_log10() +
+  scale_y_log10()
+p
+```
+
+```{r}
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+  geom_point(aes(color = journal)) +
+  geom_smooth()
+p
+```
+
+
+```{r}
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+  geom_point(aes(color = journal)) +
+  geom_smooth()
+p
+```
+
+```{r}
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+  geom_point(aes(color = journal)) +
+  geom_smooth() +
+  scale_x_continuous(breaks = c(1, 3), labels = c(10, 1000))
+p
+```
+
+
+```{r}
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+  geom_point(aes(color = journal)) +
+  geom_smooth() +
+  scale_x_continuous(breaks = c(1, 3), labels = c(10, 1000)) +
+  scale_y_continuous(breaks = c(1, 3), labels = c(10, 1000))
+p
+```
+
+### Scales that affect mapping to color
+
+```{r}
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+  geom_point(aes(color = journal)) +
+  geom_smooth() +
+  scale_x_continuous(breaks = c(1, 3), labels = c(10, 1000)) +
+  scale_y_continuous(breaks = c(1, 3), labels = c(10, 1000)) +
+  scale_color_grey()
+p
+```
+
+```{r}
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+  geom_point(aes(color = journal)) +
+  geom_smooth() +
+  scale_x_continuous(breaks = c(1, 3), labels = c(10, 1000)) +
+  scale_y_continuous(breaks = c(1, 3), labels = c(10, 1000)) +
+  scale_color_manual(values = c("red", "yellow", "orange", "purple", "blue", "yellow", "pink"))
+p
+```
+
+```{r}
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+  geom_point(aes(color = journal)) +
+  geom_smooth() +
+  scale_x_continuous(breaks = c(1, 3), labels = c(10, 1000)) +
+  scale_y_continuous(breaks = c(1, 3), labels = c(10, 1000)) +
+  scale_color_brewer(palette = "Dark2")
+p
+```
+
+```{r}
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+  geom_point(aes(color = journal)) +
+  geom_smooth() +
+  scale_x_continuous(breaks = c(1, 3), labels = c(10, 1000)) +
+  scale_y_continuous(breaks = c(1, 3), labels = c(10, 1000)) +
+  scale_color_brewer(palette = "Dark2", labels = 1:7)
+p
+```
+
+http://colorbrewer2.org/
+
+### Challenge
+
+> ## Citations versus days since publication {.challenge}
+
