@@ -30,7 +30,7 @@
           <h2 class="subtitle">R Markdown Output Options</h2>
           <section class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2 id="learning-objectives"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <p>Learn how to specify tables of contents and output styles for writing R Markdown reports.</p>
@@ -38,18 +38,19 @@
 </section>
 <p>Let’s start assembling our altmetrics code into a R Markdown file so we can generate a report of some of our analyses. First, let’s create a new R Markdown document with the title “On the origin of citations”. Once you create the R Marktown document, delete all of the demo contents below the header information. Let’s save this file as <code>altmetrics_analyses.Rmd</code> in the altmetrics directory.</p>
 <div class="figure">
-<img src="figure/start-of-rmd.png" alt="Start of New R Markdown Document" />
-<p class="caption">Start of New R Markdown Document</p>
+<img src="fig/start-of-rmd.png" alt="Start of New R Markdown Document" /><p class="caption">Start of New R Markdown Document</p>
 </div>
 <p>Let’s start by loading our data. First, using a single hashtag header level, let’s indicate we’re going to load data in Markdown. Next, let’s create a new chunk that loads the data. In this chunk, let’s load our data. Additionally, let’s name the chunk <code>data_load</code>.</p>
 <pre><code>```{r data_load}
 counts_raw <- read.delim("data/counts-raw.txt.gz")
 counts_norm <- read.delim("data/counts-norm.txt.gz")
 ```</code></pre>
+
 <p>Next, let’s add a section on exploring the data. Use another single hastag header to write “Exploring the data”. Insert another chunk that plots a histogram of the number of authors per paper.</p>
 <pre><code>```{r author_histogram}
 hist(counts_raw$authorsCount, main="Authors per paper", xlab="# authors")
 ```</code></pre>
+
 <p>This is a good start to an R Markdown file for our analyses, but there are some additional features we can use when outputting the rendered HTML.</p>
 <p>First, you can add a table of contents that with automatically reference your headers. To do so, you need to edit the header so that under the <code>html_document:</code> line it says <code>toc: true</code>:</p>
 <pre><code>---
@@ -71,7 +72,7 @@ output:
     number_sections: true
 ---</code></pre>
 <p>Note that if you have smaller headers within each section (two hashtags), the numbering will be heirarchical.</p>
-<p>In addition to creating a table of content, so you can also change the style of your document. Themes are a way of updating colors and fonts which relies on the library from <a href="http://bootswatch.com/" class="uri">http://bootswatch.com/</a>. Click on the link and search for a theme that you like. The themes included with RStudio are “default”, “cerulean”, “journal”, “flatly”, “readable”, “spacelab”, “united”, “cosmo”. To change the theme of your document, update the header under the html_document: line to include <code>theme</code>:</p>
+<p>In addition to creating a table of content, so you can also change the style of your document. Themes are a way of updating colors and fonts which relies on the library from <a href="http://bootswatch.com/">http://bootswatch.com/</a>. Click on the link and search for a theme that you like. The themes included with RStudio are “default”, “cerulean”, “journal”, “flatly”, “readable”, “spacelab”, “united”, “cosmo”. To change the theme of your document, update the header under the html_document: line to include <code>theme</code>:</p>
 <pre><code>---
 title: &quot;On the origin of citations&quot;
 author: &quot;H. Potter&quot;
@@ -112,6 +113,7 @@ output:
 <pre><code>```{r author_histogram, fig.caption="Figure 1: Number of Authors per Article"}
 hist(counts_raw$authorsCount, main="Authors per paper", xlab="# authors")
 ```</code></pre>
+
 <p>Additionally, in the header you must specify <code>fig_caption: yes</code> under the <code>html_document</code> line.</p>
 <pre><code>---
 title: &quot;On the origin of citations&quot;
@@ -153,13 +155,12 @@ render(&quot;filename.Rmd&quot;)</code></pre>
 <pre><code>render(&quot;filename.Rmd&quot;, word_document())</code></pre>
 <section class="challenge panel panel-success">
 <div class="panel-heading">
-<h2 id="update-analysis-file"><span class="glyphicon glyphicon-pencil"></span>Update analysis file</h2>
+<h2><span class="glyphicon glyphicon-pencil"></span>Update analysis file</h2>
 </div>
 <div class="panel-body">
 <p>You need to share your initial results with your collaborators, but after showing your report to your boss, they had a few suggestions.</p>
 <ol style="list-style-type: decimal">
-<li>In your final report, your collaborators should see your histogram of authors per paper, but not the code that produced the plot.<br />
-</li>
+<li>In your final report, your collaborators should see your histogram of authors per paper, but not the code that produced the plot.<br /></li>
 <li>The figure is hard to see as is, resize it to 8x8 inches</li>
 <li>Your collaborators are very interested in how popular articles are on Facebook. Add another histogram plotting the number of facebook shares per article, ensuring there are respectible titles and axis labels. Also, just like the previous figure, make sure there is a legend and that the code to generate the figure does not appear in the final report.</li>
 <li>Additionally under the new figure, your collaborators should see a sentence that says “The average number of Facebook shares per paper in the data set is X”, where X is the mean number of Facebook shares per paper, as evaluated by inline code.</li>

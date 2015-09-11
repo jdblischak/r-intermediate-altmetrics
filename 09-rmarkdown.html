@@ -30,7 +30,7 @@
           <h2 class="subtitle">Writing in R Markdown</h2>
           <section class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2 id="learning-objectives"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <p>Learn how to generate reproducible reports that display your code and results.</p>
@@ -39,10 +39,8 @@
 <p>When you perform wet lab experiments, what information do you put in your lab notebook? You probably include the protocol you used to run the experiment, information about the samples and reagents used in the protocol, and at the end you’ll likely include your results (for instance, a picture of a gel). This essentially creates a report of your experiment.</p>
 <p>You can do the same with your dry lab analyses using a tool called R Markdown. Why would we want to do this?</p>
 <ul>
-<li>Your method, results, and interpretation are stored in one place<br />
-</li>
-<li>If you update your methodology, you can easily update your results with the click of a button, rather than copying and pasting.<br />
-</li>
+<li>Your method, results, and interpretation are stored in one place<br /></li>
+<li>If you update your methodology, you can easily update your results with the click of a button, rather than copying and pasting.<br /></li>
 <li>You <em>could</em> cut and paste your code and results into Word or Power Point, but that will make rerunning your code challenging, as Word often introduces hidden characters.</li>
 </ul>
 <p>R Markdown is a fairly simple language you can use to generate reports that incorporate bits of R code along with the output they produce. There are two steps to generating reports with R Markdown and RStudio:</p>
@@ -52,27 +50,25 @@
 </ol>
 <p>Next, let’s run through the demo for knitr to see some of the options. Go up to <code>File</code> -&gt; <code>New File</code> -&gt; <code>R Markdown</code>.</p>
 <div class="figure">
-<img src="figure/start_rmarkdown_doc.png" alt="Set up new R Markdown file" />
-<p class="caption">Set up new R Markdown file</p>
+<img src="fig/start_rmarkdown_doc.png" alt="Set up new R Markdown file" /><p class="caption">Set up new R Markdown file</p>
 </div>
 <p>A screen will pop up asking us what kind of document we wish to create. Let’s name our demo report “Trial Report” and fill in your name. Ensure that “Document” is highlighted to the left and that “HTML” is chosen. Click “Ok”.</p>
 <div class="figure">
-<img src="figure/rmarkdown_document_info.png" alt="Choose HTML" />
-<p class="caption">Choose HTML</p>
+<img src="fig/rmarkdown_document_info.png" alt="Choose HTML" /><p class="caption">Choose HTML</p>
 </div>
 <p>Now we have the example R Markdown file open. The first thing you’ll notice at the top is a header which includes your name, the title of the document, the date, and a field called output. This header tells the package knitr some information it might need about your document, including what format you want the final report rendered in.</p>
 <p>The next thing you’ll notice is white space with some text describing an R Markdown document. White space in this document represents text of the report you would like to display. You can put anything here describing your analysis, results, etc. and it will be recognized as text and not R code. This white space is interpreted as Markdown language, so you can use any of the tricks we learned in the last lesson to make lists, bold certain words, or create headers in your document.</p>
 <p>In this trial script, you’ll see some of these markdown elements are used. For example, the word knit is in bolded (using asterisks), and there are code chucks near the bottom that say echo = FALSE.</p>
 <div class="figure">
-<img src="figure/rmarkdown-demo-doc.png" alt="Demo R Markdown Document" />
-<p class="caption">Demo R Markdown Document</p>
+<img src="fig/rmarkdown-demo-doc.png" alt="Demo R Markdown Document" /><p class="caption">Demo R Markdown Document</p>
 </div>
 <p>In addition to the white space, you’ll gray blocks that have ``` at the top and bottom. These are called chunks. If the start of a chunk has {r} at the end of the ticks, knitr will recognize the code in that chunk as R code and run it when rendering the HTML. In your R Markdown, the code will look like:</p>
 <pre><code>```{r}
 summary(cars)
 ```</code></pre>
+
 <p>In your final report, the code will look like:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(cars)</code></pre></div>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(cars)</code></pre>
 <pre><code>##      speed           dist       
 ##  Min.   : 4.0   Min.   :  2.00  
 ##  1st Qu.:12.0   1st Qu.: 26.00  
@@ -82,18 +78,17 @@ summary(cars)
 ##  Max.   :25.0   Max.   :120.00</code></pre>
 <p>Let’s add a new chunk to end this demo document. To do so, either you can enter three backticks in a row, followed by {r}, or you can click on the green <code>Chunks</code> button and chose <code>Insert Chunk</code>. Additionally, there’s a keyboard short cut which is <code>ctrl</code>+<code>alt</code>+<code>i</code> which will also pop up a chunk in an R Markdown document.</p>
 <div class="figure">
-<img src="figure/insert-chunk.png" alt="Insert Chunk" />
-<p class="caption">Insert Chunk</p>
+<img src="fig/insert-chunk.png" alt="Insert Chunk" /><p class="caption">Insert Chunk</p>
 </div>
 <p>In the chunk, let’s just examine the dimensions of the <code>car</code> dataset:</p>
 <pre><code>```{r}
 dim(cars)
 ```</code></pre>
+
 <p>You can actually send the code straight from the chunks over to console to be evaluated in two ways. First, you can highlight the code you want to run in the chunk and hit the <code>Run</code> button, which is located in the top right corner of the pane. Additionally, you can use the keyboard shortcut <code>ctrl</code>+<code>alt</code>+<code>c</code> (if you’re using Windows/Linux) or <code>command</code>+<code>option</code>+<code>c</code> (if you’re using a Mac). This allows you to iteratively write an test code in RStudio, rather than having to render the full report everytime you at a bit of new code.</p>
 <p>These are the basics of writing R Markdown, but we still need to generate a report. To do this, click on the button on the top bar that says “Knit HMTL”. This will prompt you to save the file. Go ahead and save this file as <code>Rmarkdown_demo.Rmd</code> in the altmetrics directory. The ending of the file <code>.Rmd</code> indicates that this is an R Markdown file.</p>
 <div class="figure">
-<img src="figure/knit_rmarkdown.png" alt="Knit R Markdown" />
-<p class="caption">Knit R Markdown</p>
+<img src="fig/knit_rmarkdown.png" alt="Knit R Markdown" /><p class="caption">Knit R Markdown</p>
 </div>
 <p>When you click on this link, you see in the console that RStudio is running and rendering your R Markdown file. What is actually happening is RStudio is running the function <code>render</code>, which is part of the <code>rmarkdown</code> package. There are two things the command render does. First, it converts the R Markdown file to a Markdown file using the command <code>knit</code> from the <code>knitr</code> package (hence why rendering is called knitting). The second step is then the Markdown file is converted to the final file format (HTML, PDF, or Word).</p>
 <p>The final result is that an HMTL file will pop up where you’ll see the report. You can see the header has been rendered, there are code and results chunks displayed, and even plots are shown right in the report.</p>

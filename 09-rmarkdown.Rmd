@@ -29,7 +29,7 @@ There are two steps to generating reports with R Markdown and RStudio:
 Next, let's run through the demo for knitr to see some of the options.
 Go up to `File` -> `New File` -> `R Markdown`. 
 
-![Set up new R Markdown file](figure/start_rmarkdown_doc.png)
+![Set up new R Markdown file](fig/start_rmarkdown_doc.png)
 
 
 A screen will pop up asking us what kind of document we wish to create.
@@ -37,7 +37,7 @@ Let's name our demo report "Trial Report" and fill in your name.
 Ensure that "Document" is highlighted to the left and that "HTML" is chosen.
 Click "Ok".
 
-![Choose HTML](figure/rmarkdown_document_info.png)
+![Choose HTML](fig/rmarkdown_document_info.png)
 
 Now we have the example R Markdown file open. 
 The first thing you'll notice at the top is a header which includes your name, the title of the document, the date, and a field called output. 
@@ -50,7 +50,7 @@ This white space is interpreted as Markdown language, so you can use any of the 
 
 In this trial script, you'll see some of these markdown elements are used. For example, the word knit is in bolded (using asterisks), and there are code chucks near the bottom that say echo = FALSE. 
 
-![Demo R Markdown Document](figure/rmarkdown-demo-doc.png)
+![Demo R Markdown Document](fig/rmarkdown-demo-doc.png)
 
 In addition to the white space, you'll gray blocks that have ``` at the top and bottom. 
 These are called chunks. 
@@ -73,7 +73,7 @@ Let's add a new chunk to end this demo document.
 To do so, either you can enter three backticks in a row, followed by {r}, or you can click on the green `Chunks` button and chose `Insert Chunk`.
 Additionally, there's a keyboard short cut which is `ctrl`+`alt`+`i` which will also pop up a chunk in an R Markdown document. 
 
-![Insert Chunk](figure/insert-chunk.png)
+![Insert Chunk](fig/insert-chunk.png)
 
 In the chunk, let's just examine the dimensions of the `car` dataset:
 
@@ -92,7 +92,7 @@ This will prompt you to save the file.
 Go ahead and save this file as `Rmarkdown_demo.Rmd` in the altmetrics directory. 
 The ending of the file `.Rmd` indicates that this is an R Markdown file. 
 
-![Knit R Markdown](figure/knit_rmarkdown.png)
+![Knit R Markdown](fig/knit_rmarkdown.png)
 
 When you click on this link, you see in the console that RStudio is running and rendering your R Markdown file. 
 What is actually happening is RStudio is running the function `render`, which is part of the `rmarkdown` package. 

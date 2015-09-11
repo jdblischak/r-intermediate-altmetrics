@@ -13,7 +13,7 @@ First, let's create a new R Markdown document with the title "On the origin of c
 Once you create the R Marktown document, delete all of the demo contents below the header information. 
 Let's save this file as `altmetrics_analyses.Rmd` in the altmetrics directory.
 
-![Start of New R Markdown Document](figure/start-of-rmd.png)
+![Start of New R Markdown Document](fig/start-of-rmd.png)
 
 Let's start by loading our data. 
 First, using a single hashtag header level, let's indicate we're going to load data in Markdown.

@@ -27,7 +27,7 @@ Make sure the working directory for R Studio is set to  the altmetrics folder by
 Now let's start our new README document. 
 Go up to `File` -> `New File` -> `Text File`. 
 
-![Start markdown file](figure/start-markdown.png)
+![Start markdown file](fig/start-markdown.png)
 
 This opens an untitled document that you can see is just blank.
 

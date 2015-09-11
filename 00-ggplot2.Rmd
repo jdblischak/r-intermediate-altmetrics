@@ -5,6 +5,11 @@ subtitle: ggplot2
 minutes: 10
 ---
 
+```{r, include = FALSE}
+source("tools/chunk-options.R")
+opts_chunk$set(fig.path = "fig/04-import-data-")
+```
+
 > ## Learning Objectives {.objectives}
 >
 
