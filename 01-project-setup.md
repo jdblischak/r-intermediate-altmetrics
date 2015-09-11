@@ -38,12 +38,24 @@ cd data
 > Recall that you can always determine where you are by running the command `pwd`, which stands for "print working directory".
 > Also, if you run `cd` with no arguments, it takes you to your home directory.
 
-Download the two data files using `wget`.
+Download the two data files using the links below.
+Save them to the data subdirectory.
 
-~~~{.bash}
-wget https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-raw.txt.gz
-wget https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-norm.txt.gz
-~~~
+*  [counts-raw](https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-raw.txt.gz)
+*  [counts-norm](https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-norm.txt.gz)
+
+> ## Downloading files from the command line {.callout}
+>
+> When possible, it is best to download files from the command line because that makes the analysis more reproducible.
+> Different systems have different tools installed, which is why we manually downloaded the files for this lesson.
+> Some options include `wget`, `curl`, and `rsync`.
+> As an example, here is how to perform the download using `wget`.
+>
+> ~~~{.bash}
+> wget https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-raw.txt.gz
+> wget https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-norm.txt.gz
+>~~~
+>
 
 The first file, `counts-raw.txt.gz`, contains the raw counts for each of the articles across all the metrics.
 The second file, `counts-norm.txt.gz`, contains the counts for each of the articles across all the metrics after they have been normalized across disciplines and years.

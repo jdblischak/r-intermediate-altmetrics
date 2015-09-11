@@ -55,9 +55,21 @@
 <p>Recall that you can always determine where you are by running the command <code>pwd</code>, which stands for “print working directory”. Also, if you run <code>cd</code> with no arguments, it takes you to your home directory.</p>
 </div>
 </aside>
-<p>Download the two data files using <code>wget</code>.</p>
+<p>Download the two data files using the links below. Save them to the data subdirectory.</p>
+<ul>
+<li><a href="https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-raw.txt.gz">counts-raw</a></li>
+<li><a href="https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-norm.txt.gz">counts-norm</a></li>
+</ul>
+<aside class="callout panel panel-info">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pushpin"></span>Downloading files from the command line</h2>
+</div>
+<div class="panel-body">
+<p>When possible, it is best to download files from the command line because that makes the analysis more reproducible. Different systems have different tools installed, which is why we manually downloaded the files for this lesson. Some options include <code>wget</code>, <code>curl</code>, and <code>rsync</code>. As an example, here is how to perform the download using <code>wget</code>.</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">wget</span> https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-raw.txt.gz
 <span class="kw">wget</span> https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-norm.txt.gz</code></pre>
+</div>
+</aside>
 <p>The first file, <code>counts-raw.txt.gz</code>, contains the raw counts for each of the articles across all the metrics. The second file, <code>counts-norm.txt.gz</code>, contains the counts for each of the articles across all the metrics after they have been normalized across disciplines and years.</p>
 <p>Confirm that the files downloaded by listing the files in <code>data</code>.</p>
 <pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">ls</span></code></pre>
