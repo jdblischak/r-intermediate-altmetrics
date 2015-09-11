@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Reference</h2>
+          <p>Explanation of columns in “counts-raw.txt.gz”:</p>
+<ul>
+<li><strong>doi</strong> - digital object identifier</li>
+<li><strong>pubDate</strong> - Date of publication, format: yyyy-mm-dd</li>
+<li><strong>journal</strong> - Abbreviation of PLOS journal</li>
+<li><strong>title</strong> - Title of article</li>
+<li><strong>articleType</strong> - Article classification</li>
+<li><strong>authorsCount</strong> - Number of authors</li>
+<li><strong>f1000Factor</strong> - Score assigned by Faculty of 1000</li>
+<li><strong>backtweetsCount</strong> - Number of tweets</li>
+<li><strong>deliciousCount</strong> - Number of bookmarks in Delicious</li>
+<li><strong>pmid</strong> - PubMed ID number</li>
+<li><strong>plosSubjectTags</strong> - Descriptions of the subject areas of the article</li>
+<li><strong>plosSubSubjectTags</strong> - More specific descriptions of the subject areas of the article</li>
+<li><strong>facebookShareCount</strong> - Number of Facebook shares</li>
+<li><strong>facebookLikeCount</strong> - Number of Facebook likes</li>
+<li><strong>facebookCommentCount</strong> - Number of Facebook comments</li>
+<li><strong>facebookClickCount</strong> - Number of Facebook clicks</li>
+<li><strong>mendeleyReadersCount</strong> - Number of Mendeley users that bookmarked article</li>
+<li><strong>almBlogsCount</strong> - Number of blog posts that link to article</li>
+<li><strong>pdfDownloadsCount</strong> - Number of PDF downloads</li>
+<li><strong>xmlDownloadsCount</strong> - Number of XML downloads</li>
+<li><strong>htmlDownloadsCount</strong> - Number of page views</li>
+<li><strong>almCiteULikeCount</strong> - Number of saves in CiteULike</li>
+<li><strong>almScopusCount</strong> - Number of citations in Scopus</li>
+<li><strong>almPubMedCentralCount</strong> - Number of citations in PubMed Central</li>
+<li><strong>almCrossRefCount</strong> - Number of citations in CrossRef</li>
+<li><strong>plosCommentCount</strong> - Number of comments on PLOS website</li>
+<li><strong>plosCommentResponsesCount</strong> - Number of responses to comments on PLOS website</li>
+<li><strong>wikipediaCites</strong> - Number of links to article</li>
+<li><strong>year</strong> - Year of publication, format: yyyy</li>
+<li><strong>daysSincePublished</strong> - Number of days since publication (out-dated)</li>
+<li><strong>wosCountThru2010</strong> - Number of citations in Web of Science as of 2010</li>
+<li><strong>wosCountThru2011</strong> - Number of citations in Web of Science as of 2011</li>
+</ul>
+<h2 id="dplyr">dplyr</h2>
+<ul>
+<li><strong>filter</strong> - subset rows</li>
+<li><strong>select</strong> - subset columns</li>
+<li><strong>arrange</strong> - sort column(s)</li>
+<li><strong>mutate</strong> - create new column(s)</li>
+<li><strong>group_by</strong> - split data into groups based on values in column(s)</li>
+<li><strong>summarize</strong> - reduce all rows (per group) to one summary row</li>
+<li><strong>%&gt;%</strong> - pipe output of one function to the next</li>
+</ul>
+<h2 id="ggplot2">ggplot2</h2>
+<ul>
+<li><strong>aes</strong> - Map columns of data frame to plot aesthetics
+<ul>
+<li><strong>x</strong> - data on x-axis</li>
+<li><strong>y</strong> - data on y-axis</li>
+<li><strong>col</strong> - color of points and lines</li>
+<li><strong>shape</strong> - shape of points</li>
+<li><strong>size</strong> - size of points</li>
+<li><strong>fill</strong> - color of geometric shapes</li>
+</ul></li>
+<li><strong>geom_*</strong> - The geometric objects to be plotted
+<ul>
+<li><strong>geom_point</strong> - scatter plot</li>
+<li><strong>geom_bar</strong> - bar plot</li>
+<li><strong>geom_histogram</strong> - histogram</li>
+<li><strong>geom_smooth</strong> - loess curve</li>
+<li><strong>geom_text</strong> - use text labels instead of points</li>
+<li><strong>geom_errorbar</strong> - Add error bars</li>
+</ul></li>
+<li><strong>scale_x_log10, scale_y_log10</strong> - Log transform an axis</li>
+<li><strong>scale_x_continous, scale_x_discrete</strong> - Change breaks and labels on axis</li>
+<li><strong>scale_color_manual, scale_fill_manual, scale_color_brewer</strong> - Change colors used for color or fill aesthetics</li>
+<li><strong>facet_grid, facet_wrap</strong> - Create a plot per group</li>
+<li><strong>theme</strong> - Change the appearance of the plot</li>
+</ul>
+<h2 id="debugging">Debugging</h2>
+<ul>
+<li><strong>debug(function_name)</strong> - Enter debugger whenever function is called</li>
+<li><strong>browser()</strong> - Enter debugger</li>
+<li><strong>options(error = recover)</strong> - Set this option to enter debugger whenever an error occurs</li>
+</ul>
+<h2 id="defensive-programming">Defensive programming</h2>
+<ul>
+<li><strong>stopifnot(cond1, cond2, …)</strong> - Stop if any of the listed conditions are FALSE</li>
+<li>From package testit:
+<ul>
+<li><strong>assert(“message”, cond1, …)</strong> - Stop and print message if any of the listed conditions are FALSE</li>
+<li><strong>has_warning(expr)</strong> - Return TRUE if expression creates a warning</li>
+<li><strong>has_error(expr)</strong> - Return TRUE if expression creates an error</li>
+</ul></li>
+</ul>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>
