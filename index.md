@@ -38,7 +38,7 @@ and programming with R.
 1.  [Importing and exploring data](04-import-data.html)
 1.  [R conditional statements](05-conditionals.html)
 1.  [R loops](06-loops.html)
-1.  [Functions in R]()
+1.  [Functions in R](07-functions.html)
 
 1.  [Writing in Markdown](08-markdown.html)
 1.  [Writing in R Markdown](09-rmarkdown.html)
