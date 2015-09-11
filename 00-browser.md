@@ -30,7 +30,7 @@ We'll start with the function we updated in the last lesson.
 
 
 ~~~{.r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   if (!is.factor(variable)) {
     variable <- as.factor(variable)
   }
@@ -38,7 +38,7 @@ sum_metric_per_var <- function(metric, variable) {
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   for (v in levels(variable)) {
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
   }
   return(result)
 }
@@ -48,14 +48,14 @@ And we'll focus on fixing the following behavior:
 
 
 ~~~{.r}
-sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
+mean_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
 ~~~
 
 
 
 ~~~{.output}
-pbio pcbi pgen pmed pntd pone ppat 
- 529  293  355  449  176   NA  305 
+     pbio      pcbi      pgen      pmed      pntd      pone      ppat 
+0.2041683 0.1906311 0.2006783 0.2293156 0.2297650        NA 0.1893234 
 
 ~~~
 
@@ -67,7 +67,7 @@ Since we suspect the problem is occuring during the `for` loop, we'll set the br
 
 
 ~~~{.r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   if (!is.factor(variable)) {
     variable <- as.factor(variable)
   }
@@ -76,7 +76,7 @@ sum_metric_per_var <- function(metric, variable) {
   names(result) <- levels(variable)
   for (v in levels(variable)) {
     browser()
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
   }
   return(result)
 }
@@ -86,10 +86,10 @@ Now the next time we call the function, we are dropped into the debugger at the 
 
 
 ~~~{.r}
-sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
+mean_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
 ~~~
 ~~~ {.output}
-Called from: sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
+Called from: mean_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
 ~~~
 ~~~ {.r}
 Browse[1]> 
@@ -128,7 +128,7 @@ Instead, we can use `c` for "continue", which continues running the code until t
 Browse[1]> c
 ~~~
 ~~~ {.output}
-Called from: sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
+Called from: mean_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
 ~~~
 ~~~ {.r}
 Browse[1]> v
@@ -140,7 +140,7 @@ Browse[1]> v
 Browse[1]> c
 ~~~
 ~~~ {.output}
-Called from: sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
+Called from: mean_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
 ~~~
 ~~~ {.r}
 Browse[2]> v
@@ -162,7 +162,7 @@ We want to enter the debugger when `v == "pone"`.
 
 
 ~~~{.r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   if (!is.factor(variable)) {
     variable <- as.factor(variable)
   }
@@ -173,7 +173,7 @@ sum_metric_per_var <- function(metric, variable) {
     if (v == "pone") {
       browser()
     }
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
   }
   return(result)
 }
@@ -181,10 +181,10 @@ sum_metric_per_var <- function(metric, variable) {
 
 
 ~~~{.r}
-sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
+mean_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
 ~~~
 ~~~ {.output}
-Called from: sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
+Called from: mean_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
 ~~~
 ~~~ {.r}
 Browse[1]> v
@@ -194,7 +194,7 @@ Browse[1]> v
 ~~~
 
 Now we entered into the debugger after the loop has reached "pone".
-Let's inspect the variable the values being passed to `sum`.
+Let's inspect the variable the values being passed to `mean`.
 Specifically, let's see all the unique values.
 
 ~~~ {.r}
@@ -225,27 +225,25 @@ Let's first exit the debugging environment.
 Browse[1]> Q
 ~~~
 
-And then check the help for `sum` to see if we can figure out what is going on (remember you can also press the `F1` key to see a function's help page).
+And then check the help for `mean` to see if we can figure out what is going on (remember you can also press the `F1` key to see a function's help page).
 
 
 ~~~{.r}
-?sum
+?mean
 ~~~
 
-From the help page, we see that `sum` has an argument `na.rm` to remove `NA`s.
+From the help page, we see that `mean` has an argument `na.rm` to remove `NA`s.
 
-> na.rm	logical. Should missing values (including NaN) be removed?
+> na.rm	a logical value indicating whether NA values should be stripped before the computation proceeds.
 
-Furthermore, the function returns `NA` of any of the values are `NA`.
+Otherwise by default, the function returns `NA` if any of the values are `NA`.
 
-> If na.rm is FALSE an NA or NaN value in any of the arguments will cause a value of NA or NaN to be returned, otherwise NA and NaN values are ignored.
-
-Let's update the function so that `sum` removes `NA` values before summing the vector.
+Let's update the function so that `mean` removes `NA` values.
 At this point we can also remove the call to `browser`.
 
 
 ~~~{.r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   if (!is.factor(variable)) {
     variable <- as.factor(variable)
   }
@@ -253,7 +251,7 @@ sum_metric_per_var <- function(metric, variable) {
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   for (v in levels(variable)) {
-    result[v] <- sum(metric[variable == v], na.rm = TRUE)
+    result[v] <- mean(metric[variable == v], na.rm = TRUE)
   }
   return(result)
 }
@@ -263,13 +261,13 @@ And now the function works properly when passed an `NA`!
 
 
 ~~~{.r}
-sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
+mean_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)
 ~~~
 
 
 
 ~~~{.output}
-pbio pcbi pgen pmed pntd pone ppat 
- 529  293  355  449  176 4962  305 
+     pbio      pcbi      pgen      pmed      pntd      pone      ppat 
+0.2041683 0.1906311 0.2006783 0.2293156 0.2297650 0.3519648 0.1893234 
 
 ~~~

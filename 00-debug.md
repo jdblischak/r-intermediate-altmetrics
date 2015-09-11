@@ -30,15 +30,15 @@ From the dropdown menu, go to "On Error" and choose the setting "Message Only".
 
 
 
-Recall the function we wrote earlier to sum a metric for each level of a factor.
+Recall the function we wrote earlier to calculate the mean of a metric for each level of a factor.
 
 
 ~~~{.r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   for (v in levels(variable)) {
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
   }
   return(result)
 }
@@ -48,23 +48,25 @@ And recall we invoke it as follows.
 
 
 ~~~{.r}
-sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$journal)
+mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$journal)
 ~~~
 
 
 
 ~~~{.output}
-pbio pcbi pgen pmed pntd pone ppat 
- 144  317  113  442   24 6968   62 
+      pbio       pcbi       pgen       pmed       pntd       pone 
+0.05557700 0.20624593 0.06387790 0.22574055 0.03133159 0.49421945 
+      ppat 
+0.03848541 
 
 ~~~
 
 However, what can we do if we obtain an unexpected result?
-For example, let's sum the number of tweets per year.
+For example, let's mean the number of tweets per year.
 
 
 ~~~{.r}
-sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 ~~~
 
 
@@ -94,12 +96,12 @@ One option is to add `print` statements to the function to inform us the values 
 
 
 ~~~{.r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   print(result)
   for (v in levels(variable)) {
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
     print(result)
   }
   return(result)
@@ -110,7 +112,7 @@ And then re-run the function.
 
 
 ~~~{.r}
-sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 ~~~
 
 
@@ -133,11 +135,11 @@ Let's remove the `print` statements, and re-define the function before trying a 
 
 
 ~~~{.r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   for (v in levels(variable)) {
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
   }
   return(result)
 }
@@ -148,22 +150,22 @@ As an argument, we pass the function that we wish to debug.
 
 
 ~~~{.r}
-debug(sum_metric_per_var)
+debug(mean_metric_per_var)
 ~~~
 
-Now everytime we run the function `sum_metric_per_var`, we will be entered into R's interactive debugging environment.
+Now everytime we run the function `mean_metric_per_var`, we will be entered into R's interactive debugging environment.
 
 
 ~~~{.r}
-sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 ~~~
 ~~~ {.output}
-debugging in: sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+debugging in: mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 debug at #1: {
     result <- numeric(length = length(levels(variable)))
     names(result) <- levels(variable)
     for (v in levels(variable)) {
-        result[v] <- sum(metric[variable == v])
+        result[v] <- mean(metric[variable == v])
     }
     return(result)
 }
@@ -268,14 +270,14 @@ To do this we use a conditional statement to check if `variable` is a factor wit
 
 
 ~~~{.r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   if (!is.factor(variable)) {
     variable <- as.factor(variable)
   }
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   for (v in levels(variable)) {
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
   }
   return(result)
 }
@@ -285,39 +287,41 @@ Since we have re-defined the function, we will no longer be entered into the deb
 
 
 ~~~{.r}
-sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 ~~~
 
 
 
 ~~~{.output}
-2003 2004 2005 2006 2007 2008 2009 2010 
-   0    5   58   25  105  209 2246 5422 
+       2003        2004        2005        2006        2007        2008 
+0.000000000 0.009578544 0.054976303 0.016170763 0.040122277 0.047532408 
+       2009        2010 
+0.351047202 0.704338789 
 
 ~~~
 
 > ## Stopping debugging {.callout}
 >
-> If we hadn't re-defined the function, but still wanted to stop the debugger from starting everytime the function was called, we could have run `undebug(sum_metric_per_year)`.
+> If we hadn't re-defined the function, but still wanted to stop the debugger from starting everytime the function was called, we could have run `undebug(mean_metric_per_year)`.
 
 And now the function works as expected.
 
 > ## Limit to a subset of levels {.challenge}
 >
-> What if we were only interested in the sum of the number of tweets in the journals PLOS Biology (pbio) and PLOS One (pone)?
-> We could subset to only pass values for these journals to the function `sum_metric_per_var`.
+> What if we were only interested in the mean of the number of tweets in the journals PLOS Biology (pbio) and PLOS One (pone)?
+> We could subset to only pass values for these journals to the function `mean_metric_per_var`.
 > 
 > 
 > ~~~{.r}
-> sum_metric_per_var(counts_raw$backtweetsCount[counts_raw$journal %in% c("pbio", "pone")],
+> mean_metric_per_var(counts_raw$backtweetsCount[counts_raw$journal %in% c("pbio", "pone")],
 >                    counts_raw$journal[counts_raw$journal %in% c("pbio", "pone")])
 > ~~~
 > 
 > 
 > 
 > ~~~{.output}
-> pbio pcbi pgen pmed pntd pone ppat 
->  144    0    0    0    0 6968    0 
+>      pbio      pcbi      pgen      pmed      pntd      pone      ppat 
+> 0.0555770       NaN       NaN       NaN       NaN 0.4942194       NaN 
 > 
 > ~~~
 >

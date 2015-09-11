@@ -49,7 +49,7 @@
 </div>
 </aside>
 <p>We’ll start with the function we updated in the last lesson.</p>
-<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   if (!<span class="kw">is.factor</span>(variable)) {
     variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
   }
@@ -57,17 +57,17 @@
   result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
   <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
   for (v in <span class="kw">levels</span>(variable)) {
-    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+    result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v])
   }
   <span class="kw">return</span>(result)
 }</code></pre>
 <p>And we’ll focus on fixing the following behavior:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
-<pre class="output"><code>pbio pcbi pgen pmed pntd pone ppat 
- 529  293  355  449  176   NA  305 
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="output"><code>     pbio      pcbi      pgen      pmed      pntd      pone      ppat 
+0.2041683 0.1906311 0.2006783 0.2293156 0.2297650        NA 0.1893234 
 </code></pre>
 <p>Our function returns <code>NA</code> for the total number of Facebook likes for PLOS One. Why is this happening? It is correctly identifying all the journals, so the first section of code appears to be working correctly. The totals per journal are computed within the <code>for</code> loop, so that is likely where the problem is originating. Since we suspect the problem is occuring during the <code>for</code> loop, we’ll set the breakpoint there with <code>browser</code> instead of starting from the beginning of the function using <code>debug</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   if (!<span class="kw">is.factor</span>(variable)) {
     variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
   }
@@ -76,13 +76,13 @@
   <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
   for (v in <span class="kw">levels</span>(variable)) {
     <span class="kw">browser</span>()
-    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+    result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v])
   }
   <span class="kw">return</span>(result)
 }</code></pre>
 <p>Now the next time we call the function, we are dropped into the debugger at the breakpoint set by <code>browser</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
-<pre class="output"><code>Called from: sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="output"><code>Called from: mean_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span></code></pre>
 <p>Let’s confirm that the beginning of the function has already been run.</p>
 <pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span><span class="kw">ls</span>()</code></pre>
@@ -100,17 +100,17 @@
 </aside>
 <p>We want to see what is happening when <code>v</code> is <code>&quot;pone&quot;</code>. As we did before we could step through line by line using <code>n</code>. But using this approach, each time through the loop we would have to type <code>n</code> multiple times to run the lines of code in the loop. This would be even worse if there were many lines of code inside. Instead, we can use <code>c</code> for “continue”, which continues running the code until the next time <code>browser</code> is called.</p>
 <pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>c</code></pre>
-<pre class="output"><code>Called from: sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="output"><code>Called from: mean_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>v</code></pre>
 <pre class="output"><code>[1] &quot;pcbi&quot;</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>c</code></pre>
-<pre class="output"><code>Called from: sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="output"><code>Called from: mean_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span>v</code></pre>
 <pre class="output"><code>[1] &quot;pgen&quot;</code></pre>
 <p>But this really isn’t much better, especially if we run through the <code>for</code> loop multiple times as we attempt to debug the function. Let’s quit the debugger and try a new strategy.</p>
 <pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span>Q</code></pre>
 <p>We can set a conditional breakpoint using an <code>if</code> statement. Then we will be dropped into the interactive debugger only when the condition is true. We want to enter the debugger when <code>v == &quot;pone&quot;</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   if (!<span class="kw">is.factor</span>(variable)) {
     variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
   }
@@ -121,15 +121,15 @@
     if (v ==<span class="st"> &quot;pone&quot;</span>) {
       <span class="kw">browser</span>()
     }
-    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+    result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v])
   }
   <span class="kw">return</span>(result)
 }</code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
-<pre class="output"><code>Called from: sum_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="output"><code>Called from: mean_metric_per_var(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
 <pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>v</code></pre>
 <pre class="output"><code>[1] &quot;pone&quot;</code></pre>
-<p>Now we entered into the debugger after the loop has reached “pone”. Let’s inspect the variable the values being passed to <code>sum</code>. Specifically, let’s see all the unique values.</p>
+<p>Now we entered into the debugger after the loop has reached “pone”. Let’s inspect the variable the values being passed to <code>mean</code>. Specifically, let’s see all the unique values.</p>
 <pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span><span class="kw">unique</span>(metric[variable ==<span class="st"> </span>v])</code></pre>
 <pre class="output"><code> [1]   0   2   1   6   5   3  10   7   4   8  35  12  34   9  37  16  14  25 892  22
 [21]  11  19  18  13  21  49  15  41  50  17  51 104  23  20  26 151  30  39  NA  24
@@ -140,18 +140,15 @@
 <p>It does not contain any <code>NA</code>s, so this is likely the problem.</p>
 <p>Let’s first exit the debugging environment.</p>
 <pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>Q</code></pre>
-<p>And then check the help for <code>sum</code> to see if we can figure out what is going on (remember you can also press the <code>F1</code> key to see a function’s help page).</p>
-<pre class="sourceCode r"><code class="sourceCode r">?sum</code></pre>
-<p>From the help page, we see that <code>sum</code> has an argument <code>na.rm</code> to remove <code>NA</code>s.</p>
+<p>And then check the help for <code>mean</code> to see if we can figure out what is going on (remember you can also press the <code>F1</code> key to see a function’s help page).</p>
+<pre class="sourceCode r"><code class="sourceCode r">?mean</code></pre>
+<p>From the help page, we see that <code>mean</code> has an argument <code>na.rm</code> to remove <code>NA</code>s.</p>
 <blockquote>
-<p>na.rm logical. Should missing values (including NaN) be removed?</p>
+<p>na.rm a logical value indicating whether NA values should be stripped before the computation proceeds.</p>
 </blockquote>
-<p>Furthermore, the function returns <code>NA</code> of any of the values are <code>NA</code>.</p>
-<blockquote>
-<p>If na.rm is FALSE an NA or NaN value in any of the arguments will cause a value of NA or NaN to be returned, otherwise NA and NaN values are ignored.</p>
-</blockquote>
-<p>Let’s update the function so that <code>sum</code> removes <code>NA</code> values before summing the vector. At this point we can also remove the call to <code>browser</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<p>Otherwise by default, the function returns <code>NA</code> if any of the values are <code>NA</code>.</p>
+<p>Let’s update the function so that <code>mean</code> removes <code>NA</code> values. At this point we can also remove the call to <code>browser</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   if (!<span class="kw">is.factor</span>(variable)) {
     variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
   }
@@ -159,14 +156,14 @@
   result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
   <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
   for (v in <span class="kw">levels</span>(variable)) {
-    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v], <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)
+    result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v], <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)
   }
   <span class="kw">return</span>(result)
 }</code></pre>
 <p>And now the function works properly when passed an <code>NA</code>!</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
-<pre class="output"><code>pbio pcbi pgen pmed pntd pone ppat 
- 529  293  355  449  176 4962  305 
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$facebookLikeCount, counts_raw$journal)</code></pre>
+<pre class="output"><code>     pbio      pcbi      pgen      pmed      pntd      pone      ppat 
+0.2041683 0.1906311 0.2006783 0.2293156 0.2297650 0.3519648 0.1893234 
 </code></pre>
         </div>
       </div>

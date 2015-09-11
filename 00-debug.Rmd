@@ -34,14 +34,14 @@ From the dropdown menu, go to "On Error" and choose the setting "Message Only".
 counts_raw <- read.delim("data/counts-raw.txt.gz")
 ```
 
-Recall the function we wrote earlier to sum a metric for each level of a factor.
+Recall the function we wrote earlier to calculate the mean of a metric for each level of a factor.
 
 ```{r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   for (v in levels(variable)) {
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
   }
   return(result)
 }
@@ -50,14 +50,14 @@ sum_metric_per_var <- function(metric, variable) {
 And recall we invoke it as follows.
 
 ```{r}
-sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$journal)
+mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$journal)
 ```
 
 However, what can we do if we obtain an unexpected result?
-For example, let's sum the number of tweets per year.
+For example, let's mean the number of tweets per year.
 
 ```{r}
-sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 ```
 
 Strange.
@@ -71,12 +71,12 @@ result
 One option is to add `print` statements to the function to inform us the values of the variables in inside the function.
 
 ```{r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   print(result)
   for (v in levels(variable)) {
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
     print(result)
   }
   return(result)
@@ -86,7 +86,7 @@ sum_metric_per_var <- function(metric, variable) {
 And then re-run the function.
 
 ```{r}
-sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 ```
 
 While this strategy can often be effective, in this case it was not very informative.
@@ -94,11 +94,11 @@ Also, we had to edit our function and all we got was a glimpse at what was happe
 Let's remove the `print` statements, and re-define the function before trying a new strategy.
 
 ```{r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   for (v in levels(variable)) {
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
   }
   return(result)
 }
@@ -108,21 +108,21 @@ We'll use the R function `debug`.
 As an argument, we pass the function that we wish to debug.
 
 ```{r}
-debug(sum_metric_per_var)
+debug(mean_metric_per_var)
 ```
 
-Now everytime we run the function `sum_metric_per_var`, we will be entered into R's interactive debugging environment.
+Now everytime we run the function `mean_metric_per_var`, we will be entered into R's interactive debugging environment.
 
 ```{r eval=FALSE}
-sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 ```
 ~~~ {.output}
-debugging in: sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+debugging in: mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 debug at #1: {
     result <- numeric(length = length(levels(variable)))
     names(result) <- levels(variable)
     for (v in levels(variable)) {
-        result[v] <- sum(metric[variable == v])
+        result[v] <- mean(metric[variable == v])
     }
     return(result)
 }
@@ -226,14 +226,14 @@ Now we'll update the function so that if `variable` is not a factor, the functio
 To do this we use a conditional statement to check if `variable` is a factor with `is.factor`, and then if needed convert it with `as.factor`.
 
 ```{r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   if (!is.factor(variable)) {
     variable <- as.factor(variable)
   }
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   for (v in levels(variable)) {
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
   }
   return(result)
 }
@@ -242,22 +242,22 @@ sum_metric_per_var <- function(metric, variable) {
 Since we have re-defined the function, we will no longer be entered into the debugger when we run the function.
 
 ```{r}
-sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 ```
 
 > ## Stopping debugging {.callout}
 >
-> If we hadn't re-defined the function, but still wanted to stop the debugger from starting everytime the function was called, we could have run `undebug(sum_metric_per_year)`.
+> If we hadn't re-defined the function, but still wanted to stop the debugger from starting everytime the function was called, we could have run `undebug(mean_metric_per_year)`.
 
 And now the function works as expected.
 
 > ## Limit to a subset of levels {.challenge}
 >
-> What if we were only interested in the sum of the number of tweets in the journals PLOS Biology (pbio) and PLOS One (pone)?
-> We could subset to only pass values for these journals to the function `sum_metric_per_var`.
+> What if we were only interested in the mean of the number of tweets in the journals PLOS Biology (pbio) and PLOS One (pone)?
+> We could subset to only pass values for these journals to the function `mean_metric_per_var`.
 > 
 > ```{r}
-> sum_metric_per_var(counts_raw$backtweetsCount[counts_raw$journal %in% c("pbio", "pone")],
+> mean_metric_per_var(counts_raw$backtweetsCount[counts_raw$journal %in% c("pbio", "pone")],
 >                    counts_raw$journal[counts_raw$journal %in% c("pbio", "pone")])
 > ```
 >
@@ -270,7 +270,7 @@ And now the function works as expected.
 
 ```{r include=FALSE}
 # Use droplevels
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   if (!is.factor(variable)) {
     variable <- as.factor(variable)
   }
@@ -278,11 +278,11 @@ sum_metric_per_var <- function(metric, variable) {
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   for (v in levels(variable)) {
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
   }
   return(result)
 }
-sum_metric_per_var(counts_raw$backtweetsCount[counts_raw$journal %in% c("pbio", "pone")],
+mean_metric_per_var(counts_raw$backtweetsCount[counts_raw$journal %in% c("pbio", "pone")],
                    counts_raw$journal[counts_raw$journal %in% c("pbio", "pone")])
 ```
 

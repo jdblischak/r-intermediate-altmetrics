@@ -45,22 +45,24 @@
 <div class="figure">
 <img src="fig/rstudio-debug-options.png" alt="Configure RStudio debugging options" /><p class="caption">Configure RStudio debugging options</p>
 </div>
-<p>Recall the function we wrote earlier to sum a metric for each level of a factor.</p>
-<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<p>Recall the function we wrote earlier to calculate the mean of a metric for each level of a factor.</p>
+<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
   <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
   for (v in <span class="kw">levels</span>(variable)) {
-    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+    result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v])
   }
   <span class="kw">return</span>(result)
 }</code></pre>
 <p>And recall we invoke it as follows.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$journal)</code></pre>
-<pre class="output"><code>pbio pcbi pgen pmed pntd pone ppat 
- 144  317  113  442   24 6968   62 
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$journal)</code></pre>
+<pre class="output"><code>      pbio       pcbi       pgen       pmed       pntd       pone 
+0.05557700 0.20624593 0.06387790 0.22574055 0.03133159 0.49421945 
+      ppat 
+0.03848541 
 </code></pre>
-<p>However, what can we do if we obtain an unexpected result? For example, let’s sum the number of tweets per year.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
+<p>However, what can we do if we obtain an unexpected result? For example, let’s mean the number of tweets per year.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
 <pre class="output"><code>numeric(0)
 </code></pre>
 <p>Strange. But how do we figure out what exactly is happening? Recall that the variables defined inside the function are not available outside in the global environment.</p>
@@ -68,41 +70,41 @@
 <pre class="output"><code>Error in eval(expr, envir, enclos): object &#39;result&#39; not found
 </code></pre>
 <p>One option is to add <code>print</code> statements to the function to inform us the values of the variables in inside the function.</p>
-<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
   <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
   <span class="kw">print</span>(result)
   for (v in <span class="kw">levels</span>(variable)) {
-    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+    result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v])
     <span class="kw">print</span>(result)
   }
   <span class="kw">return</span>(result)
 }</code></pre>
 <p>And then re-run the function.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
 <pre class="output"><code>numeric(0)
 </code></pre>
 <pre class="output"><code>numeric(0)
 </code></pre>
 <p>While this strategy can often be effective, in this case it was not very informative. Also, we had to edit our function and all we got was a glimpse at what was happening while the function was running. Let’s remove the <code>print</code> statements, and re-define the function before trying a new strategy.</p>
-<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
   <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
   for (v in <span class="kw">levels</span>(variable)) {
-    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+    result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v])
   }
   <span class="kw">return</span>(result)
 }</code></pre>
 <p>We’ll use the R function <code>debug</code>. As an argument, we pass the function that we wish to debug.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">debug</span>(sum_metric_per_var)</code></pre>
-<p>Now everytime we run the function <code>sum_metric_per_var</code>, we will be entered into R’s interactive debugging environment.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
-<pre class="output"><code>debugging in: sum_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">debug</span>(mean_metric_per_var)</code></pre>
+<p>Now everytime we run the function <code>mean_metric_per_var</code>, we will be entered into R’s interactive debugging environment.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
+<pre class="output"><code>debugging in: mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 debug at #1: {
     result &lt;- numeric(length = length(levels(variable)))
     names(result) &lt;- levels(variable)
     for (v in levels(variable)) {
-        result[v] &lt;- sum(metric[variable == v])
+        result[v] &lt;- mean(metric[variable == v])
     }
     return(result)
 }</code></pre>
@@ -139,28 +141,30 @@ help       show help
 <p>Now that we have identified the problem, we want to exit the debugger. One option would be to use <code>f</code> for “finish”, which will run the rest of the function and then exit. But since we know it won’t work anyways, let’s use <code>Q</code> for “quit”.</p>
 <pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span>Q</code></pre>
 <p>Now we’ll update the function so that if <code>variable</code> is not a factor, the function will convert it. To do this we use a conditional statement to check if <code>variable</code> is a factor with <code>is.factor</code>, and then if needed convert it with <code>as.factor</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   if (!<span class="kw">is.factor</span>(variable)) {
     variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
   }
   result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
   <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
   for (v in <span class="kw">levels</span>(variable)) {
-    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+    result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v])
   }
   <span class="kw">return</span>(result)
 }</code></pre>
 <p>Since we have re-defined the function, we will no longer be entered into the debugger when we run the function.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
-<pre class="output"><code>2003 2004 2005 2006 2007 2008 2009 2010 
-   0    5   58   25  105  209 2246 5422 
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
+<pre class="output"><code>       2003        2004        2005        2006        2007        2008 
+0.000000000 0.009578544 0.054976303 0.016170763 0.040122277 0.047532408 
+       2009        2010 
+0.351047202 0.704338789 
 </code></pre>
 <aside class="callout panel panel-info">
 <div class="panel-heading">
 <h2><span class="glyphicon glyphicon-pushpin"></span>Stopping debugging</h2>
 </div>
 <div class="panel-body">
-<p>If we hadn’t re-defined the function, but still wanted to stop the debugger from starting everytime the function was called, we could have run <code>undebug(sum_metric_per_year)</code>.</p>
+<p>If we hadn’t re-defined the function, but still wanted to stop the debugger from starting everytime the function was called, we could have run <code>undebug(mean_metric_per_year)</code>.</p>
 </div>
 </aside>
 <p>And now the function works as expected.</p>
@@ -169,11 +173,11 @@ help       show help
 <h2><span class="glyphicon glyphicon-pencil"></span>Limit to a subset of levels</h2>
 </div>
 <div class="panel-body">
-<p>What if we were only interested in the sum of the number of tweets in the journals PLOS Biology (pbio) and PLOS One (pone)? We could subset to only pass values for these journals to the function <code>sum_metric_per_var</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(counts_raw$backtweetsCount[counts_raw$journal %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pbio&quot;</span>, <span class="st">&quot;pone&quot;</span>)],
+<p>What if we were only interested in the mean of the number of tweets in the journals PLOS Biology (pbio) and PLOS One (pone)? We could subset to only pass values for these journals to the function <code>mean_metric_per_var</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount[counts_raw$journal %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pbio&quot;</span>, <span class="st">&quot;pone&quot;</span>)],
                    counts_raw$journal[counts_raw$journal %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pbio&quot;</span>, <span class="st">&quot;pone&quot;</span>)])</code></pre>
-<pre class="output"><code>pbio pcbi pgen pmed pntd pone ppat 
- 144    0    0    0    0 6968    0 
+<pre class="output"><code>     pbio      pcbi      pgen      pmed      pntd      pone      ppat 
+0.0555770       NaN       NaN       NaN       NaN 0.4942194       NaN 
 </code></pre>
 <p>Unfortunately this still gives us results for the other journals. And misleadlingly, they have counts of zero, but this is purely artificial.</p>
 <p>Use <code>debug</code> to isolate and diagnose the problem.</p>
