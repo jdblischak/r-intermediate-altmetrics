@@ -54,7 +54,7 @@ Explanation of columns in "counts-raw.txt.gz":
 * **aes** - Map columns of data frame to plot aesthetics
     * **x** - data on x-axis
     * **y** - data on y-axis
-    * **col** - color of points and lines
+    * **color** - color of points and lines
     * **shape** - shape of points
     * **size** - size of points
     * **fill** - color of geometric shapes
