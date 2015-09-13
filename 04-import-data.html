@@ -219,17 +219,18 @@
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">is.character</span>(<span class="kw">levels</span>(counts_raw$journal))</code></pre>
 <pre class="output"><code>[1] TRUE
 </code></pre>
-<p>From the <code>str</code> output, we saw that the journal is being stored as integers. These integers refer to which of the levels that value should take. Thus when we run something like <code>head</code>, R replaces the integers with its corresponding value in the “levels” character vector.</p>
+<p>From the <code>str</code> output, we saw that <code>journal</code> is a factor with 7 levels. It listed 2 of the 7 levels, and then after the colon listed the values at the beginning of the vector. Strangely, these were integers! These integers refer to which of the levels that value should take. However, when we run something like <code>head</code>, R replaces the integers with its corresponding value in the “levels” character vector.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(counts_raw$journal)</code></pre>
 <pre class="output"><code>[1] pbio pbio pbio pbio pbio pbio
 Levels: pbio pcbi pgen pmed pntd pone ppat
 </code></pre>
+<p>Thus we need to be careful with factors, because they often appear as if they are character vectors but will sometimes behave like numeric vectors because R is storing them as integers.</p>
 <aside class="callout panel panel-info">
 <div class="panel-heading">
 <h2><span class="glyphicon glyphicon-pushpin"></span>stringsAsFactors = FALSE</h2>
 </div>
 <div class="panel-body">
-<p>By default R converts character vectors into factors in imported data sets. While this can be convenient for columns with categorical varialbes, e.g. <code>journal</code>, it is cumbersome for columns where every value is unique, e.g. <code>title</code>. Because of this, we recommend setting the options <code>stringsAsFactors = FALSE</code> whenever using <code>read.table</code> or a similar function. We keep the default here because we wish to demonstrate some of the potential problems with factors.</p>
+<p>By default R converts character vectors into factors in imported data sets. While this can be convenient for columns with categorical varialbes, e.g. <code>journal</code>, it is cumbersome for columns where every value is unique, e.g. <code>title</code>. Because of this, we recommend setting the options <code>stringsAsFactors = FALSE</code> whenever using <code>read.table</code>, <code>read.delim</code>, or a similar function. We keep the default here because we wish to demonstrate some of the potential problems with factors.</p>
 </div>
 </aside>
 <p>Importantly, R is also able to handle missing values. Missing values are represented by the special constant <code>NA</code>, and can be included in a vector of any data type. We can detect the presence of an <code>NA</code> using the functions <code>is.na</code> and <code>anyNA</code> which report the status of each element of a vector or the entire vector, respectively.</p>
