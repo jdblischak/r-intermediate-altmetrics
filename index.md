@@ -54,7 +54,7 @@ and programming with R.
 1.  [Control data mapping with scales](00-ggplot2-scales.html)
 1.  [ggplot2 facets](00-ggplot2-facets.html)
 1.  [Creating different plots with geoms](00-ggplot2-geoms.html)
-1.  [ggplot2 themes]()
+1.  [Customizing plot appearance with themes](00-ggplot2-themes.html)
 
 1.  [Debugging with debug](00-debug.html)
 1.  [Debugging with browser](00-browser.html)
