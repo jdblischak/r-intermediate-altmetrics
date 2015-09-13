@@ -62,7 +62,7 @@ NULL
 }</code></pre>
 <h3 id="the-principle-of-encapsulation">The principle of encapsulation</h3>
 <p>An important feature of functions is the principle of encapsulation: the environment inside the function is distinct from the environment outside the function. In other words, variables defined inside a function are separate from variables defined outside the function.</p>
-<p>Here’s an small example to demonstrate this idea. The function <code>ex_fun</code> takes two input arguments, <code>x</code> and <code>y</code>. It calculates <code>w</code> and <code>z</code>, but only returns the value of <code>z</code>.</p>
+<p>Here’s an small example to demonstrate this idea. The function <code>ex_fun</code> takes two input arguments, <code>x</code> and <code>y</code>. It calculates <code>z</code> and returns its value.</p>
 <pre class="sourceCode r"><code class="sourceCode r">ex_fun &lt;-<span class="st"> </span>function(x, y) {
   z &lt;-<span class="st"> </span>x -<span class="st"> </span>y
   <span class="kw">return</span>(z)

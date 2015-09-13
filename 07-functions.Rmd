@@ -70,7 +70,7 @@ In other words, variables defined inside a function are separate from variables 
 
 Here's an small example to demonstrate this idea.
 The function `ex_fun` takes two input arguments, `x` and `y`.
-It calculates `w` and `z`, but only returns the value of `z`.
+It calculates `z` and returns its value.
 
 ```{r}
 ex_fun <- function(x, y) {
