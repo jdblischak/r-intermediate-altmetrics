@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Customizing plot appearance with themes</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Add title and axis labels to a plot</li>
+<li>Use themes to change plot appearance</li>
+<li>Modify the position of the legend</li>
+</ul>
+</div>
+</section>
+<p>We have learned how to translate our data into a visualization using ggplot2. However, we have not spent much time adjusting the plot appearance. Not surprisingly, ggplot2 offers these capabilities as well.</p>
+<h3 id="labeling-a-plot">Labeling a plot</h3>
+<p>We can add a title and axis labels using the ggplot2 function <code>labs</code> (for labels). Let’s modify the plot we created in the last lesson that showed the mean number of article tweets per journal.</p>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_point &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tweets_per_journal, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> mean)) +
+<span class="st">  </span><span class="kw">geom_point</span>() +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> mean -<span class="st"> </span>sem, <span class="dt">ymax =</span> mean +<span class="st"> </span>sem), <span class="dt">width =</span> <span class="fl">0.1</span>) +
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> num), <span class="dt">hjust =</span> <span class="dv">0</span>, <span class="dt">vjust =</span> <span class="dv">0</span>) +
+<span class="st">  </span><span class="kw">labs</span>(<span class="dt">title =</span> <span class="st">&quot;Number of article tweets per journal&quot;</span>,
+       <span class="dt">x =</span> <span class="st">&quot;PLOS journal&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Mean number of tweets (+/- SEM)&quot;</span>)
+tweets_point</code></pre>
+<p><img src="fig/00-ggplot2-themes-unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;" /></p>
+<h3 id="using-built-in-themes">Using built-in themes</h3>
+<p>By default all ggplot2 graphics have a gray background with white gridlines. This is known as <code>theme_gray()</code>, but we can easily change this if we have a different preference. There are multiple other built-in themes that can be applied by adding them to the plot.</p>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_point +<span class="st"> </span><span class="kw">theme_minimal</span>() <span class="co"># Minimal theme</span></code></pre>
+<p><img src="fig/00-ggplot2-themes-unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_point +<span class="st"> </span><span class="kw">theme_bw</span>() <span class="co"># Black and white theme</span></code></pre>
+<p><img src="fig/00-ggplot2-themes-unnamed-chunk-7-2.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_point +<span class="st"> </span><span class="kw">theme_classic</span>() <span class="co"># Classic theme</span></code></pre>
+<p><img src="fig/00-ggplot2-themes-unnamed-chunk-7-3.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" /></p>
+<p>If we plan to make multiple plots that all need the same theme, we can use <code>theme_set</code> so that they are automatically applied to all plots.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">theme_set</span>(<span class="kw">theme_bw</span>())
+tweets_point</code></pre>
+<p><img src="fig/00-ggplot2-themes-unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" /></p>
+<h3 id="modifying-the-legend">Modifying the legend</h3>
+<p>In theory, every aspect of the plot can be modified. But memorizing how to control every feature of the plot is not worth the effect. It can be quite complex, and you are likely only going to need to make a few changes. Because ggplot2 is so popular, there are many online resources explaining how to accomplish specific tasks.</p>
+<p>Here we’ll show some common modifications of the legend. We’ll use our plot of 2011 citations versus PDF downloads.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log10</span>(pdfDownloadsCount +<span class="st"> </span><span class="dv">1</span>), <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal)) +
+<span class="st">  </span><span class="kw">geom_smooth</span>() +
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">1000</span>)) +
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">1000</span>))
+p</code></pre>
+<pre class="output"><code>geom_smooth: method=&quot;auto&quot; and size of largest group is &gt;=1000, so using gam with formula: y ~ s(x, bs = &quot;cs&quot;). Use &#39;method = x&#39; to change the smoothing method.
+</code></pre>
+<p><img src="fig/00-ggplot2-themes-unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" style="display: block; margin: auto;" /></p>
+<p>By default the legend is placed to the right of the plot. We can control this using the <code>legend.position</code> argument to <code>theme</code>. We can use a key word like “left”, “right”, “top”, or “bottom”.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;top&quot;</span>)</code></pre>
+<pre class="output"><code>geom_smooth: method=&quot;auto&quot; and size of largest group is &gt;=1000, so using gam with formula: y ~ s(x, bs = &quot;cs&quot;). Use &#39;method = x&#39; to change the smoothing method.
+</code></pre>
+<p><img src="fig/00-ggplot2-themes-unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" /></p>
+<p>We can specify the position of the center of the legend relative to the entire plot, where (0, 0) is the bottom left and (1, 1) is the top right.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="kw">c</span>(<span class="fl">0.25</span>, <span class="fl">0.75</span>))</code></pre>
+<pre class="output"><code>geom_smooth: method=&quot;auto&quot; and size of largest group is &gt;=1000, so using gam with formula: y ~ s(x, bs = &quot;cs&quot;). Use &#39;method = x&#39; to change the smoothing method.
+</code></pre>
+<p><img src="fig/00-ggplot2-themes-unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" /></p>
+<p>Or we can remove the legend.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">theme</span>(<span class="dt">legend.position =</span> <span class="st">&quot;none&quot;</span>)</code></pre>
+<pre class="output"><code>geom_smooth: method=&quot;auto&quot; and size of largest group is &gt;=1000, so using gam with formula: y ~ s(x, bs = &quot;cs&quot;). Use &#39;method = x&#39; to change the smoothing method.
+</code></pre>
+<p><img src="fig/00-ggplot2-themes-unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" /></p>
+<p>Lastly, we can maintain the legend but remove only the legend title by setting the argument <code>legend.title</code> to <code>element_blank</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">theme</span>(<span class="dt">legend.title =</span> <span class="kw">element_blank</span>())</code></pre>
+<pre class="output"><code>geom_smooth: method=&quot;auto&quot; and size of largest group is &gt;=1000, so using gam with formula: y ~ s(x, bs = &quot;cs&quot;). Use &#39;method = x&#39; to change the smoothing method.
+</code></pre>
+<p><img src="fig/00-ggplot2-themes-unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" style="display: block; margin: auto;" /></p>
+<p>The theme is composed of theme elements, e.g. <code>theme_text</code> controls the text appearance, <code>theme_line</code> controls the line appearance, etc. This can be complicated, so it is best to use one of the built-in themes when first beginning to use ggplot2.</p>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

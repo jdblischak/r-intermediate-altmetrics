@@ -85,7 +85,7 @@ In other words, variables defined inside a function are separate from variables 
 
 Here's an small example to demonstrate this idea.
 The function `ex_fun` takes two input arguments, `x` and `y`.
-It calculates `w` and `z`, but only returns the value of `z`.
+It calculates `z` and returns its value.
 
 
 ~~~{.r}
@@ -428,6 +428,7 @@ In later lessons, we will learn how to debug functions when they are not working
 > ## Write your own function {.challenge}
 >
 > Write your own function to calculate the mean called `my_mean`.
+> It should take one input argument, `x`, which is a numeric vector.
 > Compare your results with the results from R's function `mean`.
 > Do you receive the same answer?
 

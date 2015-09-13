@@ -50,10 +50,11 @@ and programming with R.
 1.  [Using pipes with dplyr](00-dplyr-chain.html)
 1.  [Summarizing data with dplyr](00-dplyr-summarize.html)
 
-1.  [ggplot2](00-ggplot2.html)
-1.  [ggplot2 geoms]()
-1.  [more ggplot2]()
-1.  [ggplot2 themes]()
+1.  [Starting with ggplot2 - Map data to plot aesthetics](00-ggplot2-aes.html)
+1.  [Control data mapping with scales](00-ggplot2-scales.html)
+1.  [ggplot2 facets](00-ggplot2-facets.html)
+1.  [Creating different plots with geoms](00-ggplot2-geoms.html)
+1.  [Customizing plot appearance with themes](00-ggplot2-themes.html)
 
 1.  [Debugging with debug](00-debug.html)
 1.  [Debugging with browser](00-browser.html)

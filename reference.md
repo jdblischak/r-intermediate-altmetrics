@@ -54,7 +54,7 @@ Explanation of columns in "counts-raw.txt.gz":
 * **aes** - Map columns of data frame to plot aesthetics
     * **x** - data on x-axis
     * **y** - data on y-axis
-    * **col** - color of points and lines
+    * **color** - color of points and lines
     * **shape** - shape of points
     * **size** - size of points
     * **fill** - color of geometric shapes
@@ -66,7 +66,7 @@ Explanation of columns in "counts-raw.txt.gz":
     * **geom_text** - use text labels instead of points
     * **geom_errorbar** - Add error bars
 * **scale_x_log10, scale_y_log10** - Log transform an axis
-* **scale_x_continous, scale_x_discrete** - Change breaks and labels on axis
+* **scale_x_continuous, scale_x_discrete** - Change breaks and labels on axis
 * **scale_color_manual, scale_fill_manual, scale_color_brewer** - Change colors used for color or fill aesthetics
 * **facet_grid, facet_wrap** - Create a plot per group
 * **theme** - Change the appearance of the plot

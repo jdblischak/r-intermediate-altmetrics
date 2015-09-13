@@ -393,9 +393,11 @@ is.character(levels(counts_raw$journal))
 
 ~~~
 
-From the `str` output, we saw that the journal is being stored as integers.
+From the `str` output, we saw that `journal` is a factor with 7 levels.
+It listed 2 of the 7 levels, and then after the colon listed the values at the beginning of the vector.
+Strangely, these were integers!
 These integers refer to which of the levels that value should take.
-Thus when we run something like `head`, R replaces the integers with its corresponding value in the "levels" character vector.
+However, when we run something like `head`, R replaces the integers with its corresponding value in the "levels" character vector.
 
 
 ~~~{.r}
@@ -410,11 +412,13 @@ Levels: pbio pcbi pgen pmed pntd pone ppat
 
 ~~~
 
+Thus we need to be careful with factors, because they often appear as if they are character vectors but will sometimes behave like numeric vectors because R is storing them as integers.
+
 > ## stringsAsFactors = FALSE {.callout}
 >
 > By default R converts character vectors into factors in imported data sets.
 > While this can be convenient for columns with categorical varialbes, e.g. `journal`, it is cumbersome for columns where every value is unique, e.g. `title`.
-> Because of this, we recommend setting the options `stringsAsFactors = FALSE` whenever using `read.table` or a similar function.
+> Because of this, we recommend setting the options `stringsAsFactors = FALSE` whenever using `read.table`, `read.delim`, or a similar function.
 > We keep the default here because we wish to demonstrate some of the potential problems with factors.
 
 Importantly, R is also able to handle missing values.

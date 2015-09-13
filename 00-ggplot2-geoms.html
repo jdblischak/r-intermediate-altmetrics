@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Creating different plots with geoms</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Map a categorical (discrete) variable to an axis</li>
+<li>Create a boxplot and barplot</li>
+<li>Add error bars and text annotations</li>
+</ul>
+</div>
+</section>
+<p>To this point we have mainly focused on a scatter plot created using <code>geom_point</code>. ggplot2 offers many different geoms to create a wide variety of plots. In this lesson, we’ll explore a few more geoms.</p>
+<h3 id="mapping-categorical-discrete-variables">Mapping categorical (discrete) variables</h3>
+<p>The scatter plot we made mapped continuous variables to the x and y axes.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log10</span>(pdfDownloadsCount +<span class="st"> </span><span class="dv">1</span>), <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal)) +
+<span class="st">  </span><span class="kw">geom_smooth</span>() +
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">1000</span>)) +
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">1000</span>))
+p</code></pre>
+<pre class="output"><code>geom_smooth: method=&quot;auto&quot; and size of largest group is &gt;=1000, so using gam with formula: y ~ s(x, bs = &quot;cs&quot;). Use &#39;method = x&#39; to change the smoothing method.
+</code></pre>
+<p><img src="fig/00-ggplot2-geoms-unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;" /></p>
+<p>Of course we can also map categorical (also known as discrete) variables.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p_box &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
+<span class="st">  </span><span class="kw">geom_boxplot</span>() +
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">1000</span>))
+p_box</code></pre>
+<p><img src="fig/00-ggplot2-geoms-unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" /></p>
+<h3 id="creating-a-barplot">Creating a barplot</h3>
+<p>A common figure in scientific publications is the barplot, where the height of the bars represent the mean and the error bars represent the standard error of the mean (SEM). Recall from the challenge in the dplyr section that we calculated the mean and SEM for the number of article tweets per journal.</p>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_per_journal &lt;-<span class="st"> </span>research %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(journal) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>(),
+            <span class="dt">mean =</span> <span class="kw">mean</span>(backtweetsCount),
+            <span class="dt">sem =</span> <span class="kw">sd</span>(backtweetsCount) /<span class="st"> </span><span class="kw">sqrt</span>(num))
+tweets_per_journal</code></pre>
+<pre class="output"><code>Source: local data frame [7 x 4]
+
+  journal   num       mean         sem
+1    pbio  1325 0.05811321 0.020153395
+2    pcbi  1351 0.12657291 0.052177184
+3    pgen  1619 0.06547251 0.020408525
+4    pmed   643 0.31104199 0.187868371
+5    pntd   621 0.02576490 0.009057697
+6    pone 14078 0.49303878 0.034484187
+7    ppat  1459 0.02604524 0.008807428
+</code></pre>
+<p>Let’s create a barplot to display this result using <code>geom_bar</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_bar &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tweets_per_journal, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> mean)) +
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>)
+tweets_bar</code></pre>
+<p><img src="fig/00-ggplot2-geoms-unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" style="display: block; margin: auto;" /></p>
+<p>We have to set the argument <code>stat = &quot;identity&quot;</code> because by default <code>geom_bar</code> tabulates the number of occurrences of the variable mapped to <code>x</code> and maps this frequency to <code>y</code>.</p>
+<p>Now let’s add the error bars using <code>geom_errorbar</code>. We pass it values for <code>ymin</code> and <code>ymax</code>, which define the range of the error bars.</p>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_bar &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tweets_per_journal, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> mean)) +
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> mean -<span class="st"> </span>sem, <span class="dt">ymax =</span> mean +<span class="st"> </span>sem))
+tweets_bar</code></pre>
+<p><img src="fig/00-ggplot2-geoms-unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" /></p>
+<p>By default the error bars are as wide as the bars. Let’s reduce their size using the argument <code>width</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_bar &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tweets_per_journal, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> mean)) +
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> mean -<span class="st"> </span>sem, <span class="dt">ymax =</span> mean +<span class="st"> </span>sem), <span class="dt">width =</span> <span class="fl">0.1</span>)
+tweets_bar</code></pre>
+<p><img src="fig/00-ggplot2-geoms-unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" /></p>
+<p>Since we also calculated the sample size per journal, let’s add the number of articles to the plot using <code>geom_text</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_bar &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tweets_per_journal, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> mean)) +
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> mean -<span class="st"> </span>sem, <span class="dt">ymax =</span> mean +<span class="st"> </span>sem), <span class="dt">width =</span> <span class="fl">0.1</span>) +
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> num))
+tweets_bar</code></pre>
+<p><img src="fig/00-ggplot2-geoms-unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" /></p>
+<p>These are difficult to read because the text boxes are centered on the coordinate that marks the top of each bar. The positioning of the text box is controlled by the arguments <code>hjust</code> and <code>vjust</code>, for horizontal and vertical justification. By default these are both set to 0.5. We can image the text box being defined from 0 to 1 from left to right for <code>hjust</code> and from 0 to 1 from bottom to top for <code>vjust</code>. The values we set for <code>hjust</code> and <code>vjust</code> adjust where the text box is situated relative to that coordinate at the top of each bar. We’ll set them both to 0 to place the bottom left corner of the text box at that point, and thus the text is above and to the right of the bar.</p>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_bar &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tweets_per_journal, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> mean)) +
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> mean -<span class="st"> </span>sem, <span class="dt">ymax =</span> mean +<span class="st"> </span>sem), <span class="dt">width =</span> <span class="fl">0.1</span>) +
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> num), <span class="dt">hjust =</span> <span class="dv">0</span>, <span class="dt">vjust =</span> <span class="dv">0</span>)
+tweets_bar</code></pre>
+<p><img src="fig/00-ggplot2-geoms-unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" style="display: block; margin: auto;" /></p>
+<p>To make it easier to see this central point, and to show an alternative to a boxplot, we can easily switch from a barplot to using points.</p>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_point &lt;-<span class="st"> </span><span class="kw">ggplot</span>(tweets_per_journal, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> mean)) +
+<span class="st">  </span><span class="kw">geom_point</span>() +<span class="st"> </span>
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> mean -<span class="st"> </span>sem, <span class="dt">ymax =</span> mean +<span class="st"> </span>sem), <span class="dt">width =</span> <span class="fl">0.1</span>) +
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> num), <span class="dt">hjust =</span> <span class="dv">0</span>, <span class="dt">vjust =</span> <span class="dv">0</span>)
+tweets_point</code></pre>
+<p><img src="fig/00-ggplot2-geoms-unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" /></p>
+<p>Using multiple geoms, we were able to created a plot with multiple layers to display multiple sources of information, the mean, SEM, and sample size.</p>
+<h3 id="challenges">Challenges</h3>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Mean number of tweets per journal per year</h2>
+</div>
+<div class="panel-body">
+<p>Modify the dplyr code above to calculate the mean, SEM, and sample size of the number of article tweets per journal <em>and</em> per year. Use <code>facet_wrap</code> to make a separate subplot per year.</p>
+</div>
+</section>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Visualizing a single distribution</h2>
+</div>
+<div class="panel-body">
+<p>The geoms <code>geom_histogram</code> and <code>geom_density</code> can be used to create histograms and density plots, respectively. Using these geoms, visualize the distribution of 2011 citations (<code>wosCountThru2011</code>). Compare the raw distribution to log10 and square root transformations.</p>
+</div>
+</section>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

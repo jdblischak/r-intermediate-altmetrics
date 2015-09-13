@@ -142,7 +142,7 @@ In the function we wrote to do this manually, we would have had to write another
 
 
 ```{r include=FALSE}
-tweets_per_journal <- counts_raw %>%
+tweets_per_journal <- research %>%
   group_by(journal) %>%
   summarize(num = n(),
             mean = mean(backtweetsCount),
