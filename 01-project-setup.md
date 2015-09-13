@@ -56,6 +56,12 @@ Save them to the data subdirectory.
 > wget https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-norm.txt.gz
 >~~~
 >
+> If `wget` isn't installed on your machine, try `curl`:
+>
+> ~~~{.bash}
+> curl -O "https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-raw.txt.gz"
+> curl -O  "https://raw.githubusercontent.com/jdblischak/r-intermediate-altmetrics/gh-pages/data/counts-norm.txt.gz"
+>~~~
 
 The first file, `counts-raw.txt.gz`, contains the raw counts for each of the articles across all the metrics.
 The second file, `counts-norm.txt.gz`, contains the counts for each of the articles across all the metrics after they have been normalized across disciplines and years.
