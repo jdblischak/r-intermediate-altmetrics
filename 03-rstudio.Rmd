@@ -87,10 +87,12 @@ And that's it.
 Now we have an RStudio project.
 The next time we open RStudio, we can open the project and RStudio will prepare everything for us to start working.
 
-> ## Opening an existing RStudio project {.challenge}
+> ## Opening and closing RStudio projects {.challenge}
 >
-> Close RStudio and reopen it.
+> Using the same drop down menu at the top right of RStudio, which you used to create the project, choose to "Close Project".
 > In the Console run `getwd`.
 > It should display your home folder.
-> Now open the altmetrics project and run `getwd` again.
-> The working directory should have changed to the`altmetrics` directory.
+> Furthermore, your home folder should be displayed in the Files pane.
+> Now open the altmetrics project using the same menu and run `getwd` again.
+> The working directory should have changed to the`altmetrics` directory,
+> and the Files pane should display its contents.
