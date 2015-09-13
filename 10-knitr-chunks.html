@@ -30,7 +30,7 @@
           <h2 class="subtitle">Knitr Chunk Options</h2>
           <section class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2 id="learning-objectives"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <p>Learn how format chunks in R Markdown to display only the information you want to display.</p>
@@ -43,8 +43,9 @@
 <pre><code>```{r chunky_monkey}
 summary(cars)
 ```</code></pre>
+
 <p>Rendered:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(cars)</code></pre></div>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(cars)</code></pre>
 <pre><code>##      speed           dist       
 ##  Min.   : 4.0   Min.   :  2.00  
 ##  1st Qu.:12.0   1st Qu.: 26.00  
@@ -58,6 +59,7 @@ R Markdown:
 <pre><code>```{r funky_monkey, echo=FALSE}
 summary(cars)
 ```</code></pre>
+
 <p>Rendered:</p>
 <pre><code>##      speed           dist       
 ##  Min.   : 4.0   Min.   :  2.00  
@@ -71,13 +73,15 @@ R Markdown:
 <pre><code>```{r brass_monkey, results="hide"}
 summary(cars)
 ```</code></pre>
+
 <p>Rendered:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(cars)</code></pre></div>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(cars)</code></pre>
 <p>Sometimes, you may want to write a report where both the code and the output are suppressed. Why would you want to do that? Perhaps you’re sending a report to a collaborator and you only want them to see the final figures, but not any data manipulation steps in the middle. To include a chunk that is evaluated, but no output is displayed - neither the code nor the results - put <code>include=FALSE</code> after the chunk_name:</p>
 R Markdown:
 <pre><code>```{r brass_section, include=FALSE}
 summary(cars)
 ```</code></pre>
+
 <p>Rendered (I swear there’s a chunk after this! It’s just invisible!):</p>
 <p>There are tons of other options you can include in your chunks: sizing your figures and whether or not to display error or warning messages. As you write reports of your own data analysis, you can look up these options to create a report formatted in the way you want.</p>
 <p>In addition to code chunks, you may want to include the results of an evaluation in line with regular text. For instance, you may want to describe the data in a paragraph, and include the number of individuals in that paragraph. To do so, you can indicate that a code box should be evaluated as R by including a lowercase r, such as <code>`r evaluate_me`</code></p>
