@@ -326,11 +326,10 @@ And now the function works as expected.
 > ~~~
 >
 > Unfortunately this still gives us results for the other journals.
-> And misleadlingly, they have counts of zero, but this is purely artificial.
+> And their result is `NaN`, a special value indiciating "Not a Number".
 >
 > Use `debug` to isolate and diagnose the problem.
 > 
 > As an added challenge, can you fix the bug?
-
 
 
