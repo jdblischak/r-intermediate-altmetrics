@@ -87,7 +87,7 @@ result
 
 
 
-~~~{.output}
+~~~{.error}
 Error in eval(expr, envir, enclos): object 'result' not found
 
 ~~~

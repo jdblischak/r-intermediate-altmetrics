@@ -78,7 +78,7 @@ geom_smooth: method=&quot;auto&quot; and size of largest group is &gt;=1000, so 
 <pre class="sourceCode r"><code class="sourceCode r">research &lt;-<span class="st"> </span><span class="kw">mutate</span>(research, <span class="dt">immuno =</span> <span class="kw">grepl</span>(<span class="st">&quot;Immunology&quot;</span>, plosSubjectTags))</code></pre>
 <p>With <code>facet_grid</code>, we first specify the factor for the rows and second the factor for the columns.</p>
 <pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">facet_grid</span>(journal~immuno)</code></pre>
-<pre class="output"><code>Error in layout_base(data, cols, drop = drop): At least one layer must contain all variables used for facetting
+<pre class="error"><code>Error in layout_base(data, cols, drop = drop): At least one layer must contain all variables used for facetting
 </code></pre>
 <p>This failed because we updated the data frame <code>research</code> with the new column <code>immuno</code>, but we never updated <code>p</code> with the new data. Let’s redefine <code>p</code> and then add use <code>facet_grid</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log10</span>(pdfDownloadsCount +<span class="st"> </span><span class="dv">1</span>), <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +

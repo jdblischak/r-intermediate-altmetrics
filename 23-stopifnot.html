@@ -46,15 +46,15 @@
 if (!<span class="kw">is.character</span>(x)) {
   <span class="kw">stop</span>(<span class="st">&quot;x must be a character vector.&quot;</span>)
 }</code></pre>
-<pre class="output"><code>Error in eval(expr, envir, enclos): x must be a character vector.
+<pre class="error"><code>Error in eval(expr, envir, enclos): x must be a character vector.
 </code></pre>
 <p>If we had multiple conditions to check, it would take many lines of code to check all of them. Luckily R provides the convenience function <code>stopifnot</code>. We can list as many requirements that should evaluate to <code>TRUE</code>, and <code>stopifnot</code> throws an error if it finds one that is <code>FALSE</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">stopifnot</span>(<span class="kw">is.character</span>(x))</code></pre>
-<pre class="output"><code>Error: is.character(x) is not TRUE
+<pre class="error"><code>Error: is.character(x) is not TRUE
 </code></pre>
 <p>If <code>x</code> also had to have a length of one, we can add that condition.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">stopifnot</span>(<span class="kw">length</span>(x) ==<span class="st"> </span><span class="dv">1</span>, <span class="kw">is.character</span>(x))</code></pre>
-<pre class="output"><code>Error: is.character(x) is not TRUE
+<pre class="error"><code>Error: is.character(x) is not TRUE
 </code></pre>
 <p>Listing these conditions also serves a secondary purpose as documentation for the code.</p>
 <p>Let’s try out defensive programming by adding assertions to check the input to our function <code>mean_metric_per_var</code>.</p>
@@ -99,11 +99,11 @@ if (!<span class="kw">is.character</span>(x)) {
 <p>But fails instantly if given improper input.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Metric is a factor instead of numeric</span>
 <span class="kw">mean_metric_per_var</span>(counts_raw$journal, counts_raw$year)</code></pre>
-<pre class="output"><code>Error: is.numeric(metric) is not TRUE
+<pre class="error"><code>Error: is.numeric(metric) is not TRUE
 </code></pre>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The variable vector is shorter than metric</span>
 <span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year[<span class="dv">1</span>:<span class="dv">20</span>])</code></pre>
-<pre class="output"><code>Error: length(metric) == length(variable) is not TRUE
+<pre class="error"><code>Error: length(metric) == length(variable) is not TRUE
 </code></pre>
 <p>We can also check the output. Let’s add an assertion to ensure that the result does not contain any <code>NA</code>s.</p>
 <pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
@@ -141,7 +141,7 @@ if (!<span class="kw">is.character</span>(x)) {
 }</code></pre>
 <p>Now when we use a non-factor, the function warns us that it was converted to a factor.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
-<pre class="output"><code>Warning in mean_metric_per_var(counts_raw$backtweetsCount, counts_raw
+<pre class="error"><code>Warning in mean_metric_per_var(counts_raw$backtweetsCount, counts_raw
 $year): variable was automatically converted to a factor.
 </code></pre>
 <pre class="output"><code>       2003        2004        2005        2006        2007        2008 

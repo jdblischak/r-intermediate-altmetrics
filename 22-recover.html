@@ -61,13 +61,13 @@ counts_raw$downloadsAverageCount &lt;-<span class="st"> </span><span class="kw">
                                                              <span class="dt">value =</span> <span class="ot">TRUE</span>))</code></pre>
 <p>Now what do we expect would happen if we passed only one column name to the function? While this would not be very informative since taking the average of one metric would return the same metric. But there is no reason to think it should not work. Let’s try it.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">calc_sum_stat</span>(counts_raw, <span class="st">&quot;mendeleyReadersCount&quot;</span>)</code></pre>
-<pre class="output"><code>Error in apply(df_sub, 1, mean): dim(X) must have a positive length
+<pre class="error"><code>Error in apply(df_sub, 1, mean): dim(X) must have a positive length
 </code></pre>
 <p>But in fact this does fail. The error message informs us that the error occurs during the call to <code>apply</code>. While we could use <code>debug</code> or <code>browser</code> to investigate this error, a convenient way to interrogate an error is to use the function <code>recover</code>. Specifically, we can set the option <code>error</code> so that the function <code>recover</code> is called any time there is an error.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">error =</span> recover)</code></pre>
 <p>Now let’s run the function again to produce the error:</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">calc_sum_stat</span>(counts_raw, <span class="st">&quot;mendeleyReadersCount&quot;</span>)</code></pre>
-<pre class="output"><code>Error in apply(df_sub, 1, mean): dim(X) must have a positive length
+<pre class="error"><code>Error in apply(df_sub, 1, mean): dim(X) must have a positive length
 </code></pre>
 <pre class="output"><code>
 Enter a frame number, or 0 to exit   

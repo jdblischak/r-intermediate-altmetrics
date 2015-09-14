@@ -38,7 +38,7 @@ if (!is.character(x)) {
 
 
 
-~~~{.output}
+~~~{.error}
 Error in eval(expr, envir, enclos): x must be a character vector.
 
 ~~~
@@ -54,7 +54,7 @@ stopifnot(is.character(x))
 
 
 
-~~~{.output}
+~~~{.error}
 Error: is.character(x) is not TRUE
 
 ~~~
@@ -68,7 +68,7 @@ stopifnot(length(x) == 1, is.character(x))
 
 
 
-~~~{.output}
+~~~{.error}
 Error: is.character(x) is not TRUE
 
 ~~~
@@ -143,7 +143,7 @@ mean_metric_per_var(counts_raw$journal, counts_raw$year)
 
 
 
-~~~{.output}
+~~~{.error}
 Error: is.numeric(metric) is not TRUE
 
 ~~~
@@ -157,7 +157,7 @@ mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year[1:20])
 
 
 
-~~~{.output}
+~~~{.error}
 Error: length(metric) == length(variable) is not TRUE
 
 ~~~
@@ -222,7 +222,7 @@ mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 
 
 
-~~~{.output}
+~~~{.error}
 Warning in mean_metric_per_var(counts_raw$backtweetsCount, counts_raw
 $year): variable was automatically converted to a factor.
 

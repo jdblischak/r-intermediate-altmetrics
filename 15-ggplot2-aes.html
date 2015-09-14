@@ -51,7 +51,7 @@
 <pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> research, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011))</code></pre>
 <p>We plot by executing the plot object.</p>
 <pre class="sourceCode r"><code class="sourceCode r">p</code></pre>
-<pre class="output"><code>Error: No layers in plot
+<pre class="error"><code>Error: No layers in plot
 </code></pre>
 <p>However we get an error stating there are no layers in the plot. In addition to mapping aesthetics, this is the other big concept in ggplot2. We can build a plot up in layers. To make a simple scatter plot, we add the layer <code>geom_point</code> to the base we had created.</p>
 <pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">geom_point</span>()</code></pre>

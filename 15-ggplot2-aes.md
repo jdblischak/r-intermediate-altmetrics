@@ -57,7 +57,7 @@ p
 
 
 
-~~~{.output}
+~~~{.error}
 Error: No layers in plot
 
 ~~~

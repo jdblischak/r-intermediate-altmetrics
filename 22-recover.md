@@ -55,7 +55,7 @@ calc_sum_stat(counts_raw, "mendeleyReadersCount")
 
 
 
-~~~{.output}
+~~~{.error}
 Error in apply(df_sub, 1, mean): dim(X) must have a positive length
 
 ~~~
@@ -79,7 +79,7 @@ calc_sum_stat(counts_raw, "mendeleyReadersCount")
 
 
 
-~~~{.output}
+~~~{.error}
 Error in apply(df_sub, 1, mean): dim(X) must have a positive length
 
 ~~~

@@ -110,7 +110,7 @@ p + facet_grid(journal~immuno)
 
 
 
-~~~{.output}
+~~~{.error}
 Error in layout_base(data, cols, drop = drop): At least one layer must contain all variables used for facetting
 
 ~~~

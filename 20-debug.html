@@ -67,7 +67,7 @@
 </code></pre>
 <p>Strange. But how do we figure out what exactly is happening? Recall that the variables defined inside the function are not available outside in the global environment.</p>
 <pre class="sourceCode r"><code class="sourceCode r">result</code></pre>
-<pre class="output"><code>Error in eval(expr, envir, enclos): object &#39;result&#39; not found
+<pre class="error"><code>Error in eval(expr, envir, enclos): object &#39;result&#39; not found
 </code></pre>
 <p>One option is to add <code>print</code> statements to the function to inform us the values of the variables in inside the function.</p>
 <pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
