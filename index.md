@@ -51,7 +51,7 @@ and programming with R.
 
 1.  [Starting with ggplot2 - Map data to plot aesthetics](15-ggplot2-aes.html)
 1.  [Control data mapping with scales](16-ggplot2-scales.html)
-1.  [ggplot2 facets](17-ggplot2-facets.html)
+1.  [Creating subplots with facets](17-ggplot2-facets.html)
 1.  [Creating different plots with geoms](18-ggplot2-geoms.html)
 1.  [Customizing plot appearance with themes](19-ggplot2-themes.html)
 
