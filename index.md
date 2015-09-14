@@ -59,7 +59,7 @@ and programming with R.
 1.  [Debugging with browser](21-browser.html)
 1.  [Debugging with recover](22-recover.html)
 
-1.  [Defensive programming with stopifnot]()
+1.  [Defensive programming with stopifnot](23-stopifnot.Rmd)
 1.  [Defensive programming with testit]()
 
 ## Other Resources
