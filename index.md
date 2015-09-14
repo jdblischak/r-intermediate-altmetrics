@@ -60,7 +60,7 @@ and programming with R.
 1.  [Debugging with recover](22-recover.html)
 
 1.  [Defensive programming with stopifnot](23-stopifnot.html)
-1.  [Defensive programming with testit](24-testit.html)
+1.  [Testing with testit](24-testit.html)
 
 ## Other Resources
 
