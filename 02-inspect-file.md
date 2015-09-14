@@ -39,15 +39,22 @@ head -n 1 counts-raw.txt.gz
 > Recall that you can save typing by pressing the Tab character to auto-complete the names of directories and files.
 
 It wasn't very informative because the file is compressed to save space.
-You could de-compress it with `gunzip`, but instead use `zcat` to send the decompressed data to standard out.
+You could de-compress it with `gunzip`, but instead use `gunzip -c` to send the decompressed data to standard out.
+This allows us to view the contents of the file while still saving disk space.
 Pass standard out to the `head` function using the "pipe" command (it's the vertical bar on your keyboard).
 
 ~~~ {.bash}
-zcat counts-raw.txt.gz | head -n 1
+gunzip -c counts-raw.txt.gz | head -n 1
 ~~~
 ~~~ {.output}
 "doi"  "pubDate"	"journal"	"title"	"articleType"	"authorsCount"	"f1000Factor"	"backtweetsCount"	"deliciousCount"	"pmid"	"plosSubjectTags"	"plosSubSubjectTags"	"facebookShareCount"	"facebookLikeCount"	"facebookCommentCount"	"facebookClickCount"	"mendeleyReadersCount"	"almBlogsCount"	"pdfDownloadsCount"	"xmlDownloadsCount"	"htmlDownloadsCount"	"almCiteULikeCount"	"almScopusCount"	"almPubMedCentralCount"	"almCrossRefCount"	"plosCommentCount"	"plosCommentResponsesCount"	"wikipediaCites"	"year"	"daysSincePublished"	"wosCountThru2010"	"wosCountThru2011"
 ~~~
+
+> ## Decompression with zcat {.callout}
+>
+> Some systems provide a shortcut for `gunzip -c`: the function `zcat`.
+> Because it is shorter and provides the exact same functionality, we recommend using `zcat` if it is available.
+> Notably Git Bash for Windows users does not provide `zcat`, so we use `gunzip -c` here.
 
 Now that worked as expected.
 From this header line, we observe that some columns contain descriptions of the publication, e.g. "journal" and "title", and others contain the counts for the various metrics, e.g. "wosCountThru2011" is the number of citations the paper received thru 2011 according to Thomson Reuters' Web of Science.
@@ -55,14 +62,14 @@ From this header line, we observe that some columns contain descriptions of the 
 Now check the number of articles in each of the files using `wc`.
 
 ~~~ {.bash}
-zcat counts-raw.txt.gz | wc -l
+gunzip -c counts-raw.txt.gz | wc -l
 ~~~
 ~~~ {.output}
 24332
 ~~~
 
 ~~~ {.bash}
-zcat counts-norm.txt.gz | wc -l
+gunzip -c counts-norm.txt.gz | wc -l
 ~~~
 ~~~ {.output}
 21097
@@ -74,7 +81,7 @@ Confirm that this is the reason for the difference between the two files by insp
 You can select specific columns (aka fields) using `cut`.
 
 ~~~ {.bash}
-zcat counts-raw.txt.gz | cut -f5 | head
+gunzip -c counts-raw.txt.gz | cut -f5 | head
 ~~~
 ~~~ {.output}
 "articleType"
@@ -94,7 +101,7 @@ However, `uniq` requires that the data is pre-sorted to work properly.
 Thus pipe the data through the command `sort` before passing it to `uniq`.
 
 ~~~ {.bash}
-zcat counts-raw.txt.gz | cut -f5 | sort | uniq -c | head
+gunzip -c counts-raw.txt.gz | cut -f5 | sort | uniq -c | head
 ~~~
 ~~~ {.output}
       1 "articleType"
@@ -114,7 +121,7 @@ We can see that the raw counts file contains many different types of articles.
 Perform the same operation on the normalized counts file.
 
 ~~~ {.bash}
-zcat counts-norm.txt.gz | cut -f5 | sort | uniq -c
+gunzip -c counts-norm.txt.gz | cut -f5 | sort | uniq -c
 ~~~
 ~~~ {.output}
       1 "articleType"
@@ -129,7 +136,7 @@ What is the maximum number of citations for a single paper in this data set?
 Use the data from 2011 in column 32.
 
 ~~~ {.bash}
-zcat counts-raw.txt.gz | cut -f32 | sort -n | tail -n 1
+gunzip -c counts-raw.txt.gz | cut -f32 | sort -n | tail -n 1
 ~~~
 ~~~ {.output}
 737
@@ -143,7 +150,7 @@ How many articles have the subject tag "Evolutionary Biology"?
 Use `grep` to search for the term.
 
 ~~~ {.bash}
-zcat counts-raw.txt.gz | cut -f11 | grep "Evolutionary Biology" | wc -l
+gunzip -c counts-raw.txt.gz | cut -f11 | grep "Evolutionary Biology" | wc -l
 ~~~
 ~~~ {.output}
 2864
@@ -152,7 +159,7 @@ zcat counts-raw.txt.gz | cut -f11 | grep "Evolutionary Biology" | wc -l
 How many articles have the subject tag "Evolutionary Biology" and "Cell Biology"?
 
 ~~~ {.bash}
-zcat counts-raw.txt.gz | cut -f11 | grep "Evolutionary Biology" | grep "Cell Biology" | wc -l
+gunzip -c counts-raw.txt.gz | cut -f11 | grep "Evolutionary Biology" | grep "Cell Biology" | wc -l
 ~~~
 ~~~ {.output}
 153
@@ -162,7 +169,7 @@ Instead of simply counting the files that match the search criteria, save them t
 This is done with the redirection operator, `>`.
 
 ~~~ {.bash}
-zcat counts-raw.txt.gz | grep "Evolutionary Biology" | grep "Cell Biology" > evo-cell-bio.txt
+gunzip -c counts-raw.txt.gz | grep "Evolutionary Biology" | grep "Cell Biology" > evo-cell-bio.txt
 ~~~
 
 ~~~ {.bash}
