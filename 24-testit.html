@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Defensive programming with testit</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Write assertion statements with <code>assert</code></li>
+<li>Confirm errors using <code>has_error</code></li>
+<li>Confirm warnings using <code>has_warning</code></li>
+<li>Use unit tests to confirm code is working as expected</li>
+</ul>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;testit&quot;</span>)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">calc_sum_stat &lt;-<span class="st"> </span>function(df, cols) {
+  <span class="kw">stopifnot</span>(<span class="kw">dim</span>(df) &gt;<span class="st"> </span><span class="dv">0</span>,
+            <span class="kw">is.character</span>(cols),
+            cols %in%<span class="st"> </span><span class="kw">colnames</span>(df))
+  if (<span class="kw">length</span>(cols) ==<span class="st"> </span><span class="dv">1</span>) {
+    <span class="kw">warning</span>(<span class="st">&quot;Only one column specified. Calculating the mean will not change anything.&quot;</span>)
+  }
+  df_sub &lt;-<span class="st"> </span>df[, cols, drop =<span class="st"> </span><span class="ot">FALSE</span>]
+  <span class="kw">stopifnot</span>(<span class="kw">is.data.frame</span>(df_sub))
+  sum_stat &lt;-<span class="st"> </span><span class="kw">apply</span>(df_sub, <span class="dv">1</span>, mean)
+  <span class="kw">stopifnot</span>(!<span class="kw">is.na</span>(sum_stat))
+  <span class="kw">return</span>(sum_stat)
+}
+<span class="co"># Proper</span>
+sum_stat &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2010&quot;</span>, <span class="st">&quot;f1000Factor&quot;</span>))</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Empty data frame</span>
+<span class="kw">assert</span>(<span class="st">&quot;Empty data frame throws error&quot;</span>,
+       <span class="kw">has_error</span>(<span class="kw">calc_sum_stat</span>(<span class="kw">data.frame</span>(),
+                               <span class="kw">c</span>(<span class="st">&quot;wosCountThru2010&quot;</span>, <span class="st">&quot;f1000Factor&quot;</span>))))
+<span class="co"># Non-character cols</span>
+<span class="kw">assert</span>(<span class="st">&quot;Non-character vector input for columns throws error&quot;</span>,
+       <span class="kw">has_error</span>(<span class="kw">calc_sum_stat</span>(counts_raw, <span class="dv">1</span>:<span class="dv">3</span>)))
+<span class="co"># Bad column names</span>
+<span class="kw">assert</span>(<span class="st">&quot;Column names not in data frame throws error&quot;</span>,
+       <span class="kw">has_error</span>(<span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>))))
+<span class="co"># Issue warning since only one column</span>
+<span class="kw">assert</span>(<span class="st">&quot;Selecting only one column issues warning&quot;</span>,
+       <span class="kw">has_warning</span>(<span class="kw">calc_sum_stat</span>(counts_raw, <span class="st">&quot;mendeleyReadersCount&quot;</span>)))
+<span class="co"># NA output</span>
+<span class="kw">assert</span>(<span class="st">&quot;NA in output throws error&quot;</span>,
+       <span class="kw">has_error</span>(<span class="kw">calc_sum_stat</span>(counts_raw,
+                     <span class="kw">c</span>(<span class="st">&quot;wosCountThru2010&quot;</span>, <span class="st">&quot;facebookLikeCount&quot;</span>))))</code></pre>
+<h3 id="challenge">Challenge</h3>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Write some tests</h2>
+</div>
+<div class="panel-body">
+<p>Write tests for the function <code>my_mean</code> that you wrote in an earlier lesson. It should look something like this:</p>
+<pre class="sourceCode r"><code class="sourceCode r">my_mean &lt;-<span class="st"> </span>function(x) {
+  result &lt;-<span class="st"> </span><span class="kw">sum</span>(x) /<span class="st"> </span><span class="kw">length</span>(x)
+  <span class="kw">return</span>(result)
+}</code></pre>
+<p>The input <code>x</code> is a numeric vector, and the output is the mean of the vector of numbers. Some ideas to get started:</p>
+<ul>
+<li>Pass a vector where you know what the mean is, and assert that the result is correct</li>
+<li>Include an <code>NA</code> in the vector where you know the result to see what happens. Do you need to modify the code to pass the test?</li>
+<li>Add some assertion statments to check the input <code>x</code>. Use <code>has_error</code> to test that the function throws an error when given bad input.</li>
+<li>What should the function do if the user passes a vector of length one? Should a warning be issued to alert the user?</li>
+</ul>
+</div>
+</section>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>
