@@ -18,9 +18,10 @@ As we saw in the debugging section, working functions can still produce unexpect
 And tracking down the cause of the errors can be difficult even with a debugging tool.
 This is why the concept of defensive programming is important.
 Defensive programming encourages us to frequently check conditions and throw an error if something is wrong.
+These checks are referred to as assertion statements because we want to assert some condition is `TRUE` before proceeding.
 This makes it easier to debug because we have a better idea of where the error originated.
 Recall the uninformative error we received from `sum_calc_stat`: "Error in apply(df_sub, 1, mean): dim(X) must have a positive length", and the problem was actually introduced at the step before during the subsetting.
-While it will invovle more work when initially writing the code, it will save time in the future when others (including your future self) use the code.
+While it will involve more work when initially writing the code, it will save time in the future when others (including your future self) use the code.
 
 ```{r echo = FALSE}
 counts_raw <- read.delim("data/counts-raw.txt.gz")
@@ -102,17 +103,124 @@ mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 But fails instantly if given improper input.
 
 ```{r}
+# Metric is a factor instead of numeric
 mean_metric_per_var(counts_raw$journal, counts_raw$year)
+# The variable vector is shorter than metric
 mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year[1:20])
 ```
 
+We can also check the output.
+Let's add an assertion to ensure that the result does not contain any `NA`s.
 
 ```{r}
-calc_sum_stat <- function(df, cols) {
-  df_sub <- df[, cols, drop = FALSE]
-  sum_stat <- apply(df_sub, 1, mean)
-  return(sum_stat)
+mean_metric_per_var <- function(metric, variable) {
+  stopifnot(is.numeric(metric),
+            length(metric) == length(variable))
+  if (!is.factor(variable)) {
+    variable <- as.factor(variable)
+  }
+  variable <- droplevels(variable)
+  result <- numeric(length = length(levels(variable)))
+  names(result) <- levels(variable)
+  for (v in levels(variable)) {
+    result[v] <- mean(metric[variable == v], na.rm = TRUE)
+    stopifnot(!is.na(result[v]))
+  }
+  return(result)
 }
 ```
 
+### Send warnings
+
+In general, if something is wrong, we want to produce an error as quickly as possible to make it easier to debug.
+However there are situations where it is appropriate to issue a warning to the user without stopping the code.
+For example, when a non-factor is passed to `variable` in `mean_metric_per_var`, we automatically convert it to a factor.
+Since the user could have simply passed in the wrong vector, we should issue a warning.
+This alerts the user to double check their input.
+To do this we use the function `warning`.
+
+```{r}
+mean_metric_per_var <- function(metric, variable) {
+  stopifnot(is.numeric(metric),
+            length(metric) == length(variable))
+  if (!is.factor(variable)) {
+    warning("variable was automatically converted to a factor.")
+    variable <- as.factor(variable)
+  }
+  variable <- droplevels(variable)
+  result <- numeric(length = length(levels(variable)))
+  names(result) <- levels(variable)
+  for (v in levels(variable)) {
+    result[v] <- mean(metric[variable == v], na.rm = TRUE)
+    stopifnot(!is.na(result[v]))
+  }
+  return(result)
+}
+```
+
+Now when we use a non-factor, the function warns us that it was converted to a factor.
+
+```{r}
+mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
+```
+
+### Challenge
+
+> ## Practice defensive programming {.challenge}
+>
+> Use defensive programming techniques to make the function `calc_sum_stat` more robust.
+> 
+>
+> ```{r}
+> calc_sum_stat <- function(df, cols) {
+>   df_sub <- df[, cols, drop = FALSE]
+>   sum_stat <- apply(df_sub, 1, mean)
+>   return(sum_stat)
+> }
+> ```
+>
+> Some specific ideas:
+>
+> * Assert that the input `df` is not empty (hint: use `dim`)
+> * Assert that `cols` is a character vector
+> * Assert that the columns listed in `cols` are in `df` (hint: use `%in%` and `colnames`)
+> * Assert that `df_sub` is a data frame (hint: use `is.data.frame`)
+> * Assert that `sum_stat` is not `NA`
+> * Issue a warning if `cols` only contains one column (since taking the mean of one column isn't very useful, the user may have made a mistake)
+>
+
+```{r include=FALSE}
+calc_sum_stat <- function(df, cols) {
+  stopifnot(dim(df) > 0,
+            is.character(cols),
+            cols %in% colnames(df))
+  if (length(cols) == 1) {
+    warning("Only one column specified. Calculating the mean will not change anything.")
+  }
+  df_sub <- df[, cols, drop = FALSE]
+  stopifnot(is.data.frame(df_sub))
+  sum_stat <- apply(df_sub, 1, mean)
+  stopifnot(!is.na(sum_stat))
+  return(sum_stat)
+}
+# Proper
+sum_stat <- calc_sum_stat(counts_raw, c("wosCountThru2010", "f1000Factor"))
+```
+
+```{r include=FALSE, eval=FALSE}
+# Annoyingly, errors break the build if they are in chunks where `include=FALSE`.
+# Even explicitly setting `error=TRUE` does not override this behavior.
+
+# Empty data frame
+sum_stat <- calc_sum_stat(data.frame(), c("wosCountThru2010", "f1000Factor"))
+# Non-character cols
+sum_stat <- calc_sum_stat(counts_raw, 1:3)
+# Bad column names
+sum_stat <- calc_sum_stat(counts_raw, c("a", "b"))
+# Issue warning since only one column
+sum_stat <- calc_sum_stat(counts_raw, "mendeleyReadersCount")
+# NA output
+sum_stat <- calc_sum_stat(counts_raw, c("wosCountThru2010", "facebookLikeCount"))
+# Should fix to `na.rm == TRUE` in call to mean
+```
 

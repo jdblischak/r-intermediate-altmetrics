@@ -39,7 +39,7 @@
 </ul>
 </div>
 </section>
-<p>As we saw in the debugging section, working functions can still produce unexpected errors. And tracking down the cause of the errors can be difficult even with a debugging tool. This is why the concept of defensive programming is important. Defensive programming encourages us to frequently check conditions and throw an error if something is wrong. This makes it easier to debug because we have a better idea of where the error originated. Recall the uninformative error we received from <code>sum_calc_stat</code>: “Error in apply(df_sub, 1, mean): dim(X) must have a positive length”, and the problem was actually introduced at the step before during the subsetting. While it will invovle more work when initially writing the code, it will save time in the future when others (including your future self) use the code.</p>
+<p>As we saw in the debugging section, working functions can still produce unexpected errors. And tracking down the cause of the errors can be difficult even with a debugging tool. This is why the concept of defensive programming is important. Defensive programming encourages us to frequently check conditions and throw an error if something is wrong. These checks are referred to as assertion statements because we want to assert some condition is <code>TRUE</code> before proceeding. This makes it easier to debug because we have a better idea of where the error originated. Recall the uninformative error we received from <code>sum_calc_stat</code>: “Error in apply(df_sub, 1, mean): dim(X) must have a positive length”, and the problem was actually introduced at the step before during the subsetting. While it will involve more work when initially writing the code, it will save time in the future when others (including your future self) use the code.</p>
 <h3 id="checking-conditions-with-stopifnot">Checking conditions with <code>stopifnot</code></h3>
 <p>To create an error, we can use the function <code>stop</code>. For example, if a variable <code>x</code> needed to be a character vector, we could check for this condition with an <code>if</code> statement and throw an error if the condition was violated.</p>
 <pre class="sourceCode r"><code class="sourceCode r">x &lt;-<span class="st"> </span><span class="dv">1</span>
@@ -97,17 +97,81 @@ if (!<span class="kw">is.character</span>(x)) {
 0.351047202 0.704338789 
 </code></pre>
 <p>But fails instantly if given improper input.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$journal, counts_raw$year)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Metric is a factor instead of numeric</span>
+<span class="kw">mean_metric_per_var</span>(counts_raw$journal, counts_raw$year)</code></pre>
 <pre class="output"><code>Error: is.numeric(metric) is not TRUE
 </code></pre>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year[<span class="dv">1</span>:<span class="dv">20</span>])</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># The variable vector is shorter than metric</span>
+<span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year[<span class="dv">1</span>:<span class="dv">20</span>])</code></pre>
 <pre class="output"><code>Error: length(metric) == length(variable) is not TRUE
 </code></pre>
+<p>We can also check the output. Let’s add an assertion to ensure that the result does not contain any <code>NA</code>s.</p>
+<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+  <span class="kw">stopifnot</span>(<span class="kw">is.numeric</span>(metric),
+            <span class="kw">length</span>(metric) ==<span class="st"> </span><span class="kw">length</span>(variable))
+  if (!<span class="kw">is.factor</span>(variable)) {
+    variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
+  }
+  variable &lt;-<span class="st"> </span><span class="kw">droplevels</span>(variable)
+  result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
+  <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
+  for (v in <span class="kw">levels</span>(variable)) {
+    result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v], <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)
+    <span class="kw">stopifnot</span>(!<span class="kw">is.na</span>(result[v]))
+  }
+  <span class="kw">return</span>(result)
+}</code></pre>
+<h3 id="send-warnings">Send warnings</h3>
+<p>In general, if something is wrong, we want to produce an error as quickly as possible to make it easier to debug. However there are situations where it is appropriate to issue a warning to the user without stopping the code. For example, when a non-factor is passed to <code>variable</code> in <code>mean_metric_per_var</code>, we automatically convert it to a factor. Since the user could have simply passed in the wrong vector, we should issue a warning. This alerts the user to double check their input. To do this we use the function <code>warning</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+  <span class="kw">stopifnot</span>(<span class="kw">is.numeric</span>(metric),
+            <span class="kw">length</span>(metric) ==<span class="st"> </span><span class="kw">length</span>(variable))
+  if (!<span class="kw">is.factor</span>(variable)) {
+    <span class="kw">warning</span>(<span class="st">&quot;variable was automatically converted to a factor.&quot;</span>)
+    variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
+  }
+  variable &lt;-<span class="st"> </span><span class="kw">droplevels</span>(variable)
+  result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
+  <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
+  for (v in <span class="kw">levels</span>(variable)) {
+    result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v], <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)
+    <span class="kw">stopifnot</span>(!<span class="kw">is.na</span>(result[v]))
+  }
+  <span class="kw">return</span>(result)
+}</code></pre>
+<p>Now when we use a non-factor, the function warns us that it was converted to a factor.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$year)</code></pre>
+<pre class="output"><code>Warning in mean_metric_per_var(counts_raw$backtweetsCount, counts_raw
+$year): variable was automatically converted to a factor.
+</code></pre>
+<pre class="output"><code>       2003        2004        2005        2006        2007        2008 
+0.000000000 0.009578544 0.054976303 0.016170763 0.040122277 0.047532408 
+       2009        2010 
+0.351047202 0.704338789 
+</code></pre>
+<h3 id="challenge">Challenge</h3>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Practice defensive programming</h2>
+</div>
+<div class="panel-body">
+<p>Use defensive programming techniques to make the function <code>calc_sum_stat</code> more robust.</p>
 <pre class="sourceCode r"><code class="sourceCode r">calc_sum_stat &lt;-<span class="st"> </span>function(df, cols) {
   df_sub &lt;-<span class="st"> </span>df[, cols, drop =<span class="st"> </span><span class="ot">FALSE</span>]
   sum_stat &lt;-<span class="st"> </span><span class="kw">apply</span>(df_sub, <span class="dv">1</span>, mean)
   <span class="kw">return</span>(sum_stat)
 }</code></pre>
+<p>Some specific ideas:</p>
+<ul>
+<li>Assert that the input <code>df</code> is not empty (hint: use <code>dim</code>)</li>
+<li>Assert that <code>cols</code> is a character vector</li>
+<li>Assert that the columns listed in <code>cols</code> are in <code>df</code> (hint: use <code>%in%</code> and <code>colnames</code>)</li>
+<li>Assert that <code>df_sub</code> is a data frame (hint: use <code>is.data.frame</code>)</li>
+<li>Assert that <code>sum_stat</code> is not <code>NA</code></li>
+<li>Issue a warning if <code>cols</code> only contains one column (since taking the mean of one column isn’t very useful, the user may have made a mistake)</li>
+</ul>
+</div>
+</section>
         </div>
       </div>
       </article>
