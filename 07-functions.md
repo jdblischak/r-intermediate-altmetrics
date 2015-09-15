@@ -123,14 +123,14 @@ Error in eval(expr, envir, enclos): object 'z' not found
 
 ~~~
 
-> ## Environments are complicated {.challenge}
+> ## Environments are complicated {.callout}
 >
 > The situation presented above is a simplified version of environments which will serve you well if you treat functions as truly encapsulated.
 > In reality, things are more complicated.
 > For example, if inside a function you have a variable that has not been defined in the function, it will actually search the global environment for this variable.
 > To learn the advanced details, see the chapter [Environments](http://adv-r.had.co.nz/Environments.html) in Advanced R by Hadley Wickham.
 
-> ## The return statement {.challenge}
+> ## The return statement {.callout}
 >
 > R provides the shortcut of not needing to use `return` at the end of the function.
 > Instead, the variable on the last line of the body of the function is returned.
