@@ -254,9 +254,10 @@ Thus with just one line of code we were able to compute the mean across every ro
 
 ### Challenges
 
-> ## Using `apply` {.challenge}
+> ## Using apply {.challenge}
 >
-> Using `apply` and `sd`, calculate the standard deviation of each row of `counts_sub`.
-> Using `apply` and `max`, calculate the maximum of each column of `counts_sub`.
+> Using `apply` and `sd`, calculate the standard deviation of each row of `counts_sub`.  
+> Using `apply` and `max`, calculate the maximum of each column of `counts_sub`.  
+
 
 
