@@ -83,7 +83,7 @@ dim(cars)
 
 You can actually send the code straight from the chunks over to console to be evaluated in two ways. 
 First, you can highlight the code you want to run in the chunk and hit the `Run` button, which is located in the top right corner of the pane.
-Additionally, you can use the keyboard shortcut `ctrl`+`alt`+`c` (if you're using Windows/Linux) or `command`+`option`+`c` (if you're using a Mac).
+Additionally, you can use the keyboard shortcut `ctrl`+`alt`+`c`.
 This allows you to iteratively write an test code in RStudio, rather than having to render the full report everytime you at a bit of new code.
 
 These are the basics of writing R Markdown, but we still need to generate a report. 
