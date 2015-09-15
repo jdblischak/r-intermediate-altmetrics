@@ -30,7 +30,7 @@
           <h2 class="subtitle">Using RStudio</h2>
           <section class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2 id="learning-objectives"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <ul>
@@ -42,53 +42,63 @@
 </section>
 <p>We will use R via the interactive development environment (IDE) RStudio. In this lesson we’ll explore some of its useful features.</p>
 <div class="figure">
-<img src="fig/rstudio-full.png" alt="RStudio IDE" /><p class="caption">RStudio IDE</p>
+<img src="fig/rstudio-full.png" alt="RStudio IDE" />
+<p class="caption">RStudio IDE</p>
 </div>
 <h3 id="the-different-panels">The different panels</h3>
 <p>First, let’s open a new R script in the text editor (“File” -&gt; “New File” -&gt; “R Script”). One of the biggest advantages of using RStudio is how easy it makes to test new code your write. Let’s write a few lines of code in the text editor.</p>
 <div class="figure">
-<img src="fig/rstudio-editor.png" alt="RStudio editor" /><p class="caption">RStudio editor</p>
+<img src="fig/rstudio-editor.png" alt="RStudio editor" />
+<p class="caption">RStudio editor</p>
 </div>
 <p>By clicking on the button that says “Run”, we can send a line from the script to the Console to be executed. If we highlight multiple lines of code, all these lines will be run in the Console. As a shortcut, you can press “Ctrl-Enter” instead of clicking on the “Run” button.</p>
 <div class="figure">
-<img src="fig/rstudio-console.png" alt="RStudio Console" /><p class="caption">RStudio Console</p>
+<img src="fig/rstudio-console.png" alt="RStudio Console" />
+<p class="caption">RStudio Console</p>
 </div>
 <p>The R Console works the same as if you accessed R from the Unix shell or the Windows R GUI. Recall that the up and down arrows browse through past commands.</p>
 <p>The Environment panel describes all the objects present in the R session. It is similar to <code>ls</code>, but gives additional details like what is stored in the object.</p>
 <div class="figure">
-<img src="fig/rstudio-environment.png" alt="RStudio Environment" /><p class="caption">RStudio Environment</p>
+<img src="fig/rstudio-environment.png" alt="RStudio Environment" />
+<p class="caption">RStudio Environment</p>
 </div>
 <p>The History panel displays all the past commands that were run in the Console. These past commands can be selected and then sent either to the script (“Source”) or to the Console to be run again.</p>
 <div class="figure">
-<img src="fig/rstudio-history.png" alt="RStudio History" /><p class="caption">RStudio History</p>
+<img src="fig/rstudio-history.png" alt="RStudio History" />
+<p class="caption">RStudio History</p>
 </div>
 <p>The Files panel shows all the available files available in the current working directory.</p>
 <div class="figure">
-<img src="fig/rstudio-files.png" alt="RStudio Files" /><p class="caption">RStudio Files</p>
+<img src="fig/rstudio-files.png" alt="RStudio Files" />
+<p class="caption">RStudio Files</p>
 </div>
 <p>The Help panel shows the documentation for R functions. We can either run <code>?</code> in front of the function name to bring up the documentation, e.g. <code>?sum</code>. Alternatively, we can put the cursor on the name of the function and press the F1 key.</p>
 <div class="figure">
-<img src="fig/rstudio-help.png" alt="RStudio Help" /><p class="caption">RStudio Help</p>
+<img src="fig/rstudio-help.png" alt="RStudio Help" />
+<p class="caption">RStudio Help</p>
 </div>
 <p>Lastly the Plots panel will display any graphs we create and the Packages panel shows which packages have been installed.</p>
 <h3 id="creating-an-rstudio-project">Creating an RStudio project</h3>
 <p>To organize our project, we will create an RStudio project. RStudio projects are convenient for many reasons. When you open an RStudio project, the working directory in the Console is automatically set to the project directory (i.e. we don’t have to run <code>setwd</code>), the Files panel shows all the files for the project, and any files that were open in the editor the last time will be opened. Furthermore, we can configure settings specific to each project, though we won’t go into those details in this lesson.</p>
 <p>To create an RStudio project, go to the top right of the screen and click on the “Project” button. Then select “New Project”.</p>
 <div class="figure">
-<img src="fig/start-new-project.png" alt="Start new project" /><p class="caption">Start new project</p>
+<img src="fig/start-new-project.png" alt="Start new project" />
+<p class="caption">Start new project</p>
 </div>
 <p>Since we already created a project directory in the Unix shell lesson, choose to create a project in an “Existing Directory”.</p>
 <div class="figure">
-<img src="fig/project-exisiting-directory.png" alt="Start from existing directory" /><p class="caption">Start from existing directory</p>
+<img src="fig/project-exisiting-directory.png" alt="Start from existing directory" />
+<p class="caption">Start from existing directory</p>
 </div>
 <p>Click on “Browse” and find the <code>altmetrics</code> directory we created earlier.</p>
 <div class="figure">
-<img src="fig/project-choose-directory.png" alt="Choose existing directory" /><p class="caption">Choose existing directory</p>
+<img src="fig/project-choose-directory.png" alt="Choose existing directory" />
+<p class="caption">Choose existing directory</p>
 </div>
 <p>And that’s it. Now we have an RStudio project. The next time we open RStudio, we can open the project and RStudio will prepare everything for us to start working.</p>
 <section class="challenge panel panel-success">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pencil"></span>Opening and closing RStudio projects</h2>
+<h2 id="opening-and-closing-rstudio-projects"><span class="glyphicon glyphicon-pencil"></span>Opening and closing RStudio projects</h2>
 </div>
 <div class="panel-body">
 <p>Using the same drop down menu at the top right of RStudio, which you used to create the project, choose to “Close Project”. In the Console run <code>getwd</code>. It should display your home folder. Furthermore, your home folder should be displayed in the Files pane. Now open the altmetrics project using the same menu and run <code>getwd</code> again. The working directory should have changed to the<code>altmetrics</code> directory, and the Files pane should display its contents.</p>
