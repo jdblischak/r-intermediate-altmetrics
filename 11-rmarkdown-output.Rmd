@@ -134,7 +134,7 @@ To create professional looking reports, you can also generate figure captions.
 To add a figure caption to a figure, you must specifiy in the brackets at the beginning of the chunk what you want the caption to say using the argument `fig.cap`. 
 Let's add a caption to our histogram by editing the `author_histogram` chunk:
 
-<pre><code>```{r author_histogram, fig.caption="Figure 1: Number of Authors per Article"}
+<pre><code>```{r author_histogram, fig.cap="Figure 1: Number of Authors per Article"}
 hist(counts_raw$authorsCount, main="Authors per paper", xlab="# authors")
 ```</code></pre>
 
