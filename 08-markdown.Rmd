@@ -12,7 +12,7 @@ layout: page
 So far, we've written a README.txt file for our project, which is just plain text.
 There's nothing wrong with a plain text README, but we can spice it up a little. 
 In this lesson, we'll learn the basics of Markdown syntax. 
-Markdown is a language that provides some basic text upgrades over just plain text when rendered, including bolding and italicizing text.
+Markdown is a simple, easy-to-read markup language that can be converted to HTML.
 Understanding the basics of writing in Markdown will be helpful for the next few lessons, when we go over the basics of writing reports using R Markdown. 
 
 To make sure we can get started, let's make sure everyone has the rmarkdown package installed:
@@ -21,8 +21,8 @@ To make sure we can get started, let's make sure everyone has the rmarkdown pack
 install.packages('rmarkdown')
 ```
 
-Let's make a new README file for the almetrics project using the markdown language.
-Make sure the working directory for R Studio is set to  the altmetrics folder by going to `Session` -> `Set Working Directory` -> `Choose Directory`, and navigate to the altmetrics directory.
+Let's make a new README file for the almetrics project using the Markdown language.
+If you don't have the altmetrics project open, choose to open the project using the menu we discussed [in the earlier lesson where we created our RStudio project](https://jdblischak.github.io/r-intermediate-altmetrics/03-rstudio.html).
 
 Now let's start our new README document. 
 Go up to `File` -> `New File` -> `Text File`. 
