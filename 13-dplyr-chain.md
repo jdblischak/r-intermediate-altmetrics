@@ -32,7 +32,8 @@ Below we subset to include the Facebook data for all the articles in the publish
 
 
 ~~~{.r}
-facebook_2006 <- research %>% filter(year == 2006) %>% select(contains("facebook"))
+facebook_2006 <- research %>% filter(year == 2006) %>%
+  select(contains("facebook"))
 head(facebook_2006)
 ~~~
 

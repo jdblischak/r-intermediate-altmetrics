@@ -39,7 +39,8 @@ Instead of performing these operations separately, we can combine them into one 
 Below we subset to include the Facebook data for all the articles in the published in 2006.
 
 ```{r}
-facebook_2006 <- research %>% filter(year == 2006) %>% select(contains("facebook"))
+facebook_2006 <- research %>% filter(year == 2006) %>%
+  select(contains("facebook"))
 head(facebook_2006)
 ```
 
@@ -96,7 +97,10 @@ research %>%
 > Using a chain of pipes, output the titles of the three research articles with the largest 2011 citation count.
 
 ```{r include=FALSE}
-research %>% arrange(desc(wosCountThru2011)) %>% select(title) %>% slice(1:3)
+research %>%
+  arrange(desc(wosCountThru2011)) %>%
+  select(title) %>%
+  slice(1:3)
 ```
 
 > ##  Lots of authors {.challenge}
@@ -104,7 +108,8 @@ research %>% arrange(desc(wosCountThru2011)) %>% select(title) %>% slice(1:3)
 > Using a chain of pipes, output the author count, title, journal, and subject tags (`plosSubjectTags`) of the three research articles with the largest number of authors.
 
 ```{r include=FALSE}
-research %>% arrange(desc(authorsCount)) %>%
+research %>%
+  arrange(desc(authorsCount)) %>%
   select(authorsCount, title, journal, plosSubjectTags) %>%
   slice(1:3)
 ```

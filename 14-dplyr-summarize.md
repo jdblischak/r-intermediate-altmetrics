@@ -32,23 +32,18 @@ Let's create a new column that is the number of weeks since the article was publ
 
 
 ~~~{.r}
-research <- mutate(research, weeksSincePublished = daysSincePublished / 7)
+research <- mutate(research,
+                   weeksSincePublished = daysSincePublished / 7)
 ~~~
 
-As before, the dplyr version is quicker to type than the traditional R version.
-
-
-~~~{.r}
-research$weeksSincePublished <- research$daysSincePublished / 7
-~~~
-
-Another benefit is that we can instantly reference the new variables we have created.
+We can instantly reference the new variables we have created.
 For example, we can create a variable `yearsSincePublished` referencing the newly created `weeksSincePublished`.
 
 
 ~~~{.r}
-research <- mutate(research, weeksSincePublished = daysSincePublished / 7,
-                             yearsSincePublished = weeksSincePublished / 52)
+research <- mutate(research,
+                   weeksSincePublished = daysSincePublished / 7,
+                   yearsSincePublished = weeksSincePublished / 52)
 select(research, contains("Since")) %>% slice(1:10)
 ~~~
 
@@ -77,13 +72,13 @@ For example, let's calculate a summary statistic which is the mean number of PLO
 
 
 ~~~{.r}
-summarize(research, plosMean = mean(plosCommentCount))
+summarize(research, plos_mean = mean(plosCommentCount))
 ~~~
 
 
 
 ~~~{.output}
-   plosMean
+  plos_mean
 1 0.2642681
 
 ~~~
@@ -92,13 +87,14 @@ And we can additional statistics, like the standard deviation:
 
 
 ~~~{.r}
-summarize(research, plosMean = mean(plosCommentCount), plosSD = sd(plosCommentCount))
+summarize(research, plos_mean = mean(plosCommentCount),
+          plos_sd = sd(plosCommentCount))
 ~~~
 
 
 
 ~~~{.output}
-   plosMean   plosSD
+  plos_mean  plos_sd
 1 0.2642681 1.230676
 
 ~~~
@@ -111,13 +107,14 @@ Let's calculate these statistics specifically for the articles in PLOS One publi
 
 ~~~{.r}
 research %>% filter(journal == "pone", year == 2007) %>%
-  summarize(plosMean = mean(plosCommentCount), plosSD = sd(plosCommentCount))
+  summarize(plos_mean = mean(plosCommentCount),
+            plos_sd = sd(plosCommentCount))
 ~~~
 
 
 
 ~~~{.output}
-   plosMean   plosSD
+  plos_mean  plos_sd
 1 0.8315704 2.033141
 
 ~~~
@@ -127,32 +124,33 @@ Lastly, since it is often useful to know how many observations, in this case art
 
 ~~~{.r}
 research %>% filter(journal == "pone", year == 2007) %>%
-  summarize(plosMean = mean(plosCommentCount), plosSD = sd(plosCommentCount),
+  summarize(plos_mean = mean(plosCommentCount),
+            plos_sd = sd(plosCommentCount),
             num = n())
 ~~~
 
 
 
 ~~~{.output}
-   plosMean   plosSD  num
+  plos_mean  plos_sd  num
 1 0.8315704 2.033141 1229
 
 ~~~
 
 ### Summarizing per group with `group_by`
 
-The function `summarize` is most powerful when applied to grouping of the data.
+The function `summarize` is most powerful when applied to groupings of the data.
 dplyr makes the code much easier to write, understand, and extend.
 
-Recall the function we wrote earlier to sum a metric for each level of a factor.
+Recall the function we wrote earlier to calculate the mean of a metric for each level of a factor.
 
 
 ~~~{.r}
-sum_metric_per_var <- function(metric, variable) {
+mean_metric_per_var <- function(metric, variable) {
   result <- numeric(length = length(levels(variable)))
   names(result) <- levels(variable)
   for (v in levels(variable)) {
-    result[v] <- sum(metric[variable == v])
+    result[v] <- mean(metric[variable == v])
   }
   return(result)
 }
@@ -162,14 +160,16 @@ Which we ran as the following.
 
 
 ~~~{.r}
-sum_metric_per_var(research$backtweetsCount, research$journal)
+mean_metric_per_var(research$backtweetsCount, research$journal)
 ~~~
 
 
 
 ~~~{.output}
-pbio pcbi pgen pmed pntd pone ppat 
-  77  171  106  200   16 6941   38 
+      pbio       pcbi       pgen       pmed       pntd       pone 
+0.05811321 0.12657291 0.06547251 0.31104199 0.02576490 0.49303878 
+      ppat 
+0.02604524 
 
 ~~~
 
@@ -177,7 +177,8 @@ We can perform the same operation by combining `summarize` with `group_by`
 
 
 ~~~{.r}
-research %>% group_by(journal) %>% summarize(tweetsSum = sum(backtweetsCount))
+research %>% group_by(journal) %>%
+  summarize(tweets_mean = mean(backtweetsCount))
 ~~~
 
 
@@ -185,14 +186,14 @@ research %>% group_by(journal) %>% summarize(tweetsSum = sum(backtweetsCount))
 ~~~{.output}
 Source: local data frame [7 x 2]
 
-  journal tweetsSum
-1    pbio        77
-2    pcbi       171
-3    pgen       106
-4    pmed       200
-5    pntd        16
-6    pone      6941
-7    ppat        38
+  journal tweets_mean
+1    pbio  0.05811321
+2    pcbi  0.12657291
+3    pgen  0.06547251
+4    pmed  0.31104199
+5    pntd  0.02576490
+6    pone  0.49303878
+7    ppat  0.02604524
 
 ~~~
 
@@ -201,7 +202,8 @@ And if we want to further group it by another factor, we can just add it to the 
 
 
 ~~~{.r}
-research %>% group_by(journal, year) %>% summarize(tweetsSum = sum(backtweetsCount))
+research %>% group_by(journal, year) %>%
+  summarize(tweets_mean = mean(backtweetsCount))
 ~~~
 
 
@@ -210,18 +212,18 @@ research %>% group_by(journal, year) %>% summarize(tweetsSum = sum(backtweetsCou
 Source: local data frame [42 x 3]
 Groups: journal
 
-   journal year tweetsSum
-1     pbio 2003         0
-2     pbio 2004         0
-3     pbio 2005         2
-4     pbio 2006         2
-5     pbio 2007         1
-6     pbio 2008         6
-7     pbio 2009         1
-8     pbio 2010        65
-9     pcbi 2005         0
-10    pcbi 2006         0
-..     ...  ...       ...
+   journal year tweets_mean
+1     pbio 2003 0.000000000
+2     pbio 2004 0.000000000
+3     pbio 2005 0.011363636
+4     pbio 2006 0.010869565
+5     pbio 2007 0.004926108
+6     pbio 2008 0.030456853
+7     pbio 2009 0.005524862
+8     pbio 2010 0.367231638
+9     pcbi 2005 0.000000000
+10    pcbi 2006 0.000000000
+..     ...  ...         ...
 
 ~~~
 

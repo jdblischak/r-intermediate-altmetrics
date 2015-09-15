@@ -42,7 +42,8 @@
 <p>The Unix design philosophy is to create small tools that do one thing well and can be chained together to perform more complex operations. In an earlier lesson on the Unix shell, we reviewed how to chain multiple Unix commands together using the pipe operator <code>|</code>. dplyr provides similar functionality in R by utilizing the pipe operator <code>%&gt;%</code>, which is implemented in the <a href="https://cran.r-project.org/web/packages/magrittr/index.html">maggrittr</a> package.</p>
 <h3 id="how-to-use-the-pipe">How to use the pipe <code>%&gt;%</code></h3>
 <p>In the previous lesson, we learned how to subset rows and columns using <code>filter</code> and <code>select</code>, respectively. Instead of performing these operations separately, we can combine them into one expression. Below we subset to include the Facebook data for all the articles in the published in 2006.</p>
-<pre class="sourceCode r"><code class="sourceCode r">facebook_2006 &lt;-<span class="st"> </span>research %&gt;%<span class="st"> </span><span class="kw">filter</span>(year ==<span class="st"> </span><span class="dv">2006</span>) %&gt;%<span class="st"> </span><span class="kw">select</span>(<span class="kw">contains</span>(<span class="st">&quot;facebook&quot;</span>))
+<pre class="sourceCode r"><code class="sourceCode r">facebook_2006 &lt;-<span class="st"> </span>research %&gt;%<span class="st"> </span><span class="kw">filter</span>(year ==<span class="st"> </span><span class="dv">2006</span>) %&gt;%
+<span class="st">  </span><span class="kw">select</span>(<span class="kw">contains</span>(<span class="st">&quot;facebook&quot;</span>))
 <span class="kw">head</span>(facebook_2006)</code></pre>
 <pre class="output"><code>  facebookShareCount facebookLikeCount facebookCommentCount
 1                  0                 0                    0

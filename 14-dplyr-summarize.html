@@ -30,7 +30,7 @@
           <h2 class="subtitle">Summarizing with dplyr</h2>
           <section class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2 id="learning-objectives"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <ul>
@@ -44,13 +44,13 @@
 <p>At this point we have only used dplyr to subset and organize our data. But of course we can also create new data. And the true power of dplyr is revealed when we perform these operations by groups.</p>
 <h3 id="create-new-columns-with-mutate">Create new columns with <code>mutate</code></h3>
 <p>To create a new column in the data frame, we use <code>mutate</code>. Let’s create a new column that is the number of weeks since the article was published.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">research &lt;-<span class="st"> </span><span class="kw">mutate</span>(research, <span class="dt">weeksSincePublished =</span> daysSincePublished /<span class="st"> </span><span class="dv">7</span>)</code></pre></div>
-<p>As before, the dplyr version is quicker to type than the traditional R version.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">research$weeksSincePublished &lt;-<span class="st"> </span>research$daysSincePublished /<span class="st"> </span><span class="dv">7</span></code></pre></div>
-<p>Another benefit is that we can instantly reference the new variables we have created. For example, we can create a variable <code>yearsSincePublished</code> referencing the newly created <code>weeksSincePublished</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">research &lt;-<span class="st"> </span><span class="kw">mutate</span>(research, <span class="dt">weeksSincePublished =</span> daysSincePublished /<span class="st"> </span><span class="dv">7</span>,
-                             <span class="dt">yearsSincePublished =</span> weeksSincePublished /<span class="st"> </span><span class="dv">52</span>)
-<span class="kw">select</span>(research, <span class="kw">contains</span>(<span class="st">&quot;Since&quot;</span>)) %&gt;%<span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span>:<span class="dv">10</span>)</code></pre></div>
+<pre class="sourceCode r"><code class="sourceCode r">research &lt;-<span class="st"> </span><span class="kw">mutate</span>(research,
+                   <span class="dt">weeksSincePublished =</span> daysSincePublished /<span class="st"> </span><span class="dv">7</span>)</code></pre>
+<p>We can instantly reference the new variables we have created. For example, we can create a variable <code>yearsSincePublished</code> referencing the newly created <code>weeksSincePublished</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">research &lt;-<span class="st"> </span><span class="kw">mutate</span>(research,
+                   <span class="dt">weeksSincePublished =</span> daysSincePublished /<span class="st"> </span><span class="dv">7</span>,
+                   <span class="dt">yearsSincePublished =</span> weeksSincePublished /<span class="st"> </span><span class="dv">52</span>)
+<span class="kw">select</span>(research, <span class="kw">contains</span>(<span class="st">&quot;Since&quot;</span>)) %&gt;%<span class="st"> </span><span class="kw">slice</span>(<span class="dv">1</span>:<span class="dv">10</span>)</code></pre>
 <pre class="output"><code>   daysSincePublished weeksSincePublished yearsSincePublished
 1                2628            375.4286            7.219780
 2                2593            370.4286            7.123626
@@ -65,81 +65,88 @@
 </code></pre>
 <h3 id="summarize-data-using-summarize">Summarize data using <code>summarize</code></h3>
 <p>We use <code>mutate</code> when the result has the same number of rows as the original data. When we need to reduce the data to a single summary statistic, we can use <code>summarize</code>. For example, let’s calculate a summary statistic which is the mean number of PLOS comments.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(research, <span class="dt">plosMean =</span> <span class="kw">mean</span>(plosCommentCount))</code></pre></div>
-<pre class="output"><code>   plosMean
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(research, <span class="dt">plos_mean =</span> <span class="kw">mean</span>(plosCommentCount))</code></pre>
+<pre class="output"><code>  plos_mean
 1 0.2642681
 </code></pre>
 <p>And we can additional statistics, like the standard deviation:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(research, <span class="dt">plosMean =</span> <span class="kw">mean</span>(plosCommentCount), <span class="dt">plosSD =</span> <span class="kw">sd</span>(plosCommentCount))</code></pre></div>
-<pre class="output"><code>   plosMean   plosSD
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summarize</span>(research, <span class="dt">plos_mean =</span> <span class="kw">mean</span>(plosCommentCount),
+          <span class="dt">plos_sd =</span> <span class="kw">sd</span>(plosCommentCount))</code></pre>
+<pre class="output"><code>  plos_mean  plos_sd
 1 0.2642681 1.230676
 </code></pre>
 <p>Notice that this creates a second column in the data frame result.</p>
 <p>And of course we can pipe input to <code>summarize</code>. Let’s calculate these statistics specifically for the articles in PLOS One published in 2007.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">research %&gt;%<span class="st"> </span><span class="kw">filter</span>(journal ==<span class="st"> &quot;pone&quot;</span>, year ==<span class="st"> </span><span class="dv">2007</span>) %&gt;%
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">plosMean =</span> <span class="kw">mean</span>(plosCommentCount), <span class="dt">plosSD =</span> <span class="kw">sd</span>(plosCommentCount))</code></pre></div>
-<pre class="output"><code>   plosMean   plosSD
+<pre class="sourceCode r"><code class="sourceCode r">research %&gt;%<span class="st"> </span><span class="kw">filter</span>(journal ==<span class="st"> &quot;pone&quot;</span>, year ==<span class="st"> </span><span class="dv">2007</span>) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">plos_mean =</span> <span class="kw">mean</span>(plosCommentCount),
+            <span class="dt">plos_sd =</span> <span class="kw">sd</span>(plosCommentCount))</code></pre>
+<pre class="output"><code>  plos_mean  plos_sd
 1 0.8315704 2.033141
 </code></pre>
 <p>Lastly, since it is often useful to know how many observations, in this case articles, are present in a given subset, dplyr provides the convenience function <code>n()</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">research %&gt;%<span class="st"> </span><span class="kw">filter</span>(journal ==<span class="st"> &quot;pone&quot;</span>, year ==<span class="st"> </span><span class="dv">2007</span>) %&gt;%
-<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">plosMean =</span> <span class="kw">mean</span>(plosCommentCount), <span class="dt">plosSD =</span> <span class="kw">sd</span>(plosCommentCount),
-            <span class="dt">num =</span> <span class="kw">n</span>())</code></pre></div>
-<pre class="output"><code>   plosMean   plosSD  num
+<pre class="sourceCode r"><code class="sourceCode r">research %&gt;%<span class="st"> </span><span class="kw">filter</span>(journal ==<span class="st"> &quot;pone&quot;</span>, year ==<span class="st"> </span><span class="dv">2007</span>) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">plos_mean =</span> <span class="kw">mean</span>(plosCommentCount),
+            <span class="dt">plos_sd =</span> <span class="kw">sd</span>(plosCommentCount),
+            <span class="dt">num =</span> <span class="kw">n</span>())</code></pre>
+<pre class="output"><code>  plos_mean  plos_sd  num
 1 0.8315704 2.033141 1229
 </code></pre>
 <h3 id="summarizing-per-group-with-group_by">Summarizing per group with <code>group_by</code></h3>
-<p>The function <code>summarize</code> is most powerful when applied to grouping of the data. dplyr makes the code much easier to write, understand, and extend.</p>
-<p>Recall the function we wrote earlier to sum a metric for each level of a factor.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sum_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<p>The function <code>summarize</code> is most powerful when applied to groupings of the data. dplyr makes the code much easier to write, understand, and extend.</p>
+<p>Recall the function we wrote earlier to calculate the mean of a metric for each level of a factor.</p>
+<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
   <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
   for (v in <span class="kw">levels</span>(variable)) {
-    result[v] &lt;-<span class="st"> </span><span class="kw">sum</span>(metric[variable ==<span class="st"> </span>v])
+    result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v])
   }
   <span class="kw">return</span>(result)
-}</code></pre></div>
+}</code></pre>
 <p>Which we ran as the following.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sum_metric_per_var</span>(research$backtweetsCount, research$journal)</code></pre></div>
-<pre class="output"><code>pbio pcbi pgen pmed pntd pone ppat 
-  77  171  106  200   16 6941   38 
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(research$backtweetsCount, research$journal)</code></pre>
+<pre class="output"><code>      pbio       pcbi       pgen       pmed       pntd       pone 
+0.05811321 0.12657291 0.06547251 0.31104199 0.02576490 0.49303878 
+      ppat 
+0.02604524 
 </code></pre>
 <p>We can perform the same operation by combining <code>summarize</code> with <code>group_by</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">research %&gt;%<span class="st"> </span><span class="kw">group_by</span>(journal) %&gt;%<span class="st"> </span><span class="kw">summarize</span>(<span class="dt">tweetsSum =</span> <span class="kw">sum</span>(backtweetsCount))</code></pre></div>
+<pre class="sourceCode r"><code class="sourceCode r">research %&gt;%<span class="st"> </span><span class="kw">group_by</span>(journal) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">tweets_mean =</span> <span class="kw">mean</span>(backtweetsCount))</code></pre>
 <pre class="output"><code>Source: local data frame [7 x 2]
 
-  journal tweetsSum
-1    pbio        77
-2    pcbi       171
-3    pgen       106
-4    pmed       200
-5    pntd        16
-6    pone      6941
-7    ppat        38
+  journal tweets_mean
+1    pbio  0.05811321
+2    pcbi  0.12657291
+3    pgen  0.06547251
+4    pmed  0.31104199
+5    pntd  0.02576490
+6    pone  0.49303878
+7    ppat  0.02604524
 </code></pre>
 <p>Conveniently it returns the result as a data frame. And if we want to further group it by another factor, we can just add it to the <code>group_by</code> function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">research %&gt;%<span class="st"> </span><span class="kw">group_by</span>(journal, year) %&gt;%<span class="st"> </span><span class="kw">summarize</span>(<span class="dt">tweetsSum =</span> <span class="kw">sum</span>(backtweetsCount))</code></pre></div>
+<pre class="sourceCode r"><code class="sourceCode r">research %&gt;%<span class="st"> </span><span class="kw">group_by</span>(journal, year) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">tweets_mean =</span> <span class="kw">mean</span>(backtweetsCount))</code></pre>
 <pre class="output"><code>Source: local data frame [42 x 3]
 Groups: journal
 
-   journal year tweetsSum
-1     pbio 2003         0
-2     pbio 2004         0
-3     pbio 2005         2
-4     pbio 2006         2
-5     pbio 2007         1
-6     pbio 2008         6
-7     pbio 2009         1
-8     pbio 2010        65
-9     pcbi 2005         0
-10    pcbi 2006         0
-..     ...  ...       ...
+   journal year tweets_mean
+1     pbio 2003 0.000000000
+2     pbio 2004 0.000000000
+3     pbio 2005 0.011363636
+4     pbio 2006 0.010869565
+5     pbio 2007 0.004926108
+6     pbio 2008 0.030456853
+7     pbio 2009 0.005524862
+8     pbio 2010 0.367231638
+9     pcbi 2005 0.000000000
+10    pcbi 2006 0.000000000
+..     ...  ...         ...
 </code></pre>
 <p>In the function we wrote to do this manually, we would have had to write another <code>for</code> loop!</p>
 <h3 id="challenges">Challenges</h3>
 <section class="challenge panel panel-success">
 <div class="panel-heading">
-<h2 id="summarizing-the-number-of-tweets-per-journal"><span class="glyphicon glyphicon-pencil"></span>Summarizing the number of tweets per journal</h2>
+<h2><span class="glyphicon glyphicon-pencil"></span>Summarizing the number of tweets per journal</h2>
 </div>
 <div class="panel-body">
 <p>Create a new data frame, <code>tweets_per_journal</code>, that for each journal contains the total number of articles, the mean number of tweets received by articles in that journal, and the standard error of the mean (SEM) of the number of tweets. The SEM is the standard deviation divided by the square root of the sample size (i.e. the number of articles).</p>

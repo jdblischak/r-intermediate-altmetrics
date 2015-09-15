@@ -75,7 +75,8 @@ We can list an arbitrary number of filtering conditions separated by commas.
 For example, how many of these 2006 articles received at least one Facebook comment?
 
 ```{r}
-research_2006_fb <- filter(research, year == 2006, facebookCommentCount > 0)
+research_2006_fb <- filter(research, year == 2006,
+                           facebookCommentCount > 0)
 nrow(research_2006_fb)
 ```
 
@@ -83,7 +84,8 @@ Furthermore, we can create even more complex filters using the `&` ("and") and `
 
 ```{r}
 research_2006_fb_tweet <- filter(research, year == 2006,
-                                 facebookCommentCount > 0 | backtweetsCount > 0)
+                                 facebookCommentCount > 0 |
+                                 backtweetsCount > 0)
 nrow(research_2006_fb_tweet)
 ```
 
@@ -93,8 +95,10 @@ How many of these articles with early social media coverage in 2006 involved inf
 
 ```{r}
 research_2006_fb_tweet_disease <- filter(research, year == 2006,
-                                 facebookCommentCount > 0 | backtweetsCount > 0,
-                                 grepl("Infectious Diseases", plosSubjectTags))
+                                         facebookCommentCount > 0 |
+                                         backtweetsCount > 0,
+                                         grepl("Infectious Diseases",
+                                               plosSubjectTags))
 nrow(research_2006_fb_tweet_disease)
 ```
 
@@ -109,13 +113,14 @@ colnames(research)
 
 Let's create two new new data frames that are a subset of the original `research`.
 `article_info` will contain columns describing the article,
-and `metrics` will contain the count data.
+and `metrics` will contain the altmetrics and citation data.
 First we'll select some columns that specifically describe the article.
 To do this, we simply list each column we want separated by commas.
 
 ```{r}
-article_info <- select(research, doi, pubDate, journal, title, articleType, authorsCount)
-head(article_info)
+article_info <- select(research, doi, pubDate, journal, title,
+                       articleType, authorsCount)
+colnames(article_info)
 ```
 
 Note again that we did not need to use quotation marks when writing the columns names.
@@ -123,8 +128,8 @@ However, since these columns are adjacent in the data frame, we can write the co
 Using a colon, `:`, we can specify the first and last column we want, and all intervening columns will be selected as well.
 
 ```{r}
-article_info <- select(research, doi:journal)
-head(article_info)
+article_info <- select(research, doi:authorsCount)
+colnames(article_info)
 ```
 
 Now we'll select the columns which contain the count data.
@@ -132,11 +137,11 @@ Luckily we do not have to type all of those columns!
 `select` has multiple special functions that help subset columns (see `?select` for all the options).
 One versatile special function is `contains`, which works similar to `grep`.
 It selects a column if it contains the search string provided.
-We can 
+We can use it to select all the columns that contain the pattern "Count".
 
 ```{r}
 metrics <- select(research, contains("Count"))
-head(metrics)
+colnames(metrics)
 ```
 
 > ## Case sensitivity {.callout}
@@ -152,15 +157,16 @@ We can specifically exclude a column by inserting a minus sign before it.
 
 ```{r}
 metrics <- select(research, contains("Count"), -authorsCount)
-head(metrics)
+colnames(metrics)
 ```
 
 The second problem is that we are missing the columns `f1000Factor` and `wikipediaCites`.
 Let's include them by listing them.
 
 ```{r}
-metrics <- select(research, contains("Count"), -authorsCount, f1000Factor, wikipediaCites)
-head(metrics)
+metrics <- select(research, contains("Count"), -authorsCount,
+                  f1000Factor, wikipediaCites)
+colnames(metrics)
 ```
 
 Notice that this also rearranges the columns.
@@ -200,9 +206,11 @@ Therefore we can use dplyr whether our subsetting operations are basic or comple
 research_2009 <- filter(research, year == 2009)
 nrow(research_2009)
 research_2009_fb_tweet <- filter(research, year == 2009,
-                                 facebookCommentCount > 0 | backtweetsCount > 0)
+                                 facebookCommentCount > 0 |
+                                 backtweetsCount > 0)
 nrow(research_2009_fb_tweet)
-research_2009_mendeley <- filter(research, year == 2009, mendeleyReadersCount > 0)
+research_2009_mendeley <- filter(research, year == 2009,
+                                 mendeleyReadersCount > 0)
 nrow(research_2009_mendeley)
 ```
 
@@ -211,10 +219,10 @@ nrow(research_2009_mendeley)
 > One potential use of altmetrics data is recognizing articles that are widely read among the scientific community but are not cited as highly as similarly influential papers.
 > Compile a data set named `low_cite` that contains the journal, title, and year of each research article that meets the following criteria:
 >
-> *  Published in 2008 or prior
-> *  Has more than 1,000 pdf downloads
-> *  Is contained in more than 15 Mendeley libraries
-> *  Has fewer than 10 citations as of 2011
+> *  Published in 2008 or prior (`cite`)
+> *  Has more than 1,000 pdf downloads (`pdfDownloadsCount`)
+> *  Is contained in more than 15 Mendeley libraries (`mendeleyReadersCount`)
+> *  Has fewer than 10 citations as of 2011 (`wosCountThru2011`)
 >
 > How many articles did you find?
 
@@ -222,7 +230,8 @@ nrow(research_2009_mendeley)
 summary(research$pdfDownloadsCount)
 summary(research$mendeleyReadersCount)
 summary(research$wosCountThru2011)
-low_cite <- filter(research, pdfDownloadsCount > 1000, mendeleyReadersCount > 15,
+low_cite <- filter(research, pdfDownloadsCount > 1000,
+                   mendeleyReadersCount > 15,
                    year < 2009, wosCountThru2011 < 10)
 low_cite <- select(low_cite, journal, title, year)
 nrow(low_cite)

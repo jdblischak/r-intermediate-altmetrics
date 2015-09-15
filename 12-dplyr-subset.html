@@ -77,20 +77,24 @@ The following objects are masked from &#39;package:base&#39;:
 <pre class="output"><code>[1] 10
 </code></pre>
 <p>And we aren’t limited to one filtering condition at a time. We can list an arbitrary number of filtering conditions separated by commas. For example, how many of these 2006 articles received at least one Facebook comment?</p>
-<pre class="sourceCode r"><code class="sourceCode r">research_2006_fb &lt;-<span class="st"> </span><span class="kw">filter</span>(research, year ==<span class="st"> </span><span class="dv">2006</span>, facebookCommentCount &gt;<span class="st"> </span><span class="dv">0</span>)
+<pre class="sourceCode r"><code class="sourceCode r">research_2006_fb &lt;-<span class="st"> </span><span class="kw">filter</span>(research, year ==<span class="st"> </span><span class="dv">2006</span>,
+                           facebookCommentCount &gt;<span class="st"> </span><span class="dv">0</span>)
 <span class="kw">nrow</span>(research_2006_fb)</code></pre>
 <pre class="output"><code>[1] 5
 </code></pre>
 <p>Furthermore, we can create even more complex filters using the <code>&amp;</code> (“and”) and <code>|</code> (“or”) operators. How many of the articles in 2006 had at least one Tweet or Facebook comment?</p>
 <pre class="sourceCode r"><code class="sourceCode r">research_2006_fb_tweet &lt;-<span class="st"> </span><span class="kw">filter</span>(research, year ==<span class="st"> </span><span class="dv">2006</span>,
-                                 facebookCommentCount &gt;<span class="st"> </span><span class="dv">0</span> |<span class="st"> </span>backtweetsCount &gt;<span class="st"> </span><span class="dv">0</span>)
+                                 facebookCommentCount &gt;<span class="st"> </span><span class="dv">0</span> |
+<span class="st">                                 </span>backtweetsCount &gt;<span class="st"> </span><span class="dv">0</span>)
 <span class="kw">nrow</span>(research_2006_fb_tweet)</code></pre>
 <pre class="output"><code>[1] 13
 </code></pre>
 <p>As we have seen, <code>filter</code> works with any expression that evaluates to a logical vector. Thus we can use <code>grepl</code> to search for patterns. How many of these articles with early social media coverage in 2006 involved infectious disease research?</p>
 <pre class="sourceCode r"><code class="sourceCode r">research_2006_fb_tweet_disease &lt;-<span class="st"> </span><span class="kw">filter</span>(research, year ==<span class="st"> </span><span class="dv">2006</span>,
-                                 facebookCommentCount &gt;<span class="st"> </span><span class="dv">0</span> |<span class="st"> </span>backtweetsCount &gt;<span class="st"> </span><span class="dv">0</span>,
-                                 <span class="kw">grepl</span>(<span class="st">&quot;Infectious Diseases&quot;</span>, plosSubjectTags))
+                                         facebookCommentCount &gt;<span class="st"> </span><span class="dv">0</span> |
+<span class="st">                                         </span>backtweetsCount &gt;<span class="st"> </span><span class="dv">0</span>,
+                                         <span class="kw">grepl</span>(<span class="st">&quot;Infectious Diseases&quot;</span>,
+                                               plosSubjectTags))
 <span class="kw">nrow</span>(research_2006_fb_tweet_disease)</code></pre>
 <pre class="output"><code>[1] 3
 </code></pre>
@@ -114,87 +118,32 @@ The following objects are masked from &#39;package:base&#39;:
 [29] &quot;year&quot;                      &quot;daysSincePublished&quot;       
 [31] &quot;wosCountThru2010&quot;          &quot;wosCountThru2011&quot;         
 </code></pre>
-<p>Let’s create two new new data frames that are a subset of the original <code>research</code>. <code>article_info</code> will contain columns describing the article, and <code>metrics</code> will contain the count data. First we’ll select some columns that specifically describe the article. To do this, we simply list each column we want separated by commas.</p>
-<pre class="sourceCode r"><code class="sourceCode r">article_info &lt;-<span class="st"> </span><span class="kw">select</span>(research, doi, pubDate, journal, title, articleType, authorsCount)
-<span class="kw">head</span>(article_info)</code></pre>
-<pre class="output"><code>                           doi    pubDate journal
-1 10.1371/journal.pbio.0000001 2003-10-13    pbio
-2 10.1371/journal.pbio.0000002 2003-11-17    pbio
-3 10.1371/journal.pbio.0000005 2003-08-18    pbio
-4 10.1371/journal.pbio.0000006 2003-08-18    pbio
-5 10.1371/journal.pbio.0000010 2003-10-13    pbio
-6 10.1371/journal.pbio.0000012 2003-10-13    pbio
-                                                                                                                title
-1                                         A Functional Analysis of the Spacer of V(D)J Recombination Signal Sequences
-2                                                         Viral Discovery and Sequence Recovery Using DNA Microarrays
-3                             The Transcriptome of the Intraerythrocytic Developmental Cycle of Plasmodium falciparum
-4 DNA Analysis Indicates That Asian Elephants Are Native to Borneo and Are Therefore a High Priority for Conservation
-5                     The Roles of APC and Axin Derived from Experimental and Theoretical Analysis of the Wnt Pathway
-6                   Genome-Wide RNAi of C. elegans Using the Hypersensitive rrf-3 Strain Reveals Novel Gene Functions
-       articleType authorsCount
-1 Research Article            6
-2 Research Article           14
-3 Research Article            6
-4 Research Article           10
-5 Research Article            5
-6 Research Article            9
+<p>Let’s create two new new data frames that are a subset of the original <code>research</code>. <code>article_info</code> will contain columns describing the article, and <code>metrics</code> will contain the altmetrics and citation data. First we’ll select some columns that specifically describe the article. To do this, we simply list each column we want separated by commas.</p>
+<pre class="sourceCode r"><code class="sourceCode r">article_info &lt;-<span class="st"> </span><span class="kw">select</span>(research, doi, pubDate, journal, title,
+                       articleType, authorsCount)
+<span class="kw">colnames</span>(article_info)</code></pre>
+<pre class="output"><code>[1] &quot;doi&quot;          &quot;pubDate&quot;      &quot;journal&quot;      &quot;title&quot;       
+[5] &quot;articleType&quot;  &quot;authorsCount&quot;
 </code></pre>
 <p>Note again that we did not need to use quotation marks when writing the columns names. However, since these columns are adjacent in the data frame, we can write the command in an even more compact way. Using a colon, <code>:</code>, we can specify the first and last column we want, and all intervening columns will be selected as well.</p>
-<pre class="sourceCode r"><code class="sourceCode r">article_info &lt;-<span class="st"> </span><span class="kw">select</span>(research, doi:journal)
-<span class="kw">head</span>(article_info)</code></pre>
-<pre class="output"><code>                           doi    pubDate journal
-1 10.1371/journal.pbio.0000001 2003-10-13    pbio
-2 10.1371/journal.pbio.0000002 2003-11-17    pbio
-3 10.1371/journal.pbio.0000005 2003-08-18    pbio
-4 10.1371/journal.pbio.0000006 2003-08-18    pbio
-5 10.1371/journal.pbio.0000010 2003-10-13    pbio
-6 10.1371/journal.pbio.0000012 2003-10-13    pbio
+<pre class="sourceCode r"><code class="sourceCode r">article_info &lt;-<span class="st"> </span><span class="kw">select</span>(research, doi:authorsCount)
+<span class="kw">colnames</span>(article_info)</code></pre>
+<pre class="output"><code>[1] &quot;doi&quot;          &quot;pubDate&quot;      &quot;journal&quot;      &quot;title&quot;       
+[5] &quot;articleType&quot;  &quot;authorsCount&quot;
 </code></pre>
-<p>Now we’ll select the columns which contain the count data. Luckily we do not have to type all of those columns! <code>select</code> has multiple special functions that help subset columns (see <code>?select</code> for all the options). One versatile special function is <code>contains</code>, which works similar to <code>grep</code>. It selects a column if it contains the search string provided. We can</p>
+<p>Now we’ll select the columns which contain the count data. Luckily we do not have to type all of those columns! <code>select</code> has multiple special functions that help subset columns (see <code>?select</code> for all the options). One versatile special function is <code>contains</code>, which works similar to <code>grep</code>. It selects a column if it contains the search string provided. We can use it to select all the columns that contain the pattern “Count”.</p>
 <pre class="sourceCode r"><code class="sourceCode r">metrics &lt;-<span class="st"> </span><span class="kw">select</span>(research, <span class="kw">contains</span>(<span class="st">&quot;Count&quot;</span>))
-<span class="kw">head</span>(metrics)</code></pre>
-<pre class="output"><code>  authorsCount backtweetsCount deliciousCount facebookShareCount
-1            6               0              0                  0
-2           14               0              0                  0
-3            6               0              0                  1
-4           10               0              0                  0
-5            5               0              0                  0
-6            9               0              0                  0
-  facebookLikeCount facebookCommentCount facebookClickCount
-1                 0                    0                  0
-2                 0                    0                  0
-3                 0                    0                  0
-4                 0                    0                  0
-5                 0                    0                  0
-6                 0                    0                  0
-  mendeleyReadersCount almBlogsCount pdfDownloadsCount xmlDownloadsCount
-1                    4             0               348                71
-2                   17             0              2436                74
-3                   32             0              3254               210
-4                   10             0              1149               100
-5                   24             0              1937               120
-6                    1             0              1731               101
-  htmlDownloadsCount almCiteULikeCount almScopusCount
-1               6131                 0             28
-2              14149                 3            141
-3              21374                 6            509
-4              13789                 0             20
-5              16389                 5            157
-6              15769                 4            252
-  almPubMedCentralCount almCrossRefCount plosCommentCount
-1                     7                5                0
-2                    54               40                0
-3                   157              115                0
-4                     1                8                0
-5                    35               41                0
-6                    83               48                0
-  plosCommentResponsesCount wosCountThru2010 wosCountThru2011
-1                         0               29               33
-2                         0              137              181
-3                         0              354              371
-4                         0               15               18
-5                         0              147              175
-6                         0              238              254
+<span class="kw">colnames</span>(metrics)</code></pre>
+<pre class="output"><code> [1] &quot;authorsCount&quot;              &quot;backtweetsCount&quot;          
+ [3] &quot;deliciousCount&quot;            &quot;facebookShareCount&quot;       
+ [5] &quot;facebookLikeCount&quot;         &quot;facebookCommentCount&quot;     
+ [7] &quot;facebookClickCount&quot;        &quot;mendeleyReadersCount&quot;     
+ [9] &quot;almBlogsCount&quot;             &quot;pdfDownloadsCount&quot;        
+[11] &quot;xmlDownloadsCount&quot;         &quot;htmlDownloadsCount&quot;       
+[13] &quot;almCiteULikeCount&quot;         &quot;almScopusCount&quot;           
+[15] &quot;almPubMedCentralCount&quot;     &quot;almCrossRefCount&quot;         
+[17] &quot;plosCommentCount&quot;          &quot;plosCommentResponsesCount&quot;
+[19] &quot;wosCountThru2010&quot;          &quot;wosCountThru2011&quot;         
 </code></pre>
 <aside class="callout panel panel-info">
 <div class="panel-heading">
@@ -206,95 +155,33 @@ The following objects are masked from &#39;package:base&#39;:
 </aside>
 <p>This is almost what we want. The first problem is that the column <code>authorsCount</code> was included. We can specifically exclude a column by inserting a minus sign before it.</p>
 <pre class="sourceCode r"><code class="sourceCode r">metrics &lt;-<span class="st"> </span><span class="kw">select</span>(research, <span class="kw">contains</span>(<span class="st">&quot;Count&quot;</span>), -authorsCount)
-<span class="kw">head</span>(metrics)</code></pre>
-<pre class="output"><code>  backtweetsCount deliciousCount facebookShareCount facebookLikeCount
-1               0              0                  0                 0
-2               0              0                  0                 0
-3               0              0                  1                 0
-4               0              0                  0                 0
-5               0              0                  0                 0
-6               0              0                  0                 0
-  facebookCommentCount facebookClickCount mendeleyReadersCount
-1                    0                  0                    4
-2                    0                  0                   17
-3                    0                  0                   32
-4                    0                  0                   10
-5                    0                  0                   24
-6                    0                  0                    1
-  almBlogsCount pdfDownloadsCount xmlDownloadsCount htmlDownloadsCount
-1             0               348                71               6131
-2             0              2436                74              14149
-3             0              3254               210              21374
-4             0              1149               100              13789
-5             0              1937               120              16389
-6             0              1731               101              15769
-  almCiteULikeCount almScopusCount almPubMedCentralCount almCrossRefCount
-1                 0             28                     7                5
-2                 3            141                    54               40
-3                 6            509                   157              115
-4                 0             20                     1                8
-5                 5            157                    35               41
-6                 4            252                    83               48
-  plosCommentCount plosCommentResponsesCount wosCountThru2010
-1                0                         0               29
-2                0                         0              137
-3                0                         0              354
-4                0                         0               15
-5                0                         0              147
-6                0                         0              238
-  wosCountThru2011
-1               33
-2              181
-3              371
-4               18
-5              175
-6              254
+<span class="kw">colnames</span>(metrics)</code></pre>
+<pre class="output"><code> [1] &quot;backtweetsCount&quot;           &quot;deliciousCount&quot;           
+ [3] &quot;facebookShareCount&quot;        &quot;facebookLikeCount&quot;        
+ [5] &quot;facebookCommentCount&quot;      &quot;facebookClickCount&quot;       
+ [7] &quot;mendeleyReadersCount&quot;      &quot;almBlogsCount&quot;            
+ [9] &quot;pdfDownloadsCount&quot;         &quot;xmlDownloadsCount&quot;        
+[11] &quot;htmlDownloadsCount&quot;        &quot;almCiteULikeCount&quot;        
+[13] &quot;almScopusCount&quot;            &quot;almPubMedCentralCount&quot;    
+[15] &quot;almCrossRefCount&quot;          &quot;plosCommentCount&quot;         
+[17] &quot;plosCommentResponsesCount&quot; &quot;wosCountThru2010&quot;         
+[19] &quot;wosCountThru2011&quot;         
 </code></pre>
 <p>The second problem is that we are missing the columns <code>f1000Factor</code> and <code>wikipediaCites</code>. Let’s include them by listing them.</p>
-<pre class="sourceCode r"><code class="sourceCode r">metrics &lt;-<span class="st"> </span><span class="kw">select</span>(research, <span class="kw">contains</span>(<span class="st">&quot;Count&quot;</span>), -authorsCount, f1000Factor, wikipediaCites)
-<span class="kw">head</span>(metrics)</code></pre>
-<pre class="output"><code>  backtweetsCount deliciousCount facebookShareCount facebookLikeCount
-1               0              0                  0                 0
-2               0              0                  0                 0
-3               0              0                  1                 0
-4               0              0                  0                 0
-5               0              0                  0                 0
-6               0              0                  0                 0
-  facebookCommentCount facebookClickCount mendeleyReadersCount
-1                    0                  0                    4
-2                    0                  0                   17
-3                    0                  0                   32
-4                    0                  0                   10
-5                    0                  0                   24
-6                    0                  0                    1
-  almBlogsCount pdfDownloadsCount xmlDownloadsCount htmlDownloadsCount
-1             0               348                71               6131
-2             0              2436                74              14149
-3             0              3254               210              21374
-4             0              1149               100              13789
-5             0              1937               120              16389
-6             0              1731               101              15769
-  almCiteULikeCount almScopusCount almPubMedCentralCount almCrossRefCount
-1                 0             28                     7                5
-2                 3            141                    54               40
-3                 6            509                   157              115
-4                 0             20                     1                8
-5                 5            157                    35               41
-6                 4            252                    83               48
-  plosCommentCount plosCommentResponsesCount wosCountThru2010
-1                0                         0               29
-2                0                         0              137
-3                0                         0              354
-4                0                         0               15
-5                0                         0              147
-6                0                         0              238
-  wosCountThru2011 f1000Factor wikipediaCites
-1               33           6              0
-2              181           0              0
-3              371          10              2
-4               18           0              1
-5              175           9              0
-6              254           0              0
+<pre class="sourceCode r"><code class="sourceCode r">metrics &lt;-<span class="st"> </span><span class="kw">select</span>(research, <span class="kw">contains</span>(<span class="st">&quot;Count&quot;</span>), -authorsCount,
+                  f1000Factor, wikipediaCites)
+<span class="kw">colnames</span>(metrics)</code></pre>
+<pre class="output"><code> [1] &quot;backtweetsCount&quot;           &quot;deliciousCount&quot;           
+ [3] &quot;facebookShareCount&quot;        &quot;facebookLikeCount&quot;        
+ [5] &quot;facebookCommentCount&quot;      &quot;facebookClickCount&quot;       
+ [7] &quot;mendeleyReadersCount&quot;      &quot;almBlogsCount&quot;            
+ [9] &quot;pdfDownloadsCount&quot;         &quot;xmlDownloadsCount&quot;        
+[11] &quot;htmlDownloadsCount&quot;        &quot;almCiteULikeCount&quot;        
+[13] &quot;almScopusCount&quot;            &quot;almPubMedCentralCount&quot;    
+[15] &quot;almCrossRefCount&quot;          &quot;plosCommentCount&quot;         
+[17] &quot;plosCommentResponsesCount&quot; &quot;wosCountThru2010&quot;         
+[19] &quot;wosCountThru2011&quot;          &quot;f1000Factor&quot;              
+[21] &quot;wikipediaCites&quot;           
 </code></pre>
 <p>Notice that this also rearranges the columns.</p>
 <h3 id="keeping-it-simple">Keeping it simple</h3>
@@ -324,6 +211,14 @@ The following objects are masked from &#39;package:base&#39;:
 1 10.1371/journal.pbio.0000001 2003-10-13    pbio
 2 10.1371/journal.pbio.0000002 2003-11-17    pbio
 3 10.1371/journal.pbio.0000005 2003-08-18    pbio
+                                                                                    title
+1             A Functional Analysis of the Spacer of V(D)J Recombination Signal Sequences
+2                             Viral Discovery and Sequence Recovery Using DNA Microarrays
+3 The Transcriptome of the Intraerythrocytic Developmental Cycle of Plasmodium falciparum
+       articleType authorsCount
+1 Research Article            6
+2 Research Article           14
+3 Research Article            6
 </code></pre>
 <p>Therefore we can use dplyr whether our subsetting operations are basic or complex.</p>
 <h3 id="challenges">Challenges</h3>
@@ -342,10 +237,10 @@ The following objects are masked from &#39;package:base&#39;:
 <div class="panel-body">
 <p>One potential use of altmetrics data is recognizing articles that are widely read among the scientific community but are not cited as highly as similarly influential papers. Compile a data set named <code>low_cite</code> that contains the journal, title, and year of each research article that meets the following criteria:</p>
 <ul>
-<li>Published in 2008 or prior</li>
-<li>Has more than 1,000 pdf downloads</li>
-<li>Is contained in more than 15 Mendeley libraries</li>
-<li>Has fewer than 10 citations as of 2011</li>
+<li>Published in 2008 or prior (<code>cite</code>)</li>
+<li>Has more than 1,000 pdf downloads (<code>pdfDownloadsCount</code>)</li>
+<li>Is contained in more than 15 Mendeley libraries (<code>mendeleyReadersCount</code>)</li>
+<li>Has fewer than 10 citations as of 2011 (<code>wosCountThru2011</code>)</li>
 </ul>
 <p>How many articles did you find?</p>
 </div>

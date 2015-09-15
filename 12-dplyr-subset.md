@@ -106,7 +106,8 @@ For example, how many of these 2006 articles received at least one Facebook comm
 
 
 ~~~{.r}
-research_2006_fb <- filter(research, year == 2006, facebookCommentCount > 0)
+research_2006_fb <- filter(research, year == 2006,
+                           facebookCommentCount > 0)
 nrow(research_2006_fb)
 ~~~
 
@@ -122,7 +123,8 @@ Furthermore, we can create even more complex filters using the `&` ("and") and `
 
 ~~~{.r}
 research_2006_fb_tweet <- filter(research, year == 2006,
-                                 facebookCommentCount > 0 | backtweetsCount > 0)
+                                 facebookCommentCount > 0 |
+                                 backtweetsCount > 0)
 nrow(research_2006_fb_tweet)
 ~~~
 
@@ -140,8 +142,10 @@ How many of these articles with early social media coverage in 2006 involved inf
 
 ~~~{.r}
 research_2006_fb_tweet_disease <- filter(research, year == 2006,
-                                 facebookCommentCount > 0 | backtweetsCount > 0,
-                                 grepl("Infectious Diseases", plosSubjectTags))
+                                         facebookCommentCount > 0 |
+                                         backtweetsCount > 0,
+                                         grepl("Infectious Diseases",
+                                               plosSubjectTags))
 nrow(research_2006_fb_tweet_disease)
 ~~~
 
@@ -186,40 +190,22 @@ colnames(research)
 
 Let's create two new new data frames that are a subset of the original `research`.
 `article_info` will contain columns describing the article,
-and `metrics` will contain the count data.
+and `metrics` will contain the altmetrics and citation data.
 First we'll select some columns that specifically describe the article.
 To do this, we simply list each column we want separated by commas.
 
 
 ~~~{.r}
-article_info <- select(research, doi, pubDate, journal, title, articleType, authorsCount)
-head(article_info)
+article_info <- select(research, doi, pubDate, journal, title,
+                       articleType, authorsCount)
+colnames(article_info)
 ~~~
 
 
 
 ~~~{.output}
-                           doi    pubDate journal
-1 10.1371/journal.pbio.0000001 2003-10-13    pbio
-2 10.1371/journal.pbio.0000002 2003-11-17    pbio
-3 10.1371/journal.pbio.0000005 2003-08-18    pbio
-4 10.1371/journal.pbio.0000006 2003-08-18    pbio
-5 10.1371/journal.pbio.0000010 2003-10-13    pbio
-6 10.1371/journal.pbio.0000012 2003-10-13    pbio
-                                                                                                                title
-1                                         A Functional Analysis of the Spacer of V(D)J Recombination Signal Sequences
-2                                                         Viral Discovery and Sequence Recovery Using DNA Microarrays
-3                             The Transcriptome of the Intraerythrocytic Developmental Cycle of Plasmodium falciparum
-4 DNA Analysis Indicates That Asian Elephants Are Native to Borneo and Are Therefore a High Priority for Conservation
-5                     The Roles of APC and Axin Derived from Experimental and Theoretical Analysis of the Wnt Pathway
-6                   Genome-Wide RNAi of C. elegans Using the Hypersensitive rrf-3 Strain Reveals Novel Gene Functions
-       articleType authorsCount
-1 Research Article            6
-2 Research Article           14
-3 Research Article            6
-4 Research Article           10
-5 Research Article            5
-6 Research Article            9
+[1] "doi"          "pubDate"      "journal"      "title"       
+[5] "articleType"  "authorsCount"
 
 ~~~
 
@@ -229,20 +215,15 @@ Using a colon, `:`, we can specify the first and last column we want, and all in
 
 
 ~~~{.r}
-article_info <- select(research, doi:journal)
-head(article_info)
+article_info <- select(research, doi:authorsCount)
+colnames(article_info)
 ~~~
 
 
 
 ~~~{.output}
-                           doi    pubDate journal
-1 10.1371/journal.pbio.0000001 2003-10-13    pbio
-2 10.1371/journal.pbio.0000002 2003-11-17    pbio
-3 10.1371/journal.pbio.0000005 2003-08-18    pbio
-4 10.1371/journal.pbio.0000006 2003-08-18    pbio
-5 10.1371/journal.pbio.0000010 2003-10-13    pbio
-6 10.1371/journal.pbio.0000012 2003-10-13    pbio
+[1] "doi"          "pubDate"      "journal"      "title"       
+[5] "articleType"  "authorsCount"
 
 ~~~
 
@@ -251,59 +232,27 @@ Luckily we do not have to type all of those columns!
 `select` has multiple special functions that help subset columns (see `?select` for all the options).
 One versatile special function is `contains`, which works similar to `grep`.
 It selects a column if it contains the search string provided.
-We can 
+We can use it to select all the columns that contain the pattern "Count".
 
 
 ~~~{.r}
 metrics <- select(research, contains("Count"))
-head(metrics)
+colnames(metrics)
 ~~~
 
 
 
 ~~~{.output}
-  authorsCount backtweetsCount deliciousCount facebookShareCount
-1            6               0              0                  0
-2           14               0              0                  0
-3            6               0              0                  1
-4           10               0              0                  0
-5            5               0              0                  0
-6            9               0              0                  0
-  facebookLikeCount facebookCommentCount facebookClickCount
-1                 0                    0                  0
-2                 0                    0                  0
-3                 0                    0                  0
-4                 0                    0                  0
-5                 0                    0                  0
-6                 0                    0                  0
-  mendeleyReadersCount almBlogsCount pdfDownloadsCount xmlDownloadsCount
-1                    4             0               348                71
-2                   17             0              2436                74
-3                   32             0              3254               210
-4                   10             0              1149               100
-5                   24             0              1937               120
-6                    1             0              1731               101
-  htmlDownloadsCount almCiteULikeCount almScopusCount
-1               6131                 0             28
-2              14149                 3            141
-3              21374                 6            509
-4              13789                 0             20
-5              16389                 5            157
-6              15769                 4            252
-  almPubMedCentralCount almCrossRefCount plosCommentCount
-1                     7                5                0
-2                    54               40                0
-3                   157              115                0
-4                     1                8                0
-5                    35               41                0
-6                    83               48                0
-  plosCommentResponsesCount wosCountThru2010 wosCountThru2011
-1                         0               29               33
-2                         0              137              181
-3                         0              354              371
-4                         0               15               18
-5                         0              147              175
-6                         0              238              254
+ [1] "authorsCount"              "backtweetsCount"          
+ [3] "deliciousCount"            "facebookShareCount"       
+ [5] "facebookLikeCount"         "facebookCommentCount"     
+ [7] "facebookClickCount"        "mendeleyReadersCount"     
+ [9] "almBlogsCount"             "pdfDownloadsCount"        
+[11] "xmlDownloadsCount"         "htmlDownloadsCount"       
+[13] "almCiteULikeCount"         "almScopusCount"           
+[15] "almPubMedCentralCount"     "almCrossRefCount"         
+[17] "plosCommentCount"          "plosCommentResponsesCount"
+[19] "wosCountThru2010"          "wosCountThru2011"         
 
 ~~~
 
@@ -321,54 +270,22 @@ We can specifically exclude a column by inserting a minus sign before it.
 
 ~~~{.r}
 metrics <- select(research, contains("Count"), -authorsCount)
-head(metrics)
+colnames(metrics)
 ~~~
 
 
 
 ~~~{.output}
-  backtweetsCount deliciousCount facebookShareCount facebookLikeCount
-1               0              0                  0                 0
-2               0              0                  0                 0
-3               0              0                  1                 0
-4               0              0                  0                 0
-5               0              0                  0                 0
-6               0              0                  0                 0
-  facebookCommentCount facebookClickCount mendeleyReadersCount
-1                    0                  0                    4
-2                    0                  0                   17
-3                    0                  0                   32
-4                    0                  0                   10
-5                    0                  0                   24
-6                    0                  0                    1
-  almBlogsCount pdfDownloadsCount xmlDownloadsCount htmlDownloadsCount
-1             0               348                71               6131
-2             0              2436                74              14149
-3             0              3254               210              21374
-4             0              1149               100              13789
-5             0              1937               120              16389
-6             0              1731               101              15769
-  almCiteULikeCount almScopusCount almPubMedCentralCount almCrossRefCount
-1                 0             28                     7                5
-2                 3            141                    54               40
-3                 6            509                   157              115
-4                 0             20                     1                8
-5                 5            157                    35               41
-6                 4            252                    83               48
-  plosCommentCount plosCommentResponsesCount wosCountThru2010
-1                0                         0               29
-2                0                         0              137
-3                0                         0              354
-4                0                         0               15
-5                0                         0              147
-6                0                         0              238
-  wosCountThru2011
-1               33
-2              181
-3              371
-4               18
-5              175
-6              254
+ [1] "backtweetsCount"           "deliciousCount"           
+ [3] "facebookShareCount"        "facebookLikeCount"        
+ [5] "facebookCommentCount"      "facebookClickCount"       
+ [7] "mendeleyReadersCount"      "almBlogsCount"            
+ [9] "pdfDownloadsCount"         "xmlDownloadsCount"        
+[11] "htmlDownloadsCount"        "almCiteULikeCount"        
+[13] "almScopusCount"            "almPubMedCentralCount"    
+[15] "almCrossRefCount"          "plosCommentCount"         
+[17] "plosCommentResponsesCount" "wosCountThru2010"         
+[19] "wosCountThru2011"         
 
 ~~~
 
@@ -377,55 +294,25 @@ Let's include them by listing them.
 
 
 ~~~{.r}
-metrics <- select(research, contains("Count"), -authorsCount, f1000Factor, wikipediaCites)
-head(metrics)
+metrics <- select(research, contains("Count"), -authorsCount,
+                  f1000Factor, wikipediaCites)
+colnames(metrics)
 ~~~
 
 
 
 ~~~{.output}
-  backtweetsCount deliciousCount facebookShareCount facebookLikeCount
-1               0              0                  0                 0
-2               0              0                  0                 0
-3               0              0                  1                 0
-4               0              0                  0                 0
-5               0              0                  0                 0
-6               0              0                  0                 0
-  facebookCommentCount facebookClickCount mendeleyReadersCount
-1                    0                  0                    4
-2                    0                  0                   17
-3                    0                  0                   32
-4                    0                  0                   10
-5                    0                  0                   24
-6                    0                  0                    1
-  almBlogsCount pdfDownloadsCount xmlDownloadsCount htmlDownloadsCount
-1             0               348                71               6131
-2             0              2436                74              14149
-3             0              3254               210              21374
-4             0              1149               100              13789
-5             0              1937               120              16389
-6             0              1731               101              15769
-  almCiteULikeCount almScopusCount almPubMedCentralCount almCrossRefCount
-1                 0             28                     7                5
-2                 3            141                    54               40
-3                 6            509                   157              115
-4                 0             20                     1                8
-5                 5            157                    35               41
-6                 4            252                    83               48
-  plosCommentCount plosCommentResponsesCount wosCountThru2010
-1                0                         0               29
-2                0                         0              137
-3                0                         0              354
-4                0                         0               15
-5                0                         0              147
-6                0                         0              238
-  wosCountThru2011 f1000Factor wikipediaCites
-1               33           6              0
-2              181           0              0
-3              371          10              2
-4               18           0              1
-5              175           9              0
-6              254           0              0
+ [1] "backtweetsCount"           "deliciousCount"           
+ [3] "facebookShareCount"        "facebookLikeCount"        
+ [5] "facebookCommentCount"      "facebookClickCount"       
+ [7] "mendeleyReadersCount"      "almBlogsCount"            
+ [9] "pdfDownloadsCount"         "xmlDownloadsCount"        
+[11] "htmlDownloadsCount"        "almCiteULikeCount"        
+[13] "almScopusCount"            "almPubMedCentralCount"    
+[15] "almCrossRefCount"          "plosCommentCount"         
+[17] "plosCommentResponsesCount" "wosCountThru2010"         
+[19] "wosCountThru2011"          "f1000Factor"              
+[21] "wikipediaCites"           
 
 ~~~
 
@@ -492,6 +379,14 @@ slice(article_info, 1:3)
 1 10.1371/journal.pbio.0000001 2003-10-13    pbio
 2 10.1371/journal.pbio.0000002 2003-11-17    pbio
 3 10.1371/journal.pbio.0000005 2003-08-18    pbio
+                                                                                    title
+1             A Functional Analysis of the Spacer of V(D)J Recombination Signal Sequences
+2                             Viral Discovery and Sequence Recovery Using DNA Microarrays
+3 The Transcriptome of the Intraerythrocytic Developmental Cycle of Plasmodium falciparum
+       articleType authorsCount
+1 Research Article            6
+2 Research Article           14
+3 Research Article            6
 
 ~~~
 
@@ -512,10 +407,10 @@ Therefore we can use dplyr whether our subsetting operations are basic or comple
 > One potential use of altmetrics data is recognizing articles that are widely read among the scientific community but are not cited as highly as similarly influential papers.
 > Compile a data set named `low_cite` that contains the journal, title, and year of each research article that meets the following criteria:
 >
-> *  Published in 2008 or prior
-> *  Has more than 1,000 pdf downloads
-> *  Is contained in more than 15 Mendeley libraries
-> *  Has fewer than 10 citations as of 2011
+> *  Published in 2008 or prior (`cite`)
+> *  Has more than 1,000 pdf downloads (`pdfDownloadsCount`)
+> *  Is contained in more than 15 Mendeley libraries (`mendeleyReadersCount`)
+> *  Has fewer than 10 citations as of 2011 (`wosCountThru2011`)
 >
 > How many articles did you find?
 
