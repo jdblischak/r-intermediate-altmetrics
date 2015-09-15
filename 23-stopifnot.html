@@ -170,6 +170,17 @@ $year): variable was automatically converted to a factor.
 <li>Assert that <code>sum_stat</code> is not <code>NA</code></li>
 <li>Issue a warning if <code>cols</code> only contains one column (since taking the mean of one column isn’t very useful, the user may have made a mistake)</li>
 </ul>
+<p>After you add your assertion statements, test out the following inputs to <code>calc_sum_stat</code>. Do your assertion statements catch these errors? Should we update the function based on some of these results?</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Empty data frame</span>
+sum_stat &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(<span class="kw">data.frame</span>(), <span class="kw">c</span>(<span class="st">&quot;wosCountThru2010&quot;</span>, <span class="st">&quot;f1000Factor&quot;</span>))
+<span class="co"># Non-character cols</span>
+sum_stat &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="dv">1</span>:<span class="dv">3</span>)
+<span class="co"># Bad column names</span>
+sum_stat &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>))
+<span class="co"># Issue warning since only one column</span>
+sum_stat &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="st">&quot;mendeleyReadersCount&quot;</span>)
+<span class="co"># NA output</span>
+sum_stat &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2010&quot;</span>, <span class="st">&quot;facebookLikeCount&quot;</span>))</code></pre>
 </div>
 </section>
         </div>

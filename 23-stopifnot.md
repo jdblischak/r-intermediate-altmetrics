@@ -263,8 +263,22 @@ $year): variable was automatically converted to a factor.
 > * Assert that `sum_stat` is not `NA`
 > * Issue a warning if `cols` only contains one column (since taking the mean of one column isn't very useful, the user may have made a mistake)
 >
-
-
-
+> After you add your assertion statements, test out the following inputs to `calc_sum_stat`.
+> Do your assertion statements catch these errors?
+> Should we update the function based on some of these results?
+>
+> 
+> ~~~{.r}
+> # Empty data frame
+> sum_stat <- calc_sum_stat(data.frame(), c("wosCountThru2010", "f1000Factor"))
+> # Non-character cols
+> sum_stat <- calc_sum_stat(counts_raw, 1:3)
+> # Bad column names
+> sum_stat <- calc_sum_stat(counts_raw, c("a", "b"))
+> # Issue warning since only one column
+> sum_stat <- calc_sum_stat(counts_raw, "mendeleyReadersCount")
+> # NA output
+> sum_stat <- calc_sum_stat(counts_raw, c("wosCountThru2010", "facebookLikeCount"))
+> ~~~
 
 
