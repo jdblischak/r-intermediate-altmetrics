@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Mapping data to plot aesthetics
-minutes: 30
+title: Mapping data to plot aesthetics
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -51,7 +49,7 @@ p <- ggplot(data = research, mapping = aes(x = pdfDownloadsCount,
 
 We plot by executing the plot object.
 
-```{r}
+```{r eval=FALSE}
 p
 ```
 
@@ -171,7 +169,7 @@ Because the aesthetic color was defined in the base `ggplot` call, `geom_smooth`
 > Set the transparency level (alpha) of the points to 0.5 and color the points according to the journal where the article was published.
 > Make the loess curve red.
 
-```{r include=FALSE}
+```{r include=TRUE}
 p <- ggplot(research, aes(x = daysSincePublished,
                           y = wosCountThru2011)) +
   geom_point(aes(color = journal), alpha = 0.5) +

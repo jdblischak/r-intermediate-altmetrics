@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Customizing plot appearance with themes
-minutes: 30
+title: Customizing plot appearance with themes
+output: word_document
 ---
 
 ```{r, include = FALSE}

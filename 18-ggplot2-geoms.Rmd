@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Creating different plots with geoms
-minutes: 30
+title: Creating different plots with geoms
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -148,7 +146,7 @@ Using multiple geoms, we were able to created a plot with multiple layers to dis
 > Modify the dplyr code above to calculate the mean, SEM, and sample size of the number of article tweets per journal _and_ per year.
 > Use `facet_wrap` to make a separate subplot per year.
 
-```{r include=FALSE}
+```{r include=TRUE}
 tweets_per_journal_year <- research %>%
   group_by(journal, year) %>%
   summarize(num = n(),
@@ -169,7 +167,7 @@ ggplot(tweets_per_journal_year, aes(x = journal, y = mean)) +
 > Using these geoms, visualize the distribution of 2011 citations (`wosCountThru2011`).
 > Compare the raw distribution to log10 and square root transformations.
 
-```{r include=FALSE}
+```{r include=TRUE}
 p <- ggplot(research, aes(x = wosCountThru2011))
 p + geom_histogram()
 p + geom_histogram() + scale_x_log10() 

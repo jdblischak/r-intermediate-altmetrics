@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Creating subplots with facets
-minutes: 10
+title: Creating subplots with facets
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -101,7 +99,7 @@ p + facet_grid(journal~immuno)
 > Add another variable to `research` called `evolution`, which is a logical vector indicating if the article has the PLOS subject tag "Evolutionary Biology".
 > Use `facet_grid` to create subplots based on the variables `evolution` and `immuno`.
 
-```{r include=FALSE}
+```{r include=TRUE}
 research <- mutate(research,
                    evolution = grepl("Evolutionary Biology",
                                      plosSubjectTags))

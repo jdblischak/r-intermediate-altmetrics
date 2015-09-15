@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Summarizing with dplyr
-minutes: 30
+title: Summarizing with dplyr
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -142,7 +140,7 @@ In the function we wrote to do this manually, we would have had to write another
 > The SEM is the standard deviation divided by the square root of the sample size (i.e. the number of articles).
 
 
-```{r include=FALSE}
+```{r include=TRUE}
 tweets_per_journal <- research %>%
   group_by(journal) %>%
   summarize(num = n(),

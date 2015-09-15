@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Controlling the plot scales
-minutes: 30
+title: Controlling the plot scales
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -149,7 +147,7 @@ p + scale_color_brewer(palette = "Dark2", labels = 1:7, name = "title")
 > Update the plot to use a square root transformation instead of log10.
 > Also color the points using the ColorBrewer palette "Accent".
 
-```{r include=FALSE}
+```{r include=TRUE}
 p <- ggplot(research, aes(x = pdfDownloadsCount,
                           y = wosCountThru2011)) +
   geom_point(aes(color = journal)) +

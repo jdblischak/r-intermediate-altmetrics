@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Subsetting with dplyr
-minutes: 30
+title: Subsetting with dplyr
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -202,7 +200,7 @@ Therefore we can use dplyr whether our subsetting operations are basic or comple
 > How many of these had at least one Tweet or Facebook comment?
 > How many were in at least one Mendeley library (`mendeleyReadersCount`)?
 
-```{r include=FALSE}
+```{r include=TRUE}
 research_2009 <- filter(research, year == 2009)
 nrow(research_2009)
 research_2009_fb_tweet <- filter(research, year == 2009,
@@ -226,7 +224,7 @@ nrow(research_2009_mendeley)
 >
 > How many articles did you find?
 
-```{r include=FALSE}
+```{r include=TRUE}
 summary(research$pdfDownloadsCount)
 summary(research$mendeleyReadersCount)
 summary(research$wosCountThru2011)

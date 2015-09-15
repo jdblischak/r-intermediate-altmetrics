@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Chaining commands with dplyr
-minutes: 30
+title: Chaining commands with dplyr
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -96,7 +94,7 @@ research %>%
 >
 > Using a chain of pipes, output the titles of the three research articles with the largest 2011 citation count.
 
-```{r include=FALSE}
+```{r include=TRUE}
 research %>%
   arrange(desc(wosCountThru2011)) %>%
   select(title) %>%
@@ -107,7 +105,7 @@ research %>%
 >
 > Using a chain of pipes, output the author count, title, journal, and subject tags (`plosSubjectTags`) of the three research articles with the largest number of authors.
 
-```{r include=FALSE}
+```{r include=TRUE}
 research %>%
   arrange(desc(authorsCount)) %>%
   select(authorsCount, title, journal, plosSubjectTags) %>%
