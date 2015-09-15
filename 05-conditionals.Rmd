@@ -64,9 +64,11 @@ These logical conditions can be combined into more complex filters using the amp
 
 ```{r}
 # All the articles published in the journal PLOS One AND with more than 7 authors
-dim(counts_raw[counts_raw$journal == "pone" & counts_raw$authorsCount > 7, ])
+dim(counts_raw[counts_raw$journal == "pone" &
+               counts_raw$authorsCount > 7, ])
 # All the articles published in the journal PLOS One OR the journal PLOS Biology
-dim(counts_raw[counts_raw$journal == "pone" | counts_raw$journal == "pbio", ])
+dim(counts_raw[counts_raw$journal == "pone" |
+               counts_raw$journal == "pbio", ])
 ```
 
 When we are checking one vector for multiple possibilities, it is more convenient to use the operator `%in%` instead of creating multiple "or" conditions.
@@ -109,7 +111,7 @@ dim(counts_raw[grepl("Immunology", counts_raw$plosSubjectTags) &
                  counts_raw$journal == "pmed", ])
 ```
 
-> ## `grepl` vs. `grep` {.callout}
+> ## grepl vs. grep {.callout}
 >
 > `grepl` returns a logical vector.
 > Another option is to use `grep`.

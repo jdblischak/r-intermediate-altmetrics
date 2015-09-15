@@ -247,6 +247,7 @@ y-axis is the log of the 2011 citations (use `wosCountThru2011`).
 > Don't forget to add a pseudocount of 1.
 
 ```{r challenge, include=FALSE}
-plot(counts_raw$daysSincePublished / 7, log(counts_raw$wosCountThru2011 + 1))
+plot(counts_raw$daysSincePublished / 7,
+     log(counts_raw$wosCountThru2011 + 1))
 ```
 

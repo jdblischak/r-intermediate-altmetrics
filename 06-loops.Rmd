@@ -143,7 +143,8 @@ Let's create a new summary statistic for the articles that is the average of the
 We subset the data frame by listing the 3 columns we want:
 
 ```{r}
-counts_sub <- counts_raw[, c("wosCountThru2011", "backtweetsCount", "plosCommentCount")]
+counts_sub <- counts_raw[, c("wosCountThru2011", "backtweetsCount",
+                             "plosCommentCount")]
 counts_sub[1:5, ]
 ```
 
@@ -162,7 +163,7 @@ Thus with just one line of code we were able to compute the mean across every ro
 
 ### Challenges
 
-> ## Using `apply` {.challenge}
+> ## Using apply {.challenge}
 >
 > Using `apply` and `sd`, calculate the standard deviation of each row of `counts_sub`.
 > Using `apply` and `max`, calculate the maximum of each column of `counts_sub`.
