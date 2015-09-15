@@ -162,7 +162,7 @@ Instead of simply counting the files that match the search criteria, save them t
 This is done with the redirection operator, `>`.
 
 ~~~ {.bash}
-zcat counts-raw.txt.gz | grep "Evolutionary Biology" | grep "Cell Biology" > evo-cell-bio.txt
+zcat counts-raw.txt.gz | cut -f11 | grep "Evolutionary Biology" | grep "Cell Biology" > evo-cell-bio.txt
 ~~~
 
 ~~~ {.bash}
