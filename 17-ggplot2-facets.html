@@ -39,8 +39,9 @@
 </ul>
 </div>
 </section>
-<p>In our plot of the 2011 citations versus number of PDF downloads, we colored the points according to the journal where the article was published. However this was very informative because the the points overlapped substantially. In order to compare across journals, it would be better to create a separate subplot for each journal.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log10</span>(pdfDownloadsCount +<span class="st"> </span><span class="dv">1</span>), <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
+<p>In our plot of the 2011 citations versus number of PDF downloads, we colored the points according to the journal where the article was published. However this was not very informative because the the points overlapped substantially. In order to compare across journals, it would be better to create a separate subplot for each journal.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log10</span>(pdfDownloadsCount +<span class="st"> </span><span class="dv">1</span>),
+                          <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal)) +
 <span class="st">  </span><span class="kw">geom_smooth</span>() +
 <span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">1000</span>)) +
@@ -77,9 +78,7 @@ geom_smooth: method=&quot;auto&quot; and size of largest group is &gt;=1000, so 
 <p>If we have two categorical variables to facet, we use the function <code>facet_grid</code>. First let’s create a new column that is a logical vector for whether or not the article has the PLOS subject tag “Immunology”.</p>
 <pre class="sourceCode r"><code class="sourceCode r">research &lt;-<span class="st"> </span><span class="kw">mutate</span>(research, <span class="dt">immuno =</span> <span class="kw">grepl</span>(<span class="st">&quot;Immunology&quot;</span>, plosSubjectTags))</code></pre>
 <p>With <code>facet_grid</code>, we first specify the factor for the rows and second the factor for the columns.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">facet_grid</span>(journal~immuno)</code></pre>
-<pre class="error"><code>Error in layout_base(data, cols, drop = drop): At least one layer must contain all variables used for facetting
-</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co">#p + facet_grid(journal~immuno)</span></code></pre>
 <p>This failed because we updated the data frame <code>research</code> with the new column <code>immuno</code>, but we never updated <code>p</code> with the new data. Let’s redefine <code>p</code> and then add use <code>facet_grid</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log10</span>(pdfDownloadsCount +<span class="st"> </span><span class="dv">1</span>), <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal)) +

@@ -43,7 +43,8 @@
 <p>To this point we have mainly focused on a scatter plot created using <code>geom_point</code>. ggplot2 offers many different geoms to create a wide variety of plots. In this lesson, we’ll explore a few more geoms.</p>
 <h3 id="mapping-categorical-discrete-variables">Mapping categorical (discrete) variables</h3>
 <p>The scatter plot we made mapped continuous variables to the x and y axes.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log10</span>(pdfDownloadsCount +<span class="st"> </span><span class="dv">1</span>), <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log10</span>(pdfDownloadsCount +<span class="st"> </span><span class="dv">1</span>),
+                          <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal)) +
 <span class="st">  </span><span class="kw">geom_smooth</span>() +
 <span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">1000</span>)) +
@@ -53,7 +54,8 @@ p</code></pre>
 </code></pre>
 <p><img src="fig/18-ggplot2-geoms-unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;" /></p>
 <p>Of course we can also map categorical (also known as discrete) variables.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p_box &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
+<pre class="sourceCode r"><code class="sourceCode r">p_box &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> journal,
+                              <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
 <span class="st">  </span><span class="kw">geom_boxplot</span>() +
 <span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">1000</span>))
 p_box</code></pre>

@@ -31,7 +31,8 @@ The scatter plot we made mapped continuous variables to the x and y axes.
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1),
+                          y = log10(wosCountThru2011 + 1))) +
   geom_point(aes(color = journal)) +
   geom_smooth() +
   scale_x_continuous(breaks = c(1, 3), labels = c(10, 1000)) +
@@ -52,7 +53,8 @@ Of course we can also map categorical (also known as discrete) variables.
 
 
 ~~~{.r}
-p_box <- ggplot(research, aes(x = journal, y = log10(wosCountThru2011 + 1))) +
+p_box <- ggplot(research, aes(x = journal,
+                              y = log10(wosCountThru2011 + 1))) +
   geom_boxplot() +
   scale_y_continuous(breaks = c(1, 3), labels = c(10, 1000))
 p_box

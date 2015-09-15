@@ -81,7 +81,7 @@ tweets_point
 ### Modifying the legend
 
 In theory, every aspect of the plot can be modified.
-But memorizing how to control every feature of the plot is not worth the effect.
+But memorizing how to control every feature of the plot is not worth the effort.
 It can be quite complex, and you are likely only going to need to make a few changes.
 Because ggplot2 is so popular, there are many online resources explaining how to accomplish specific tasks.
 
@@ -90,7 +90,8 @@ We'll use our plot of 2011 citations versus PDF downloads.
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1),
+                          y = log10(wosCountThru2011 + 1))) +
   geom_point(aes(color = journal)) +
   geom_smooth() +
   scale_x_continuous(breaks = c(1, 3), labels = c(10, 1000)) +

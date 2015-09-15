@@ -45,7 +45,8 @@ We map the number of PDF downloads to the x variable and the number of 2011 cita
 
 
 ~~~{.r}
-p <- ggplot(data = research, mapping = aes(x = pdfDownloadsCount, y = wosCountThru2011))
+p <- ggplot(data = research, mapping = aes(x = pdfDownloadsCount,
+                                           y = wosCountThru2011))
 ~~~
 
 We plot by executing the plot object.
@@ -90,7 +91,8 @@ Also we'll remove the names of the arguments to `ggplot2` so that it is shorter.
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point()
 p
 ~~~
@@ -106,7 +108,8 @@ We'll explore the significance of this later.
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point(aes(color = journal))
 p
 ~~~
@@ -121,7 +124,8 @@ Let's assign the size of the point to the number of authors for the article.
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point(aes(size = authorsCount))
 p
 ~~~
@@ -133,7 +137,8 @@ Let's map alpha to the number of days since publication to emphasize articles th
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point(aes(alpha = daysSincePublished))
 p
 ~~~
@@ -147,7 +152,8 @@ For example, to make all the points the color red we assign the aesthetic withou
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point(color = "red")
 p
 ~~~
@@ -161,7 +167,8 @@ Let's return to coloring the points by the journal and add a new layer, `geom_sm
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point(aes(color = journal)) +
   geom_smooth()
 p
@@ -182,7 +189,8 @@ Now let's change the aesthetics such that mapping the column `journal` to the co
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011,
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011,
                           color = journal)) +
   geom_point() +
   geom_smooth()

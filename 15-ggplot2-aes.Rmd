@@ -45,7 +45,8 @@ The base function is `ggplot`, which we supply the data frame and also the mappi
 We map the number of PDF downloads to the x variable and the number of 2011 citations to the y variable.
 
 ```{r}
-p <- ggplot(data = research, mapping = aes(x = pdfDownloadsCount, y = wosCountThru2011))
+p <- ggplot(data = research, mapping = aes(x = pdfDownloadsCount,
+                                           y = wosCountThru2011))
 ```
 
 We plot by executing the plot object.
@@ -77,7 +78,8 @@ To aid readability, each new command will go on a new line.
 Also we'll remove the names of the arguments to `ggplot2` so that it is shorter.
 
 ```{r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point()
 p
 ```
@@ -90,7 +92,8 @@ We'll define these new aesthetics within the `geom_point` layer.
 We'll explore the significance of this later.
 
 ```{r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point(aes(color = journal))
 p
 ```
@@ -102,7 +105,8 @@ Another aesthetic is the size of the points.
 Let's assign the size of the point to the number of authors for the article.
 
 ```{r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point(aes(size = authorsCount))
 p
 ```
@@ -111,7 +115,8 @@ The aesthetic alpha controls the transparency of the points.
 Let's map alpha to the number of days since publication to emphasize articles that have had more time to accrue citations.
 
 ```{r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point(aes(alpha = daysSincePublished))
 p
 ```
@@ -122,7 +127,8 @@ If the aesthetic is defined outside of `aes`, then it is applied uniformly to al
 For example, to make all the points the color red we assign the aesthetic without `aes`.
 
 ```{r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point(color = "red")
 p
 ```
@@ -133,7 +139,8 @@ The plots we've made have only had one layer.
 Let's return to coloring the points by the journal and add a new layer, `geom_smooth`.
 
 ```{r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point(aes(color = journal)) +
   geom_smooth()
 p
@@ -144,7 +151,8 @@ p
 Now let's change the aesthetics such that mapping the column `journal` to the color of the points is done in the base `ggplot` function call.
 
 ```{r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011,
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011,
                           color = journal)) +
   geom_point() +
   geom_smooth()
@@ -164,7 +172,8 @@ Because the aesthetic color was defined in the base `ggplot` call, `geom_smooth`
 > Make the loess curve red.
 
 ```{r include=FALSE}
-p <- ggplot(research, aes(x = daysSincePublished, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = daysSincePublished,
+                          y = wosCountThru2011)) +
   geom_point(aes(color = journal), alpha = 0.5) +
   geom_smooth(color = "red")
 p

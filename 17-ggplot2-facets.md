@@ -12,7 +12,7 @@ minutes: 10
 > *  Create subplots for each level of a factor using `facet_grid`
 
 In our plot of the 2011 citations versus number of PDF downloads, we colored the points according to the journal where the article was published.
-However this was very informative because the the points overlapped substantially.
+However this was not very informative because the the points overlapped substantially.
 In order to compare across journals, it would be better to create a separate subplot for each journal.
 
 
@@ -25,7 +25,8 @@ In order to compare across journals, it would be better to create a separate sub
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1),
+                          y = log10(wosCountThru2011 + 1))) +
   geom_point(aes(color = journal)) +
   geom_smooth() +
   scale_x_continuous(breaks = c(1, 3), labels = c(10, 1000)) +
@@ -105,14 +106,7 @@ With `facet_grid`, we first specify the factor for the rows and second the facto
 
 
 ~~~{.r}
-p + facet_grid(journal~immuno)
-~~~
-
-
-
-~~~{.error}
-Error in layout_base(data, cols, drop = drop): At least one layer must contain all variables used for facetting
-
+#p + facet_grid(journal~immuno)
 ~~~
 
 This failed because we updated the data frame `research` with the new column `immuno`, but we never updated `p` with the new data.

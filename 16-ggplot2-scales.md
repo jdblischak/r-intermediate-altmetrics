@@ -32,7 +32,8 @@ In the last lesson we plotted the number of PDF downloads versus the 2011 citati
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = pdfDownloadsCount, y = wosCountThru2011)) +
+p <- ggplot(research, aes(x = pdfDownloadsCount,
+                          y = wosCountThru2011)) +
   geom_point(aes(color = journal)) +
   geom_smooth()
 p
@@ -71,7 +72,8 @@ This allows us to add the pseudocount to avoid taking the log of zero.
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1),
+                          y = log10(wosCountThru2011 + 1))) +
   geom_point(aes(color = journal)) +
   geom_smooth()
 p
@@ -94,7 +96,8 @@ To mimic the axes of the earlier plot, we create breaks 1 and 3 which correspond
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1),
+                          y = log10(wosCountThru2011 + 1))) +
   geom_point(aes(color = journal)) +
   geom_smooth() +
   scale_x_continuous(breaks = c(1, 3), labels = c(10, 1000))
@@ -114,7 +117,8 @@ And then we can do the same for the y-axis.
 
 
 ~~~{.r}
-p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1), y = log10(wosCountThru2011 + 1))) +
+p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1),
+                          y = log10(wosCountThru2011 + 1))) +
   geom_point(aes(color = journal)) +
   geom_smooth() +
   scale_x_continuous(breaks = c(1, 3), labels = c(10, 1000)) +
@@ -170,7 +174,9 @@ levels(research$journal)
 
 
 ~~~{.r}
-p + scale_color_manual(values = c("red", "yellow", "orange", "purple", "blue", "yellow", "pink"))
+p + scale_color_manual(values = c("red", "yellow", "orange",
+                                  "purple", "blue", "yellow",
+                                  "pink"))
 ~~~
 
 
@@ -213,12 +219,12 @@ geom_smooth: method="auto" and size of largest group is >=1000, so using gam wit
 
 <img src="fig/16-ggplot2-scales-unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" />
 
-Lastly, if we want the descriptions in the legend to be different than the shorthand we use for the raw data, we can do this via any of the `scale_color_*` functions using the argument `labels`.
-Here we'll just change them to the numbers 1 through 7 to illustrate the point.
+Lastly, if we want the descriptions in the legend to be different than the shorthand we use for the raw data, we can do this via any of the `scale_color_*` functions using the arguments `labels` and `name`.
+Here we'll just change the labels to the numbers 1 through 7 and the title to "title" to illustrate the point.
 
 
 ~~~{.r}
-p + scale_color_brewer(palette = "Dark2", labels = 1:7)
+p + scale_color_brewer(palette = "Dark2", labels = 1:7, name = "title")
 ~~~
 
 

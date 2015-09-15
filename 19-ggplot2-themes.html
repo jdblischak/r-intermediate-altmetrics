@@ -64,9 +64,10 @@ tweets_point</code></pre>
 tweets_point</code></pre>
 <p><img src="fig/19-ggplot2-themes-unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" /></p>
 <h3 id="modifying-the-legend">Modifying the legend</h3>
-<p>In theory, every aspect of the plot can be modified. But memorizing how to control every feature of the plot is not worth the effect. It can be quite complex, and you are likely only going to need to make a few changes. Because ggplot2 is so popular, there are many online resources explaining how to accomplish specific tasks.</p>
+<p>In theory, every aspect of the plot can be modified. But memorizing how to control every feature of the plot is not worth the effort. It can be quite complex, and you are likely only going to need to make a few changes. Because ggplot2 is so popular, there are many online resources explaining how to accomplish specific tasks.</p>
 <p>Here we’ll show some common modifications of the legend. We’ll use our plot of 2011 citations versus PDF downloads.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log10</span>(pdfDownloadsCount +<span class="st"> </span><span class="dv">1</span>), <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log10</span>(pdfDownloadsCount +<span class="st"> </span><span class="dv">1</span>),
+                          <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal)) +
 <span class="st">  </span><span class="kw">geom_smooth</span>() +
 <span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">1000</span>)) +

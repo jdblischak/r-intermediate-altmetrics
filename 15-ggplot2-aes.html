@@ -48,7 +48,8 @@
 <pre class="output"><code>Loading required package: methods
 </code></pre>
 <p>In ggplot2, we map columns of a data frame to features of a plot, which are called aesthetics. The base function is <code>ggplot</code>, which we supply the data frame and also the mappings. We map the number of PDF downloads to the x variable and the number of 2011 citations to the y variable.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> research, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011))</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> research, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount,
+                                           <span class="dt">y =</span> wosCountThru2011))</code></pre>
 <p>We plot by executing the plot object.</p>
 <pre class="sourceCode r"><code class="sourceCode r">p</code></pre>
 <pre class="error"><code>Error: No layers in plot
@@ -60,35 +61,41 @@
 <p>One option is to build up the plot in pieces by reassigning the result to <code>p</code>.</p>
 <pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">geom_point</span>()</code></pre>
 <p>But so that it is clear what commands are creating each plot, we’ll assign <code>p</code> in one long command. To aid readability, each new command will go on a new line. Also we’ll remove the names of the arguments to <code>ggplot2</code> so that it is shorter.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011)) +
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount,
+                          <span class="dt">y =</span> wosCountThru2011)) +
 <span class="st">  </span><span class="kw">geom_point</span>()
 p</code></pre>
 <p><img src="fig/15-ggplot2-aes-unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" /></p>
 <h3 id="exploring-the-different-aesthetics">Exploring the different aesthetics</h3>
 <p>So far this isn’t that interesting because the aesthetics <code>x</code> and <code>y</code> are so straightforward. Let’s map the column <code>journal</code> to some of the different aesthetics to see how powerful this is. We’ll define these new aesthetics within the <code>geom_point</code> layer. We’ll explore the significance of this later.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011)) +
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount,
+                          <span class="dt">y =</span> wosCountThru2011)) +
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal))
 p</code></pre>
 <p><img src="fig/15-ggplot2-aes-unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" /></p>
 <p>Each point was colored according the journal the article was published in. Furthermore, a legend was automatically added to the plot.</p>
 <p>Another aesthetic is the size of the points. Let’s assign the size of the point to the number of authors for the article.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011)) +
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount,
+                          <span class="dt">y =</span> wosCountThru2011)) +
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> authorsCount))
 p</code></pre>
 <p><img src="fig/15-ggplot2-aes-unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" /></p>
 <p>The aesthetic alpha controls the transparency of the points. Let’s map alpha to the number of days since publication to emphasize articles that have had more time to accrue citations.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011)) +
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount,
+                          <span class="dt">y =</span> wosCountThru2011)) +
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">alpha =</span> daysSincePublished))
 p</code></pre>
 <p><img src="fig/15-ggplot2-aes-unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" style="display: block; margin: auto;" /></p>
 <p>Up to this point it may have seemed superfluous to have the <code>aes</code> function call within the other functions. However, this is critical for ggplot2 to know we are mapping the aesthetic to a column of the data frame. If the aesthetic is defined outside of <code>aes</code>, then it is applied uniformly to all the data. For example, to make all the points the color red we assign the aesthetic without <code>aes</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011)) +
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount,
+                          <span class="dt">y =</span> wosCountThru2011)) +
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">color =</span> <span class="st">&quot;red&quot;</span>)
 p</code></pre>
 <p><img src="fig/15-ggplot2-aes-unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" /></p>
 <h3 id="adding-another-layer">Adding another layer</h3>
 <p>The plots we’ve made have only had one layer. Let’s return to coloring the points by the journal and add a new layer, <code>geom_smooth</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011)) +
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount,
+                          <span class="dt">y =</span> wosCountThru2011)) +
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal)) +
 <span class="st">  </span><span class="kw">geom_smooth</span>()
 p</code></pre>
@@ -97,7 +104,8 @@ p</code></pre>
 <p><img src="fig/15-ggplot2-aes-unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display: block; margin: auto;" /></p>
 <p><code>geom_smooth</code> fits a loess curve to the data along with the 95% confidence interval.</p>
 <p>Now let’s change the aesthetics such that mapping the column <code>journal</code> to the color of the points is done in the base <code>ggplot</code> function call.</p>
-<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011,
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount,
+                          <span class="dt">y =</span> wosCountThru2011,
                           <span class="dt">color =</span> journal)) +
 <span class="st">  </span><span class="kw">geom_point</span>() +
 <span class="st">  </span><span class="kw">geom_smooth</span>()
