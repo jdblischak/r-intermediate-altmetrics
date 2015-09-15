@@ -30,7 +30,7 @@
           <h2 class="subtitle">Functions</h2>
           <section class="objectives panel panel-warning">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+<h2 id="learning-objectives"><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
 </div>
 <div class="panel-body">
 <ul>
@@ -44,101 +44,101 @@
 <h3 id="the-parts-of-a-function">The parts of a function</h3>
 <p>We’ve already been using built-in R functions: <code>read.delim</code>, <code>mean</code>, <code>apply</code>, etc. These functions allow us to run the same routine with different inputs.</p>
 <p>Let’s explore <code>read.delim</code> further. All functions in R have two parts: the input arguments and the body. We can see the arguments of a function with the <code>args</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">args</span>(read.delim)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">args</span>(read.delim)</code></pre></div>
 <pre class="output"><code>function (file, header = TRUE, sep = &quot;\t&quot;, quote = &quot;\&quot;&quot;, dec = &quot;.&quot;, 
     fill = TRUE, comment.char = &quot;&quot;, ...) 
 NULL
 </code></pre>
 <p>So when we pass a character vector like <code>&quot;data/counts-raw.txt.gz&quot;</code>, this gets assigned to the argument <code>file</code>. All the other arguments have defaults set, so we do not need to assign them a value.</p>
 <p>After the arguments have been assigned values, then the body of the function is executed. We can view the body of a function with <code>body</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">body</span>(read.delim)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">body</span>(read.delim)</code></pre></div>
 <pre class="output"><code>read.table(file = file, header = header, sep = sep, quote = quote, 
     dec = dec, fill = fill, comment.char = comment.char, ...)
 </code></pre>
 <p><code>read.delim</code> is very short. It just calls another function, <code>read.table</code>, using the input file and the default arguments as the arguments passed to <code>read.table</code>.</p>
 <p>When we define our own functions, we use the syntax below. We list the arguments, separated by commas, within the parentheses. The body follows, contained within curly brackets <code>{}</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">function_name &lt;-<span class="st"> </span>function(args) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">function_name &lt;-<span class="st"> </span>function(args) {
   body
-}</code></pre>
+}</code></pre></div>
 <h3 id="the-principle-of-encapsulation">The principle of encapsulation</h3>
 <p>An important feature of functions is the principle of encapsulation: the environment inside the function is distinct from the environment outside the function. In other words, variables defined inside a function are separate from variables defined outside the function.</p>
 <p>Here’s an small example to demonstrate this idea. The function <code>ex_fun</code> takes two input arguments, <code>x</code> and <code>y</code>. It calculates <code>z</code> and returns its value.</p>
-<pre class="sourceCode r"><code class="sourceCode r">ex_fun &lt;-<span class="st"> </span>function(x, y) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ex_fun &lt;-<span class="st"> </span>function(x, y) {
   z &lt;-<span class="st"> </span>x -<span class="st"> </span>y
   <span class="kw">return</span>(z)
-}</code></pre>
+}</code></pre></div>
 <p>When we run <code>ex_fun</code>, the only thing returned to the global environment is the value that was assigned to <code>z</code>. The variable <code>z</code> itself was only defined in the function environment, and does not exist in the global environment.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ex_fun</span>(<span class="dv">3</span>, <span class="dv">10</span>)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ex_fun</span>(<span class="dv">3</span>, <span class="dv">10</span>)</code></pre></div>
 <pre class="output"><code>[1] -7
 </code></pre>
-<pre class="sourceCode r"><code class="sourceCode r">z</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">z</code></pre></div>
 <pre class="error"><code>Error in eval(expr, envir, enclos): object &#39;z&#39; not found
 </code></pre>
-<section class="challenge panel panel-success">
+<aside class="callout panel panel-info">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pencil"></span>Environments are complicated</h2>
+<h2 id="environments-are-complicated"><span class="glyphicon glyphicon-pushpin"></span>Environments are complicated</h2>
 </div>
 <div class="panel-body">
 <p>The situation presented above is a simplified version of environments which will serve you well if you treat functions as truly encapsulated. In reality, things are more complicated. For example, if inside a function you have a variable that has not been defined in the function, it will actually search the global environment for this variable. To learn the advanced details, see the chapter <a href="http://adv-r.had.co.nz/Environments.html">Environments</a> in Advanced R by Hadley Wickham.</p>
 </div>
-</section>
-<section class="challenge panel panel-success">
+</aside>
+<aside class="callout panel panel-info">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pencil"></span>The return statement</h2>
+<h2 id="the-return-statement"><span class="glyphicon glyphicon-pushpin"></span>The return statement</h2>
 </div>
 <div class="panel-body">
 <p>R provides the shortcut of not needing to use <code>return</code> at the end of the function. Instead, the variable on the last line of the body of the function is returned. This is useful for writing very small functions, but in these lessons we will use <code>return</code> to be more explicit about what is happening.</p>
 </div>
-</section>
+</aside>
 <h3 id="examples">Examples</h3>
 <p>In the last lesson we wrote the following <code>for</code> loop to calculate the mean number of citations for each journal. Let’s generalize this code to a function so that we can perform a similar calculation for any of the metrics across any of the categorical variables.</p>
-<pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(counts_raw$journal)))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(counts_raw$journal)))
 <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(counts_raw$journal)
 for (j in <span class="kw">levels</span>(counts_raw$journal)) {
   result[j] &lt;-<span class="st"> </span><span class="kw">mean</span>(counts_raw$wosCountThru2011[counts_raw$journal ==<span class="st"> </span>j])
 }
-result</code></pre>
+result</code></pre></div>
 <pre class="output"><code>     pbio      pcbi      pgen      pmed      pntd      pone      ppat 
 28.705905 14.219258 22.928208 18.148110  7.348564  8.306972 20.892613 
 </code></pre>
 <p>We’ll name the function <code>mean_metric_per_var</code>, and it will take two input arguments: <code>metric</code> and <code>variable</code>. The outline of our function looks like this.</p>
-<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   <span class="co"># body goes here</span>
-}</code></pre>
+}</code></pre></div>
 <p>Now we can copy paste our loop code into the body of the function. We indent the code by two spaces as a convention to aid readability, it doesn’t actually affect the ability of the code to run (to indent in RStudio you can highlight all the lines and press Ctrl-I).</p>
-<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(counts_raw$journal)))
   <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(counts_raw$journal)
   for (j in <span class="kw">levels</span>(counts_raw$journal)) {
     result[j] &lt;-<span class="st"> </span><span class="kw">mean</span>(counts_raw$wosCountThru2011[counts_raw$journal ==<span class="st"> </span>j])
   }
   result
-}</code></pre>
+}</code></pre></div>
 <p>Now we need to replace the specific data we used, the journal and the 2011 citations, with the names of the function arguments. We’ll also add the <code>return</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
   <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
   for (j in <span class="kw">levels</span>(variable)) {
     result[j] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>j])
   }
   <span class="kw">return</span>(result)
-}</code></pre>
+}</code></pre></div>
 <p>Lastly, instead of naming the looping variable <code>j</code> for “journal”, let’s change it to <code>v</code> for “variable”</p>
-<pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
   result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
   <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
   for (v in <span class="kw">levels</span>(variable)) {
     result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v])
   }
   <span class="kw">return</span>(result)
-}</code></pre>
+}</code></pre></div>
 <p>Now we can run the same analysis we did before:</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$wosCountThru2011, counts_raw$journal)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$wosCountThru2011, counts_raw$journal)</code></pre></div>
 <pre class="output"><code>     pbio      pcbi      pgen      pmed      pntd      pone      ppat 
 28.705905 14.219258 22.928208 18.148110  7.348564  8.306972 20.892613 
 </code></pre>
 <p>Or a new analysis, like the mean number of tweets grouped by the type of article.</p>
-<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$articleType)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount, counts_raw$articleType)</code></pre></div>
 <pre class="output"><code>                            Best Practice 
                                0.00000000 
          Book Review/Science in the Media 
@@ -237,36 +237,36 @@ Historical and Philosophical Perspectives
                                0.03225806 
 </code></pre>
 <p>The other loop we wrote used <code>apply</code> to calculate the mean of multiple metrics for each article, i.e. row, of the data frame.</p>
-<pre class="sourceCode r"><code class="sourceCode r">counts_sub &lt;-<span class="st"> </span>counts_raw[, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2011&quot;</span>, <span class="st">&quot;backtweetsCount&quot;</span>, <span class="st">&quot;plosCommentCount&quot;</span>)]
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">counts_sub &lt;-<span class="st"> </span>counts_raw[, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2011&quot;</span>, <span class="st">&quot;backtweetsCount&quot;</span>, <span class="st">&quot;plosCommentCount&quot;</span>)]
 sum_stat &lt;-<span class="st"> </span><span class="kw">apply</span>(counts_sub, <span class="dv">1</span>, mean)
-<span class="kw">summary</span>(sum_stat)</code></pre>
+<span class="kw">summary</span>(sum_stat)</code></pre></div>
 <pre class="output"><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
   0.0000   0.6667   2.0000   4.7060   5.0000 245.7000 
 </code></pre>
 <p>Let’s generalize this to a function where we can choose which columns to include in the mean summary statistic. We’ll call it <code>calc_sum_stat</code>, and it will take two input arguments: the data frame and a vector of the columns to select. Here’s the outline of the function.</p>
-<pre class="sourceCode r"><code class="sourceCode r">calc_sum_stat &lt;-<span class="st"> </span>function(df, cols) {
-}</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">calc_sum_stat &lt;-<span class="st"> </span>function(df, cols) {
+}</code></pre></div>
 <p>Now we copy-paste our previous code into the body of the function and indent.</p>
-<pre class="sourceCode r"><code class="sourceCode r">calc_sum_stat &lt;-<span class="st"> </span>function(df, cols) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">calc_sum_stat &lt;-<span class="st"> </span>function(df, cols) {
   counts_sub &lt;-<span class="st"> </span>counts_raw[, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2011&quot;</span>, <span class="st">&quot;backtweetsCount&quot;</span>, <span class="st">&quot;plosCommentCount&quot;</span>)]
   sum_stat &lt;-<span class="st"> </span><span class="kw">apply</span>(counts_sub, <span class="dv">1</span>, mean)
   <span class="kw">summary</span>(sum_stat)
-}</code></pre>
+}</code></pre></div>
 <p>Also, replace the specific variable names with the argument names and add <code>return</code>.</p>
-<pre class="sourceCode r"><code class="sourceCode r">calc_sum_stat &lt;-<span class="st"> </span>function(df, cols) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">calc_sum_stat &lt;-<span class="st"> </span>function(df, cols) {
   df_sub &lt;-<span class="st"> </span>df[, cols]
   sum_stat &lt;-<span class="st"> </span><span class="kw">apply</span>(df_sub, <span class="dv">1</span>, mean)
   <span class="kw">return</span>(sum_stat)
-}</code></pre>
+}</code></pre></div>
 <p>Now we can perform the same analysis as before:</p>
-<pre class="sourceCode r"><code class="sourceCode r">sum_stat_1 &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2011&quot;</span>, <span class="st">&quot;backtweetsCount&quot;</span>, <span class="st">&quot;plosCommentCount&quot;</span>))
-<span class="kw">summary</span>(sum_stat_1)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sum_stat_1 &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2011&quot;</span>, <span class="st">&quot;backtweetsCount&quot;</span>, <span class="st">&quot;plosCommentCount&quot;</span>))
+<span class="kw">summary</span>(sum_stat_1)</code></pre></div>
 <pre class="output"><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
   0.0000   0.6667   2.0000   4.7060   5.0000 245.7000 
 </code></pre>
 <p>Or choose different metrics to summarize:</p>
-<pre class="sourceCode r"><code class="sourceCode r">sum_stat_2 &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2010&quot;</span>, <span class="st">&quot;f1000Factor&quot;</span>))
-<span class="kw">summary</span>(sum_stat_2)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">sum_stat_2 &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2010&quot;</span>, <span class="st">&quot;f1000Factor&quot;</span>))
+<span class="kw">summary</span>(sum_stat_2)</code></pre></div>
 <pre class="output"><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   0.000   0.000   1.000   4.116   4.000 315.500 
 </code></pre>
@@ -274,7 +274,7 @@ sum_stat &lt;-<span class="st"> </span><span class="kw">apply</span>(counts_sub,
 <h3 id="challenges">Challenges</h3>
 <section class="challenge panel panel-success">
 <div class="panel-heading">
-<h2><span class="glyphicon glyphicon-pencil"></span>Write your own function</h2>
+<h2 id="write-your-own-function"><span class="glyphicon glyphicon-pencil"></span>Write your own function</h2>
 </div>
 <div class="panel-body">
 <p>Write your own function to calculate the mean called <code>my_mean</code>. It should take one input argument, <code>x</code>, which is a numeric vector. Compare your results with the results from R’s function <code>mean</code>. Do you receive the same answer?</p>
