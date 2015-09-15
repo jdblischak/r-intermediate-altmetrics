@@ -214,7 +214,8 @@ We subset the data frame by listing the 3 columns we want:
 
 
 ~~~{.r}
-counts_sub <- counts_raw[, c("wosCountThru2011", "backtweetsCount", "plosCommentCount")]
+counts_sub <- counts_raw[, c("wosCountThru2011", "backtweetsCount",
+                             "plosCommentCount")]
 counts_sub[1:5, ]
 ~~~
 

@@ -23,10 +23,10 @@ R Markdown is a fairly simple language you can use to generate reports that inco
 There are two steps to generating reports with R Markdown and RStudio:
 
 1) Write your code in R Markdown.
-2) Assemble your report as either HTML or a PDF using the package knitr.  
+2) Assemble your report as either HTML or a PDF using the package rmarkdown.  
 
 
-Next, let's run through the demo for knitr to see some of the options.
+Next, let's run through the demo R Markdown file to see some of the options.
 Go up to `File` -> `New File` -> `R Markdown`. 
 
 ![Set up new R Markdown file](fig/start_rmarkdown_doc.png)
@@ -41,20 +41,20 @@ Click "Ok".
 
 Now we have the example R Markdown file open. 
 The first thing you'll notice at the top is a header which includes your name, the title of the document, the date, and a field called output. 
-This header tells the package knitr some information it might need about your document, including what format you want the final report rendered in. 
+This header tells the package rmarkdown some information it might need about your document, including what format you want the final report rendered in. 
 
 The next thing you'll notice is white space with some text describing an R Markdown document. 
 White space in this document represents text of the report you would like to display. 
 You can put anything here describing your analysis, results, etc. and it will be recognized as text and not R code.
 This white space is interpreted as Markdown language, so you can use any of the tricks we learned in the last lesson to make lists, bold certain words, or create headers in your document. 
 
-In this trial script, you'll see some of these markdown elements are used. For example, the word knit is in bolded (using asterisks), and there are code chucks near the bottom that say echo = FALSE. 
+In this trial script, you'll see how some of these markdown elements are used. For example, the word knit is in bolded (using asterisks), and there are code chucks near the bottom that say echo = FALSE. 
 
 ![Demo R Markdown Document](fig/rmarkdown-demo-doc.png)
 
 In addition to the white space, you'll gray blocks that have ``` at the top and bottom. 
 These are called chunks. 
-If the start of a chunk has {r} at the end of the ticks, knitr will recognize the code in that chunk as R code and run it when rendering the HTML.
+If the start of a chunk has {r} at the end of the ticks, the code will be run and both it and its output will be displayed in the rendered HTML.
 In your R Markdown, the code will look like:
 
 <pre><code>```{r}
@@ -95,7 +95,7 @@ dim(cars)
 You can actually send the code straight from the chunks over to console to be evaluated in two ways. 
 First, you can highlight the code you want to run in the chunk and hit the `Run` button, which is located in the top right corner of the pane.
 Additionally, you can use the keyboard shortcut `ctrl`+`alt`+`c`.
-This allows you to iteratively write an test code in RStudio, rather than having to render the full report everytime you at a bit of new code.
+This allows you to iteratively write an test code in RStudio, rather than having to render the full report everytime you add a bit of new code.
 
 These are the basics of writing R Markdown, but we still need to generate a report. 
 To do this, click on the button on the top bar that says "Knit HMTL". 
@@ -106,13 +106,13 @@ The ending of the file `.Rmd` indicates that this is an R Markdown file.
 ![Knit R Markdown](fig/knit_rmarkdown.png)
 
 When you click on this link, you see in the console that RStudio is running and rendering your R Markdown file. 
-What is actually happening is RStudio is running the function `render`, which is part of the `rmarkdown` package. 
-There are two things the command render does. 
-First, it converts the R Markdown file to a Markdown file using the command `knit` from the `knitr` package (hence why rendering is called knitting).
+What is actually happening is RStudio is running the function `render`, which is part of the rmarkdown package. 
+There are two things the command `render` does. 
+First, it converts the R Markdown file to a Markdown file using the command `knit` from the knitr package (hence why rendering is called knitting).
 The second step is then the Markdown file is converted to the final file format (HTML, PDF, or Word).
 
 The final result is that an HMTL file will pop up where you'll see the report. 
 You can see the header has been rendered, there are code and results chunks displayed, and even plots are shown right in the report. 
 
 Also, if you now look in the altmetrics folder, you'll see an HTML file of the name Rmarkdown_demo.html.
-When knitr is run, it saves the current version of the .Rmd file and the generated HTML file in the directory it is stored in. 
+When `render` is run, it saves the current version of the .Rmd file and the generated HTML file in the directory it is stored in. 
