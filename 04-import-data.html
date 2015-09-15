@@ -47,7 +47,7 @@
 <pre class="sourceCode r"><code class="sourceCode r">counts_raw &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;data/counts-raw.txt.gz&quot;</span>)</code></pre>
 <p>This reads in the data and stores it as a data frame. We confirm that it is present in our R environment using the function <code>ls</code>, named after the Unix function of similar utility.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ls</span>()</code></pre>
-<pre class="output"><code>[1] &quot;counts_raw&quot; &quot;hook_in&quot;    &quot;hook_out&quot;  
+<pre class="output"><code>[1] &quot;counts_raw&quot; &quot;hook_error&quot; &quot;hook_in&quot;    &quot;hook_out&quot;  
 </code></pre>
 <p>For a quick inspection, we use <code>dim</code>, <code>head</code>, and <code>tail</code>. <code>dim</code> tells us the dimensions of the data frame, rows then columns. <code>head</code> and <code>tail</code> work similarly to their Unix counterparts, with the second argument specifying the number of lines to display.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(counts_raw)</code></pre>

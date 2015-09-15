@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Debugging with recover</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Use <code>recover</code> to debug when code crashes</li>
+</ul>
+</div>
+</section>
+<aside class="callout panel panel-info">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pushpin"></span>Turn off RStudio’s debugging features</h2>
+</div>
+<div class="panel-body">
+<p>Just like last lesson, make sure to turn of RStudio’s debugging features. In the menu, go to “Debug”. From the dropdown menu, go to “On Error” and choose the setting “Message Only”.</p>
+</div>
+</aside>
+<p>Recall the function we wrote earlier to calculate a summary statistic which was the average of multiple specified metric columns.</p>
+<pre class="sourceCode r"><code class="sourceCode r">calc_sum_stat &lt;-<span class="st"> </span>function(df, cols) {
+  df_sub &lt;-<span class="st"> </span>df[, cols]
+  sum_stat &lt;-<span class="st"> </span><span class="kw">apply</span>(df_sub, <span class="dv">1</span>, mean)
+  <span class="kw">return</span>(sum_stat)
+}</code></pre>
+<p>Then we could create new metric columns, for example, the average of the multiple Facebook metrics or the average of the download metrics.</p>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw$facebookAverageCount &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">grep</span>(<span class="st">&quot;facebook&quot;</span>,
+                                                                  <span class="kw">colnames</span>(counts_raw),
+                                                                  <span class="dt">value =</span> <span class="ot">TRUE</span>))
+counts_raw$downloadsAverageCount &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">grep</span>(<span class="st">&quot;Downloads&quot;</span>,
+                                                             <span class="kw">colnames</span>(counts_raw),
+                                                             <span class="dt">value =</span> <span class="ot">TRUE</span>))</code></pre>
+<p>Now what do we expect would happen if we passed only one column name to the function? While this would not be very informative since taking the average of one metric would return the same metric. But there is no reason to think it should not work. Let’s try it.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">calc_sum_stat</span>(counts_raw, <span class="st">&quot;mendeleyReadersCount&quot;</span>)</code></pre>
+<pre class="error"><code>Error in apply(df_sub, 1, mean): dim(X) must have a positive length
+</code></pre>
+<p>But in fact this does fail. The error message informs us that the error occurs during the call to <code>apply</code>. While we could use <code>debug</code> or <code>browser</code> to investigate this error, a convenient way to interrogate an error is to use the function <code>recover</code>. Specifically, we can set the option <code>error</code> so that the function <code>recover</code> is called any time there is an error.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">error =</span> recover)</code></pre>
+<p>Now let’s run the function again to produce the error:</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">calc_sum_stat</span>(counts_raw, <span class="st">&quot;mendeleyReadersCount&quot;</span>)</code></pre>
+<pre class="error"><code>Error in apply(df_sub, 1, mean): dim(X) must have a positive length
+</code></pre>
+<pre class="output"><code>
+Enter a frame number, or 0 to exit   
+
+1: calc_sum_stat(counts_raw, &quot;mendeleyReadersCount&quot;)
+2: #3: apply(df_sub, 1, mean)
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Selection:</code></pre>
+<p>Essentially, <code>recover</code> allows us to explore the state of the code right before the error was thrown. It first asks us to select a frame number. The frames refer to the different environments that were created. First we called our function <code>calc_sum_stat</code> which has its own environment. But within that function, <code>apply</code> was called creating an additional environment within the environment of <code>calc_sum_stat</code>. These frames make up the call stack, which we can visualize as the list of sub-functions that have been called.</p>
+<p>Since we know the error occured in <code>apply</code>, we’ll choose frame #2.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Selection:<span class="st"> </span><span class="dv">2</span></code></pre>
+<pre class="output"><code>Called from: calc_sum_stat(counts_raw, &quot;mendeleyReadersCount&quot;)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">2</span>]&gt;<span class="st"> </span></code></pre>
+<p>This brings us to the familiar debugger environment. Since the state is frozen we can’t actually use these commands, but in fact typing one of these commands will bring us back to the frame menu (simply hitting the <code>Enter</code> key works as well). But we can investigate the state of the variables.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span><span class="kw">ls</span>()</code></pre>
+<pre class="output"><code>[1] &quot;dl&quot;     &quot;FUN&quot;    &quot;MARGIN&quot; &quot;X&quot;  </code></pre>
+<p>To remind ourselves of the argument names of <code>apply</code>, we can open the help page.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>?apply</code></pre>
+<p>This opens the Help tab, where we can read that <code>X</code> contains the data passed to <code>apply</code>:</p>
+<blockquote>
+<p>X an array, including a matrix.</p>
+</blockquote>
+<p>Investigating what X is, we see that is a vector instead of a one-column data frame.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span><span class="kw">str</span>(X)</code></pre>
+<pre class="output"><code> int [1:24331] 4 17 0 0 32 10 0 6 2 24 ... </code></pre>
+<p>This is strange. Let’s confirm this is what we passed to <code>apply</code>. Type <code>c</code> to exit the debugger and return to the frame menu.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>c</code></pre>
+<pre class="output"><code>Enter a frame number, or 0 to exit   
+
+1: calc_sum_stat(counts_raw, &quot;mendeleyReadersCount&quot;)
+2: #3: apply(df_sub, 1, mean)</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Selection:</code></pre>
+<p>Now we’ll enter frame #1 to investigate <code>df_sub</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Selection:<span class="st"> </span><span class="dv">1</span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">3</span>]&gt;<span class="st"> </span><span class="kw">str</span>(df_sub)</code></pre>
+<pre class="output"><code> int [1:24331] 4 17 0 0 32 10 0 6 2 24 ... </code></pre>
+<p>So it turns out that the first line that selects the one column returns a vector and not a data frame. This is actually the default behavior of R’s extract function (yes, the brackets are actually a function, try <code>?&quot;[&quot;</code> to learn more).</p>
+<p>Let’s exit <code>recover</code> so that we can return to fix our function.</p>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>c</code></pre>
+<pre class="output"><code>
+Enter a frame number, or 0 to exit   
+
+1: calc_sum_stat(counts_raw, &quot;mendeleyReadersCount&quot;)
+2: #3: apply(df_sub, 1, mean)
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Selection:<span class="st"> </span><span class="dv">0</span></code></pre>
+<p>To fix this problem, we need to pass a third argmument when subsetting a data frame. If we set <code>drop = FALSE</code>, then it will remain a one column data frame instead of being converted to a vector.</p>
+<pre class="sourceCode r"><code class="sourceCode r">calc_sum_stat &lt;-<span class="st"> </span>function(df, cols) {
+  df_sub &lt;-<span class="st"> </span>df[, cols, drop =<span class="st"> </span><span class="ot">FALSE</span>]
+  sum_stat &lt;-<span class="st"> </span><span class="kw">apply</span>(df_sub, <span class="dv">1</span>, mean)
+  <span class="kw">return</span>(sum_stat)
+}</code></pre>
+<p>And now it works.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(<span class="kw">calc_sum_stat</span>(counts_raw, <span class="st">&quot;mendeleyReadersCount&quot;</span>))</code></pre>
+<pre class="output"><code>[1]  4 17  0  0 32 10
+</code></pre>
+<p>Unfortunately you will not always be able to easily solve the problem yourself. But since you know how to isolate a problem using the debugging tools, you are prepared to ask for help on online forums. For best results, follow advice for creating a minimal, reproducible example:</p>
+<ul>
+<li><a href="http://stackoverflow.com/questions/5963269/how-to-make-a-great-r-reproducible-example">Stack Overflow - How to make a great R reproducible example?</a></li>
+<li><a href="http://www.r-bloggers.com/three-tips-for-posting-good-questions-to-r-help-and-stack-overflow/">R-bloggers - Three tips for posting good questions to R-help and Stack Overflow</a></li>
+<li><a href="http://stackoverflow.com/help/mcve">Stack Overflow - How to create a Minimal, Complete, and Verifiable example</a></li>
+</ul>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

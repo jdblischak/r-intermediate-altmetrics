@@ -42,7 +42,7 @@ ls()
 
 
 ~~~{.output}
-[1] "counts_raw" "hook_in"    "hook_out"  
+[1] "counts_raw" "hook_error" "hook_in"    "hook_out"  
 
 ~~~
 

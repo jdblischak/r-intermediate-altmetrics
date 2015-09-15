@@ -45,23 +45,22 @@ and programming with R.
 1.  [Using knitr chunk options](10-knitr-chunks.html)
 1.  [R Markdown output options](11-rmarkdown-output.html)
 
-1.  [dplyr](00-dplyr.html)
-1.  [Subsetting data with dplyr](00-dplyr-subset.html)
-1.  [Using pipes with dplyr](00-dplyr-chain.html)
-1.  [Summarizing data with dplyr](00-dplyr-summarize.html)
+1.  [Subsetting data with dplyr](12-dplyr-subset.html)
+1.  [Using pipes with dplyr](13-dplyr-chain.html)
+1.  [Summarizing data with dplyr](14-dplyr-summarize.html)
 
-1.  [Starting with ggplot2 - Map data to plot aesthetics](00-ggplot2-aes.html)
-1.  [Control data mapping with scales](00-ggplot2-scales.html)
-1.  [ggplot2 facets](00-ggplot2-facets.html)
-1.  [Creating different plots with geoms](00-ggplot2-geoms.html)
-1.  [Customizing plot appearance with themes](00-ggplot2-themes.html)
+1.  [Starting with ggplot2 - Map data to plot aesthetics](15-ggplot2-aes.html)
+1.  [Control data mapping with scales](16-ggplot2-scales.html)
+1.  [Creating subplots with facets](17-ggplot2-facets.html)
+1.  [Creating different plots with geoms](18-ggplot2-geoms.html)
+1.  [Customizing plot appearance with themes](19-ggplot2-themes.html)
 
-1.  [Debugging with debug](00-debug.html)
-1.  [Debugging with browser](00-browser.html)
-1.  [Debugging with recover](00-recover.html)
+1.  [Debugging with debug](20-debug.html)
+1.  [Debugging with browser](21-browser.html)
+1.  [Debugging with recover](22-recover.html)
 
-1.  [Defensive programming with stopifnot]()
-1.  [Defensive programming with testit]()
+1.  [Defensive programming with stopifnot](23-stopifnot.html)
+1.  [Testing with testit](24-testit.html)
 
 ## Other Resources
 

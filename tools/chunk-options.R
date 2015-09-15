@@ -22,5 +22,11 @@ hook_out <- function(x, options) {
                  "\n~~~\n\n")
 }
 
-knit_hooks$set(source = hook_in, output = hook_out, warning = hook_out,
-               error = hook_out, message = hook_out)
+hook_error <- function(x, options) {
+  stringr::str_c("\n\n~~~{.error}\n",
+                 paste0(x, collapse="\n"),
+                 "\n~~~\n\n")
+}
+
+knit_hooks$set(source = hook_in, output = hook_out, warning = hook_error,
+               error = hook_error, message = hook_out)

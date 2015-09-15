@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Mapping data to plot aesthetics</h2>
+          <section class="objectives panel panel-warning">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-certificate"></span>Learning Objectives</h2>
+</div>
+<div class="panel-body">
+<ul>
+<li>Map columns of data frame to plot aesthetics using <code>aes</code></li>
+<li>Add multiple layers to a plot</li>
+<li>An aesthetic should be defined within <code>aes</code> only when it is data-dependent</li>
+<li>Layers inherit the aesthetics defined in the original <code>ggplot</code> function call</li>
+</ul>
+</div>
+</section>
+<p>Plotting with ggplot2 is quite different from the base R plotting functions. While there is a decent learning curve, once you become comfortable with the basics you can easily make complicated visualizations.</p>
+<h3 id="a-first-plot">A first plot</h3>
+<p>We start by loading the package.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;ggplot2&quot;</span>)</code></pre>
+<pre class="output"><code>Loading required package: methods
+</code></pre>
+<p>In ggplot2, we map columns of a data frame to features of a plot, which are called aesthetics. The base function is <code>ggplot</code>, which we supply the data frame and also the mappings. We map the number of PDF downloads to the x variable and the number of 2011 citations to the y variable.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> research, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011))</code></pre>
+<p>We plot by executing the plot object.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p</code></pre>
+<pre class="error"><code>Error: No layers in plot
+</code></pre>
+<p>However we get an error stating there are no layers in the plot. In addition to mapping aesthetics, this is the other big concept in ggplot2. We can build a plot up in layers. To make a simple scatter plot, we add the layer <code>geom_point</code> to the base we had created.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">geom_point</span>()</code></pre>
+<p><img src="fig/15-ggplot2-aes-unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" /></p>
+<p>Using the plus sign <code>+</code> we can combine multiple ggplot2 commands. We did not need to pass any arguments to <code>geom_point</code> because it inherited the aesthetic mappings we set in the original <code>ggplot</code> command.</p>
+<p>One option is to build up the plot in pieces by reassigning the result to <code>p</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span>p +<span class="st"> </span><span class="kw">geom_point</span>()</code></pre>
+<p>But so that it is clear what commands are creating each plot, we’ll assign <code>p</code> in one long command. To aid readability, each new command will go on a new line. Also we’ll remove the names of the arguments to <code>ggplot2</code> so that it is shorter.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011)) +
+<span class="st">  </span><span class="kw">geom_point</span>()
+p</code></pre>
+<p><img src="fig/15-ggplot2-aes-unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" /></p>
+<h3 id="exploring-the-different-aesthetics">Exploring the different aesthetics</h3>
+<p>So far this isn’t that interesting because the aesthetics <code>x</code> and <code>y</code> are so straightforward. Let’s map the column <code>journal</code> to some of the different aesthetics to see how powerful this is. We’ll define these new aesthetics within the <code>geom_point</code> layer. We’ll explore the significance of this later.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011)) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal))
+p</code></pre>
+<p><img src="fig/15-ggplot2-aes-unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" /></p>
+<p>Each point was colored according the journal the article was published in. Furthermore, a legend was automatically added to the plot.</p>
+<p>Another aesthetic is the size of the points. Let’s assign the size of the point to the number of authors for the article.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011)) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">size =</span> authorsCount))
+p</code></pre>
+<p><img src="fig/15-ggplot2-aes-unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" /></p>
+<p>The aesthetic alpha controls the transparency of the points. Let’s map alpha to the number of days since publication to emphasize articles that have had more time to accrue citations.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011)) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">alpha =</span> daysSincePublished))
+p</code></pre>
+<p><img src="fig/15-ggplot2-aes-unnamed-chunk-13-1.png" title="plot of chunk unnamed-chunk-13" alt="plot of chunk unnamed-chunk-13" style="display: block; margin: auto;" /></p>
+<p>Up to this point it may have seemed superfluous to have the <code>aes</code> function call within the other functions. However, this is critical for ggplot2 to know we are mapping the aesthetic to a column of the data frame. If the aesthetic is defined outside of <code>aes</code>, then it is applied uniformly to all the data. For example, to make all the points the color red we assign the aesthetic without <code>aes</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011)) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">color =</span> <span class="st">&quot;red&quot;</span>)
+p</code></pre>
+<p><img src="fig/15-ggplot2-aes-unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" /></p>
+<h3 id="adding-another-layer">Adding another layer</h3>
+<p>The plots we’ve made have only had one layer. Let’s return to coloring the points by the journal and add a new layer, <code>geom_smooth</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011)) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal)) +
+<span class="st">  </span><span class="kw">geom_smooth</span>()
+p</code></pre>
+<pre class="output"><code>geom_smooth: method=&quot;auto&quot; and size of largest group is &gt;=1000, so using gam with formula: y ~ s(x, bs = &quot;cs&quot;). Use &#39;method = x&#39; to change the smoothing method.
+</code></pre>
+<p><img src="fig/15-ggplot2-aes-unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display: block; margin: auto;" /></p>
+<p><code>geom_smooth</code> fits a loess curve to the data along with the 95% confidence interval.</p>
+<p>Now let’s change the aesthetics such that mapping the column <code>journal</code> to the color of the points is done in the base <code>ggplot</code> function call.</p>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount, <span class="dt">y =</span> wosCountThru2011,
+                          <span class="dt">color =</span> journal)) +
+<span class="st">  </span><span class="kw">geom_point</span>() +
+<span class="st">  </span><span class="kw">geom_smooth</span>()
+p</code></pre>
+<pre class="output"><code>geom_smooth: method=&quot;auto&quot; and size of largest group is &gt;=1000, so using gam with formula: y ~ s(x, bs = &quot;cs&quot;). Use &#39;method = x&#39; to change the smoothing method.
+</code></pre>
+<p><img src="fig/15-ggplot2-aes-unnamed-chunk-16-1.png" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" style="display: block; margin: auto;" /></p>
+<p>There are now 7 loess curves, one per journal. Because the aesthetic color was defined in the base <code>ggplot</code> call, <code>geom_smooth</code> inherited this aesthetic mapping and correspondingly split into 7 groups.</p>
+<h3 id="challenge">Challenge</h3>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Citations versus days since publication</h2>
+</div>
+<div class="panel-body">
+<p>Create a scatter plot with <code>daysSincePublished</code> mapped to the x-axis and <code>wosCountThru2011</code> mapped to the y-axis. Include a loess fit of the data. Set the transparency level (alpha) of the points to 0.5 and color the points according to the journal where the article was published. Make the loess curve red.</p>
+</div>
+</section>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

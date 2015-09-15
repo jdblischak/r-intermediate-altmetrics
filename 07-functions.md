@@ -118,7 +118,7 @@ z
 
 
 
-~~~{.output}
+~~~{.error}
 Error in eval(expr, envir, enclos): object 'z' not found
 
 ~~~
