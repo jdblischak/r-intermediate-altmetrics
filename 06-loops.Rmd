@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Loops
-minutes: 30
+title: Loops
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -169,7 +167,7 @@ Thus with just one line of code we were able to compute the mean across every ro
 > Using `apply` and `max`, calculate the maximum of each column of `counts_sub`.  
 
 
-```{r include=FALSE}
+```{r include=TRUE}
 sum_stat_sd <- apply(counts_sub, 1, sd)
 summary(sum_stat_sd)
 apply(counts_sub, 2, max)

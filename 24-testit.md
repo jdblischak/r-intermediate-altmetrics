@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Testing with testit
-minutes: 30
+title: Testing with testit
+output: word_document
 ---
 
 
@@ -352,3 +350,34 @@ assert("NA input does not result in NA output",
 > Do you need to modify the code to pass the test?
 
 
+~~~{.r}
+my_mean <- function(x) {
+  assert("x is numeric", is.numeric(x))
+  if (length(x) == 1) {
+    warning("Input vector had only one element")
+  }
+  result <- sum(x, na.rm = TRUE) / length(x[!is.na(x)])
+  return(result)
+}
+
+assert("Mean is calculated correctly",
+       my_mean(1:3) == 2, my_mean(c(2, 4, 6)) == 4)
+assert("Non-numeric input throws error",
+       has_error(my_mean("hello")))
+~~~
+
+
+
+~~~{.output}
+assertion failed: x is numeric
+
+~~~
+
+
+
+~~~{.r}
+assert("Input vector with one element issues warning",
+       has_warning(my_mean(5)))
+assert("Mean is calculated correctly when given NAs",
+       my_mean(c(2, 4, 6, NA)) == 4)
+~~~

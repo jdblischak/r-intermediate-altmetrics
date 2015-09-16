@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Defensive programming with stopifnot
-minutes: 30
+title: Defensive programming with stopifnot
+output: word_document
 ---
 
 
@@ -282,3 +280,21 @@ $year): variable was automatically converted to a factor.
 > ~~~
 
 
+~~~{.r}
+# Because of the `NA` result, use `na.rm = TRUE` with `mean`
+calc_sum_stat <- function(df, cols) {
+  stopifnot(dim(df) > 0,
+            is.character(cols),
+            cols %in% colnames(df))
+  if (length(cols) == 1) {
+    warning("Only one column specified. Calculating the mean will not change anything.")
+  }
+  df_sub <- df[, cols, drop = FALSE]
+  stopifnot(is.data.frame(df_sub))
+  sum_stat <- apply(df_sub, 1, mean, na.rm = TRUE)
+  stopifnot(!is.na(sum_stat))
+  return(sum_stat)
+}
+# Proper
+sum_stat <- calc_sum_stat(counts_raw, c("wosCountThru2010", "f1000Factor"))
+~~~

@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Functions
-minutes: 30
+title: Functions
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -84,7 +82,7 @@ The variable `z` itself was only defined in the function environment, and does n
 
 ```{r}
 ex_fun(3, 10)
-z
+#z
 ```
 
 > ## Environments are complicated {.callout}
@@ -173,7 +171,9 @@ mean_metric_per_var(counts_raw$wosCountThru2011, counts_raw$journal)
 
 Or a new analysis, like the mean number of tweets grouped by the type of article.
 
-```{r}
+```{r eval=FALSE}
+# Warning: Lots of ouput.
+# Not evaluated for printout
 mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$articleType)
 ```
 
@@ -241,7 +241,7 @@ In later lessons, we will learn how to debug functions when they are not working
 > Compare your results with the results from R's function `mean`.
 > Do you receive the same answer?
 
-```{r include=FALSE}
+```{r include=TRUE}
 my_mean <- function(x) {
   result <- sum(x) / length(x)
   return(result)

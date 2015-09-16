@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Defensive programming with stopifnot
-minutes: 30
+title: Defensive programming with stopifnot
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -205,7 +203,7 @@ mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$year)
 > sum_stat <- calc_sum_stat(counts_raw, c("wosCountThru2010", "facebookLikeCount"))
 > ```
 
-```{r include=FALSE}
+```{r include=TRUE}
 # Because of the `NA` result, use `na.rm = TRUE` with `mean`
 calc_sum_stat <- function(df, cols) {
   stopifnot(dim(df) > 0,

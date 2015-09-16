@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Testing with testit
-minutes: 30
+title: Testing with testit
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -229,7 +227,7 @@ assert("NA input does not result in NA output",
 > * Include an `NA` in the vector where you know the result to see what happens.
 > Do you need to modify the code to pass the test?
 
-```{r include=FALSE}
+```{r include=TRUE}
 my_mean <- function(x) {
   assert("x is numeric", is.numeric(x))
   if (length(x) == 1) {

@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Debugging with browser
-minutes: 30
+title: Debugging with browser
+output: word_document
 ---
 
 ```{r, include = FALSE}

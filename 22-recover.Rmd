@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Debugging with recover
-minutes: 30
+title: Debugging with recover
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -50,7 +48,7 @@ While this would not be very informative since taking the average of one metric 
 But there is no reason to think it should not work.
 Let's try it.
 
-```{r}
+```{r eval=FALSE}
 calc_sum_stat(counts_raw, "mendeleyReadersCount")
 ```
 
@@ -65,7 +63,7 @@ options(error = recover)
 
 Now let's run the function again to produce the error:
 
-```{r}
+```{r eval=FALSE}
 calc_sum_stat(counts_raw, "mendeleyReadersCount")
 ```
 ~~~ {.output}

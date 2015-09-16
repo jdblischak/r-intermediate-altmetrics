@@ -1,8 +1,6 @@
 ---
-layout: page
-title: Intermediate programming with R
-subtitle: Debugging with debug
-minutes: 30
+title: Debugging with debug
+output: word_document
 ---
 
 ```{r, include = FALSE}
@@ -65,7 +63,7 @@ But how do we figure out what exactly is happening?
 Recall that the variables defined inside the function are not available outside in the global environment.
 
 ```{r}
-result
+# result
 ```
 
 One option is to add `print` statements to the function to inform us the values of the variables in inside the function.
@@ -268,7 +266,7 @@ And now the function works as expected.
 > 
 > As an added challenge, can you fix the bug?
 
-```{r include=FALSE}
+```{r include=TRUE}
 # Use droplevels
 mean_metric_per_var <- function(metric, variable) {
   if (!is.factor(variable)) {
