@@ -46,7 +46,7 @@ Additionally, naming your chunks will be beneficial to identify errors in your c
 
 
 Sometimes you may not want to see the code that produced a particular result in your report.
-You can have codeblocks in your R Markdown that are evaluated, but the code is not displayed in the final report by including echo=FALSE after the `{r chunk_name}`.
+You can have codeblocks in your R Markdown that are evaluated, but the code is not displayed in the final report by including `echo=FALSE` after the `{r chunk_name}`.
 
 R Markdown:
 <pre><code>```{r funky_monkey, echo=FALSE}

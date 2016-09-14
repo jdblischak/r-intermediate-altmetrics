@@ -212,5 +212,5 @@ render("filename.Rmd", word_document())
 >
 > 1. In your final report, your collaborators should see your histogram of authors per paper, but not the code that produced the plot.  
 > 2. The figure is hard to see as is, resize it to 8x8 inches
-> 3. Your collaborators are very interested in how popular articles are on Facebook. Add another histogram plotting the number of facebook shares per article, ensuring there are respectible titles and axis labels. Also, just like the previous figure, make sure there is a legend and that the code to generate the figure does not appear in the final report. 
+> 3. Your collaborators are very interested in how popular articles are on Facebook. Add another histogram plotting the number of facebook shares per article (`facebookShareCount`), ensuring there are respectible titles and axis labels. Also, just like the previous figure, make sure there is a legend and that the code to generate the figure does not appear in the final report. 
 > 4. Additionally under the new figure, your collaborators should see a sentence that says "The average number of Facebook shares per paper in the data set is X", where X is the mean number of Facebook shares per paper, as evaluated by inline code. 

@@ -1,0 +1,183 @@
+---
+layout: page
+title: Intermediate programming with R
+subtitle: Instructor's Guide
+---
+
+```{r, include = FALSE}
+source("tools/chunk-options.R")
+```
+
+This page contains the solutions to the exercises.
+Since most of the exercises use `counts-raw.txt.gz`, it is loaded here at the beginning.
+
+```{r}
+counts_raw <- read.delim("data/counts-raw.txt.gz")
+```
+
+## 01 Setting up a project
+
+> ## Create a README file {.challenge}
+>
+> It is a convention to have a file named `README` in a project directory to explain what it contains (both for others and your future self).
+> Use `nano` to create a README file.
+> Include the date and explain that this directory was created for a Software Carpentry workshop.
+
+Looking for an answer something like the following:
+
+~~~{.bash}
+nano README
+cat REAMDME
+~~~
+~~~ {.output}
+This directory contains the files created during the Software Carpentry workshop
+at X University on YYYY-MM-DD.
+~~~
+
+## 02 Inspecting a file
+
+Q: What could be the reason for the discrepancy in the number of articles in our saved file?
+
+A: The first command searches only in column 11. The second looks for matches in any of the columns. Thus the second command returns more lines because these strings are also present in some other columns.
+
+> ## Largest number of Wikipedia cites {.challenge}
+>
+> What is the largest number of Wikipedia cites that an article in this data set has received?
+> Hint: The counts of Wikipedia cites are in column 28.
+
+~~~ {.bash}
+gunzip -c counts-raw.txt.gz | cut -f28 | sort -n | tail -n 1
+~~~
+~~~ {.output}
+17
+~~~
+
+Alternatively:
+
+~~~ {.bash}
+gunzip -c counts-raw.txt.gz | cut -f28 | sort -nr | head -n 1
+~~~
+~~~ {.output}
+17
+~~~
+
+
+> ## Find articles in your field {.challenge}
+>
+> Choose two PLOS subject tags to search for and save these articles to a new file.
+> How many articles are there?
+
+There are lots of possible subject tags to choose from:
+
+~~~ {.bash}
+gunzip -c counts-raw.txt.gz | cut -f11 | sort | uniq | wc -l
+~~~
+~~~ {.output}
+6717
+~~~
+
+As an example:
+
+~~~ {.bash}
+gunzip -c counts-raw.txt.gz | cut -f11 | grep "Cardiovascular Disorders" | grep "Nephrology" | wc -l
+~~~
+~~~ {.output}
+14
+~~~
+
+## 03 Using RStudio
+
+> ## Opening and closing RStudio projects {.challenge}
+>
+> Using the same drop down menu at the top right of RStudio, which you used to create the project, choose to "Close Project".
+> In the Console run `getwd`.
+> It should display your home folder.
+> Furthermore, your home folder should be displayed in the Files pane.
+> Now open the altmetrics project using the same menu and run `getwd` again.
+> The working directory should have changed to the`altmetrics` directory,
+> and the Files pane should display its contents.
+
+If the RStudio Project was setup correctly, this should be straightforward.
+
+## 04 Importing and inspecting data
+
+> ## Citations versus weeks since publication {.challenge}
+> Create a scatter plot where the x-axis is the number of weeks since publication and the 
+y-axis is the log of the 2011 citations (use `wosCountThru2011`).
+> Don't forget to add a pseudocount of 1.
+
+```{r 04-01}
+plot(counts_raw$daysSincePublished / 7,
+     log(counts_raw$wosCountThru2011 + 1))
+```
+
+## 05 Conditional statments
+
+> ## Filtering articles {.challenge}
+>
+> How many articles with the subject tag (`plosSubjectTags`) "Evolutionary Biology" were published in either PLOS One ("pone"), PLOS Biology ("pbio"), or PLOS Medicine ("pmed")?
+
+```{r 05}
+dim(counts_raw[grepl("Evolutionary Biology", counts_raw$plosSubjectTags) &
+                 counts_raw$journal %in% c("pone", "pbio", "pmed"), ])
+```
+
+## 06 Loops
+
+> ## Using apply {.challenge}
+>
+> Using `apply` and `sd`, calculate the standard deviation of each row of `counts_sub`.  
+> Using `apply` and `max`, calculate the maximum of each column of `counts_sub`.  
+
+
+```{r 06}
+counts_sub <- counts_raw[, c("wosCountThru2011", "backtweetsCount",
+                             "plosCommentCount")]
+sum_stat_sd <- apply(counts_sub, 1, sd)
+summary(sum_stat_sd)
+apply(counts_sub, 2, max)
+```
+
+## 07 Functions
+
+> ## Write your own function {.challenge}
+>
+> Write your own function to calculate the mean called `my_mean`.
+> It should take one input argument, `x`, which is a numeric vector.
+> Compare your results with the results from R's function `mean`.
+> Do you receive the same answer?
+
+```{r 07}
+my_mean <- function(x) {
+  result <- sum(x) / length(x)
+  return(result)
+}
+my_mean(1:10)
+mean(1:10)
+```
+
+## 11 R Markdown Output Options
+
+> ## Update analysis file {.challenge}
+>
+> You need to share your initial results with your collaborators, but after showing your report to your boss, they had a few suggestions.
+>
+> 1. In your final report, your collaborators should see your histogram of authors per paper, but not the code that produced the plot.  
+> 2. The figure is hard to see as is, resize it to 8x8 inches
+> 3. Your collaborators are very interested in how popular articles are on Facebook. Add another histogram plotting the number of facebook shares per article (`facebookShareCount`), ensuring there are respectible titles and axis labels. Also, just like the previous figure, make sure there is a legend and that the code to generate the figure does not appear in the final report. 
+> 4. Additionally under the new figure, your collaborators should see a sentence that says "The average number of Facebook shares per paper in the data set is X", where X is the mean number of Facebook shares per paper, as evaluated by inline code. 
+
+1. Use chunk option `echo=FALSE`.
+2. Use chunk options `fig.width=8, fig.height=8`.
+3. 
+
+```{r 11-01, eval=FALSE}
+hist(counts_raw$facebookShareCount, xlab = "Number of shares on Facebook",
+     ylab = "Number of articles", main = "Distributin of Facebook Shares")
+```
+
+4. Use the inline code:
+
+```{r 11-02, eval=FALSE}
+`r mean(counts_raw$facebookShareCount)`
+```

@@ -144,7 +144,8 @@ These logical conditions can be combined into more complex filters using the amp
 
 ~~~{.r}
 # All the articles published in the journal PLOS One AND with more than 7 authors
-dim(counts_raw[counts_raw$journal == "pone" & counts_raw$authorsCount > 7, ])
+dim(counts_raw[counts_raw$journal == "pone" &
+               counts_raw$authorsCount > 7, ])
 ~~~
 
 
@@ -158,7 +159,8 @@ dim(counts_raw[counts_raw$journal == "pone" & counts_raw$authorsCount > 7, ])
 
 ~~~{.r}
 # All the articles published in the journal PLOS One OR the journal PLOS Biology
-dim(counts_raw[counts_raw$journal == "pone" | counts_raw$journal == "pbio", ])
+dim(counts_raw[counts_raw$journal == "pone" |
+               counts_raw$journal == "pbio", ])
 ~~~
 
 
@@ -254,7 +256,7 @@ dim(counts_raw[grepl("Immunology", counts_raw$plosSubjectTags) &
 
 ~~~
 
-> ## `grepl` vs. `grep` {.callout}
+> ## grepl vs. grep {.callout}
 >
 > `grepl` returns a logical vector.
 > Another option is to use `grep`.
@@ -310,6 +312,6 @@ if (!is.character(x)) {
 
 > ## Filtering articles {.challenge}
 >
-> How many articles with the subject tag (`plosSubjectTags`) "Evolutionary Biology" were published in either PLOS One, PLOS Biology, or PLOS Medicine?
+> How many articles with the subject tag (`plosSubjectTags`) "Evolutionary Biology" were published in either PLOS One ("pone"), PLOS Biology ("pbio"), or PLOS Medicine ("pmed")?
 
 

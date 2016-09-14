@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="generator" content="pandoc">
+    <title>Software Carpentry: Intermediate programming with R</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap/bootstrap-theme.css" />
+    <link rel="stylesheet" type="text/css" href="css/swc.css" />
+    <link rel="alternate" type="application/rss+xml" title="Software Carpentry Blog" href="http://software-carpentry.org/feed.xml"/>
+    <meta charset="UTF-8" />
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body class="lesson">
+    <div class="container card">
+      <div class="banner">
+        <a href="http://software-carpentry.org" title="Software Carpentry">
+          <img alt="Software Carpentry banner" src="img/software-carpentry-banner.png" />
+        </a>
+      </div>
+      <article>
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+                    <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
+          <h2 class="subtitle">Instructor’s Guide</h2>
+          <p>This page contains the solutions to the exercises. Since most of the exercises use <code>counts-raw.txt.gz</code>, it is loaded here at the beginning.</p>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;data/counts-raw.txt.gz&quot;</span>)</code></pre>
+<h2 id="setting-up-a-project">01 Setting up a project</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Create a README file</h2>
+</div>
+<div class="panel-body">
+<p>It is a convention to have a file named <code>README</code> in a project directory to explain what it contains (both for others and your future self). Use <code>nano</code> to create a README file. Include the date and explain that this directory was created for a Software Carpentry workshop.</p>
+</div>
+</section>
+<p>Looking for an answer something like the following:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">nano</span> README
+<span class="kw">cat</span> REAMDME</code></pre>
+<pre class="output"><code>This directory contains the files created during the Software Carpentry workshop
+at X University on YYYY-MM-DD.</code></pre>
+<h2 id="inspecting-a-file">02 Inspecting a file</h2>
+<p>Q: What could be the reason for the discrepancy in the number of articles in our saved file?</p>
+<p>A: The first command searches only in column 11. The second looks for matches in any of the columns. Thus the second command returns more lines because these strings are also present in some other columns.</p>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Largest number of Wikipedia cites</h2>
+</div>
+<div class="panel-body">
+<p>What is the largest number of Wikipedia cites that an article in this data set has received? Hint: The counts of Wikipedia cites are in column 28.</p>
+</div>
+</section>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">gunzip</span> -c counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f28 <span class="kw">|</span> <span class="kw">sort</span> -n <span class="kw">|</span> <span class="kw">tail</span> -n 1</code></pre>
+<pre class="output"><code>17</code></pre>
+<p>Alternatively:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">gunzip</span> -c counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f28 <span class="kw">|</span> <span class="kw">sort</span> -nr <span class="kw">|</span> <span class="kw">head</span> -n 1</code></pre>
+<pre class="output"><code>17</code></pre>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Find articles in your field</h2>
+</div>
+<div class="panel-body">
+<p>Choose two PLOS subject tags to search for and save these articles to a new file. How many articles are there?</p>
+</div>
+</section>
+<p>There are lots of possible subject tags to choose from:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">gunzip</span> -c counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f11 <span class="kw">|</span> <span class="kw">sort</span> <span class="kw">|</span> <span class="kw">uniq</span> <span class="kw">|</span> <span class="kw">wc</span> -l</code></pre>
+<pre class="output"><code>6717</code></pre>
+<p>As an example:</p>
+<pre class="sourceCode bash"><code class="sourceCode bash"><span class="kw">gunzip</span> -c counts-raw.txt.gz <span class="kw">|</span> <span class="kw">cut</span> -f11 <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Cardiovascular Disorders&quot;</span> <span class="kw">|</span> <span class="kw">grep</span> <span class="st">&quot;Nephrology&quot;</span> <span class="kw">|</span> <span class="kw">wc</span> -l</code></pre>
+<pre class="output"><code>14</code></pre>
+<h2 id="using-rstudio">03 Using RStudio</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Opening and closing RStudio projects</h2>
+</div>
+<div class="panel-body">
+<p>Using the same drop down menu at the top right of RStudio, which you used to create the project, choose to “Close Project”. In the Console run <code>getwd</code>. It should display your home folder. Furthermore, your home folder should be displayed in the Files pane. Now open the altmetrics project using the same menu and run <code>getwd</code> again. The working directory should have changed to the<code>altmetrics</code> directory, and the Files pane should display its contents.</p>
+</div>
+</section>
+<p>If the RStudio Project was setup correctly, this should be straightforward.</p>
+<h2 id="importing-and-inspecting-data">04 Importing and inspecting data</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Citations versus weeks since publication</h2>
+</div>
+<div class="panel-body">
+<p>Create a scatter plot where the x-axis is the number of weeks since publication and the y-axis is the log of the 2011 citations (use <code>wosCountThru2011</code>). Don’t forget to add a pseudocount of 1.</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(counts_raw$daysSincePublished /<span class="st"> </span><span class="dv">7</span>,
+     <span class="kw">log</span>(counts_raw$wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))</code></pre>
+<p><img src="fig/04-01-1.png" title="plot of chunk 04-01" alt="plot of chunk 04-01" style="display: block; margin: auto;" /></p>
+<h2 id="conditional-statments">05 Conditional statments</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Filtering articles</h2>
+</div>
+<div class="panel-body">
+<p>How many articles with the subject tag (<code>plosSubjectTags</code>) “Evolutionary Biology” were published in either PLOS One (“pone”), PLOS Biology (“pbio”), or PLOS Medicine (“pmed”)?</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dim</span>(counts_raw[<span class="kw">grepl</span>(<span class="st">&quot;Evolutionary Biology&quot;</span>, counts_raw$plosSubjectTags) &amp;
+<span class="st">                 </span>counts_raw$journal %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pone&quot;</span>, <span class="st">&quot;pbio&quot;</span>, <span class="st">&quot;pmed&quot;</span>), ])</code></pre>
+<pre class="output"><code>[1] 2080   32
+</code></pre>
+<h2 id="loops">06 Loops</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Using apply</h2>
+</div>
+<div class="panel-body">
+<p>Using <code>apply</code> and <code>sd</code>, calculate the standard deviation of each row of <code>counts_sub</code>.<br />Using <code>apply</code> and <code>max</code>, calculate the maximum of each column of <code>counts_sub</code>.</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r">counts_sub &lt;-<span class="st"> </span>counts_raw[, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2011&quot;</span>, <span class="st">&quot;backtweetsCount&quot;</span>,
+                             <span class="st">&quot;plosCommentCount&quot;</span>)]
+sum_stat_sd &lt;-<span class="st"> </span><span class="kw">apply</span>(counts_sub, <span class="dv">1</span>, sd)
+<span class="kw">summary</span>(sum_stat_sd)</code></pre>
+<pre class="output"><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   1.155   3.464   7.832   8.563 425.500 
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">apply</span>(counts_sub, <span class="dv">2</span>, max)</code></pre>
+<pre class="output"><code>wosCountThru2011  backtweetsCount plosCommentCount 
+             737              363               49 
+</code></pre>
+<h2 id="functions">07 Functions</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Write your own function</h2>
+</div>
+<div class="panel-body">
+<p>Write your own function to calculate the mean called <code>my_mean</code>. It should take one input argument, <code>x</code>, which is a numeric vector. Compare your results with the results from R’s function <code>mean</code>. Do you receive the same answer?</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r">my_mean &lt;-<span class="st"> </span>function(x) {
+  result &lt;-<span class="st"> </span><span class="kw">sum</span>(x) /<span class="st"> </span><span class="kw">length</span>(x)
+  <span class="kw">return</span>(result)
+}
+<span class="kw">my_mean</span>(<span class="dv">1</span>:<span class="dv">10</span>)</code></pre>
+<pre class="output"><code>[1] 5.5
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean</span>(<span class="dv">1</span>:<span class="dv">10</span>)</code></pre>
+<pre class="output"><code>[1] 5.5
+</code></pre>
+<h2 id="r-markdown-output-options">11 R Markdown Output Options</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Update analysis file</h2>
+</div>
+<div class="panel-body">
+<p>You need to share your initial results with your collaborators, but after showing your report to your boss, they had a few suggestions.</p>
+<ol style="list-style-type: decimal">
+<li>In your final report, your collaborators should see your histogram of authors per paper, but not the code that produced the plot.<br /></li>
+<li>The figure is hard to see as is, resize it to 8x8 inches</li>
+<li>Your collaborators are very interested in how popular articles are on Facebook. Add another histogram plotting the number of facebook shares per article (<code>facebookShareCount</code>), ensuring there are respectible titles and axis labels. Also, just like the previous figure, make sure there is a legend and that the code to generate the figure does not appear in the final report.</li>
+<li>Additionally under the new figure, your collaborators should see a sentence that says “The average number of Facebook shares per paper in the data set is X”, where X is the mean number of Facebook shares per paper, as evaluated by inline code.</li>
+</ol>
+</div>
+</section>
+<ol style="list-style-type: decimal">
+<li>Use chunk option <code>echo=FALSE</code>.</li>
+<li>Use chunk options <code>fig.width=8, fig.height=8</code>.</li>
+<li></li>
+</ol>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(counts_raw$facebookShareCount, <span class="dt">xlab =</span> <span class="st">&quot;Number of shares on Facebook&quot;</span>,
+     <span class="dt">ylab =</span> <span class="st">&quot;Number of articles&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;Distributin of Facebook Shares&quot;</span>)</code></pre>
+<p>4.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="st">`</span><span class="dt">r mean(counts_raw$facebookShareCount)</span><span class="st">`</span></code></pre>
+        </div>
+      </div>
+      </article>
+      <div class="footer">
+        <a class="label swc-blue-bg" href="http://software-carpentry.org">Software Carpentry</a>
+        <a class="label swc-blue-bg" href="https://github.com/jdblischak/r-intermediate-altmetrics">Source</a>
+        <a class="label swc-blue-bg" href="mailto:admin@software-carpentry.org">Contact</a>
+        <a class="label swc-blue-bg" href="LICENSE.html">License</a>
+      </div>
+    </div>
+    <!-- Javascript placed at the end of the document so the pages load faster -->
+    <script src="http://software-carpentry.org/v5/js/jquery-1.9.1.min.js"></script>
+    <script src="css/bootstrap/bootstrap-js/bootstrap.js"></script>
+  </body>
+</html>

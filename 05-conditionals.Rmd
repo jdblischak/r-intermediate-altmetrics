@@ -157,7 +157,7 @@ if (!is.character(x)) {
 
 > ## Filtering articles {.challenge}
 >
-> How many articles with the subject tag (`plosSubjectTags`) "Evolutionary Biology" were published in either PLOS One, PLOS Biology, or PLOS Medicine?
+> How many articles with the subject tag (`plosSubjectTags`) "Evolutionary Biology" were published in either PLOS One ("pone"), PLOS Biology ("pbio"), or PLOS Medicine ("pmed")?
 
 ```{r include=FALSE}
 dim(counts_raw[grepl("Evolutionary Biology", counts_raw$plosSubjectTags) &

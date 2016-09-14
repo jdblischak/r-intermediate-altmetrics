@@ -164,7 +164,7 @@ Thus we need to be careful with factors, because they often appear as if they ar
 > ## stringsAsFactors = FALSE {.callout}
 >
 > By default R converts character vectors into factors in imported data sets.
-> While this can be convenient for columns with categorical varialbes, e.g. `journal`, it is cumbersome for columns where every value is unique, e.g. `title`.
+> While this can be convenient for columns with categorical variables, e.g. `journal`, it is cumbersome for columns where every value is unique, e.g. `title`.
 > Because of this, we recommend setting the options `stringsAsFactors = FALSE` whenever using `read.table`, `read.delim`, or a similar function.
 > We keep the default here because we wish to demonstrate some of the potential problems with factors.
 
