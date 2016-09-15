@@ -28,8 +28,11 @@
         <div class="col-md-10 col-md-offset-1">
                     <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
           <h2 class="subtitle">Instructor’s Guide</h2>
-          <p>This page contains the solutions to the exercises. Since most of the exercises use <code>counts-raw.txt.gz</code>, it is loaded here at the beginning.</p>
-<pre class="sourceCode r"><code class="sourceCode r">counts_raw &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;data/counts-raw.txt.gz&quot;</span>)</code></pre>
+          <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;dplyr&quot;</span>)
+<span class="kw">library</span>(<span class="st">&quot;ggplot2&quot;</span>)</code></pre>
+<p>This page contains the solutions to the exercises. Since most of the exercises use <code>counts-raw.txt.gz</code>, it is loaded here at the beginning. Also, many use <code>research</code>, the subset of the data that only includes research articles.</p>
+<pre class="sourceCode r"><code class="sourceCode r">counts_raw &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;data/counts-raw.txt.gz&quot;</span>)
+research &lt;-<span class="st"> </span><span class="kw">filter</span>(counts_raw, articleType ==<span class="st"> &quot;Research Article&quot;</span>)</code></pre>
 <h2 id="setting-up-a-project">01 Setting up a project</h2>
 <section class="challenge panel panel-success">
 <div class="panel-heading">
@@ -95,7 +98,7 @@ at X University on YYYY-MM-DD.</code></pre>
 </section>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(counts_raw$daysSincePublished /<span class="st"> </span><span class="dv">7</span>,
      <span class="kw">log</span>(counts_raw$wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))</code></pre>
-<p><img src="fig/04-01-1.png" title="plot of chunk 04-01" alt="plot of chunk 04-01" style="display: block; margin: auto;" /></p>
+<p><img src="fig/instructors-04-01-1.png" title="plot of chunk 04-01" alt="plot of chunk 04-01" style="display: block; margin: auto;" /></p>
 <h2 id="conditional-statments">05 Conditional statments</h2>
 <section class="challenge panel panel-success">
 <div class="panel-heading">
@@ -170,8 +173,238 @@ sum_stat_sd &lt;-<span class="st"> </span><span class="kw">apply</span>(counts_s
 </ol>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">hist</span>(counts_raw$facebookShareCount, <span class="dt">xlab =</span> <span class="st">&quot;Number of shares on Facebook&quot;</span>,
      <span class="dt">ylab =</span> <span class="st">&quot;Number of articles&quot;</span>, <span class="dt">main =</span> <span class="st">&quot;Distributin of Facebook Shares&quot;</span>)</code></pre>
-<p>4.</p>
+<ol start="4" style="list-style-type: decimal">
+<li>Use the inline code:</li>
+</ol>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="st">`</span><span class="dt">r mean(counts_raw$facebookShareCount)</span><span class="st">`</span></code></pre>
+<h2 id="subsetting-with-dplyr">12 Subsetting with dplyr</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>How much did altmetrics numbers change by 2009?</h2>
+</div>
+<div class="panel-body">
+<p>How many articles were published in 2009 (<code>year</code>)? How many of these had at least one Tweet (<code>backtweetsCount</code>) or Facebook comment (<code>facebookCommentCount</code>)? How many were in at least one Mendeley library (<code>mendeleyReadersCount</code>)?</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r">research_2009 &lt;-<span class="st"> </span><span class="kw">filter</span>(research, year ==<span class="st"> </span><span class="dv">2009</span>)
+<span class="kw">nrow</span>(research_2009)</code></pre>
+<pre class="output"><code>[1] 6036
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">research_2009_fb_tweet &lt;-<span class="st"> </span><span class="kw">filter</span>(research, year ==<span class="st"> </span><span class="dv">2009</span>,
+                                 facebookCommentCount &gt;<span class="st"> </span><span class="dv">0</span> |
+<span class="st">                                 </span>backtweetsCount &gt;<span class="st"> </span><span class="dv">0</span>)
+<span class="kw">nrow</span>(research_2009_fb_tweet)</code></pre>
+<pre class="output"><code>[1] 830
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">research_2009_mendeley &lt;-<span class="st"> </span><span class="kw">filter</span>(research, year ==<span class="st"> </span><span class="dv">2009</span>,
+                                 mendeleyReadersCount &gt;<span class="st"> </span><span class="dv">0</span>)
+<span class="kw">nrow</span>(research_2009_mendeley)</code></pre>
+<pre class="output"><code>[1] 5078
+</code></pre>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>What are people reading but not citing?</h2>
+</div>
+<div class="panel-body">
+<p>One potential use of altmetrics data is recognizing articles that are widely read among the scientific community but are not cited as highly as similarly influential papers. Compile a data set named <code>low_cite</code> that contains the journal, title, and year of each research article that meets the following criteria:</p>
+<ul>
+<li>Published in 2008 or prior (<code>year</code>)</li>
+<li>Has more than 1,000 pdf downloads (<code>pdfDownloadsCount</code>)</li>
+<li>Is contained in more than 15 Mendeley libraries (<code>mendeleyReadersCount</code>)</li>
+<li>Has fewer than 10 citations as of 2011 (<code>wosCountThru2011</code>)</li>
+</ul>
+<p>How many articles did you find?</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(research$pdfDownloadsCount)</code></pre>
+<pre class="output"><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    0.0   152.0   261.0   432.5   481.0 35720.0 
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(research$mendeleyReadersCount)</code></pre>
+<pre class="output"><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   1.000   2.000   4.128   5.000 171.000 
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(research$wosCountThru2011)</code></pre>
+<pre class="output"><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00    2.00    7.00   14.54   16.00  737.00 
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">low_cite &lt;-<span class="st"> </span><span class="kw">filter</span>(research, pdfDownloadsCount &gt;<span class="st"> </span><span class="dv">1000</span>,
+                   mendeleyReadersCount &gt;<span class="st"> </span><span class="dv">15</span>,
+                   year &lt;<span class="st"> </span><span class="dv">2009</span>, wosCountThru2011 &lt;<span class="st"> </span><span class="dv">10</span>)
+low_cite &lt;-<span class="st"> </span><span class="kw">select</span>(low_cite, journal, title, year)
+<span class="kw">nrow</span>(low_cite)</code></pre>
+<pre class="output"><code>[1] 25
+</code></pre>
+<h2 id="chaining-commands-with-dplyr">13 Chaining commands with dplyr</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Titles of most cited articles</h2>
+</div>
+<div class="panel-body">
+<p>Using a chain of pipes, output the titles of the three research articles with the largest 2011 citation count (<code>wosCountThru2011</code>).</p>
+</div>
+</section>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Lots of authors</h2>
+</div>
+<div class="panel-body">
+<p>Using a chain of pipes, output the author count (<code>authorsCount</code>), title, journal, and subject tags (<code>plosSubjectTags</code>) of the three research articles with the largest number of authors.</p>
+</div>
+</section>
+<h2 id="summarizing-with-dplyr">14 Summarizing with dplyr</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Summarizing the number of tweets per journal</h2>
+</div>
+<div class="panel-body">
+<p>Create a new data frame, <code>tweets_per_journal</code>, that for each journal contains the total number of articles, the mean number of tweets (<code>backtweetsCount</code>) received by articles in that journal, and the standard error of the mean (SEM) of the number of tweets. The SEM is the standard deviation divided by the square root of the sample size (i.e. the number of articles).</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_per_journal &lt;-<span class="st"> </span>research %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(journal) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>(),
+            <span class="dt">mean =</span> <span class="kw">mean</span>(backtweetsCount),
+            <span class="dt">sem =</span> <span class="kw">sd</span>(backtweetsCount) /<span class="st"> </span><span class="kw">sqrt</span>(num))
+tweets_per_journal</code></pre>
+<pre class="output"><code>Source: local data frame [7 x 4]
+
+  journal   num       mean         sem
+   &lt;fctr&gt; &lt;int&gt;      &lt;dbl&gt;       &lt;dbl&gt;
+1    pbio  1325 0.05811321 0.020153395
+2    pcbi  1351 0.12657291 0.052177184
+3    pgen  1619 0.06547251 0.020408525
+4    pmed   643 0.31104199 0.187868371
+5    pntd   621 0.02576490 0.009057697
+6    pone 14078 0.49303878 0.034484187
+7    ppat  1459 0.02604524 0.008807428
+</code></pre>
+<h2 id="mapping-data-to-plot-aesthetics">15 Mapping data to plot aesthetics</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Citations versus days since publication</h2>
+</div>
+<div class="panel-body">
+<p>Create a scatter plot with <code>daysSincePublished</code> mapped to the x-axis and <code>wosCountThru2011</code> mapped to the y-axis. Include a loess fit of the data. Set the transparency level (<code>alpha</code>) of the points to 0.5 and color the points according to the journal where the article was published. Make the loess curve red.</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> daysSincePublished,
+                          <span class="dt">y =</span> wosCountThru2011)) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal), <span class="dt">alpha =</span> <span class="fl">0.5</span>) +
+<span class="st">  </span><span class="kw">geom_smooth</span>(<span class="dt">color =</span> <span class="st">&quot;red&quot;</span>)
+p</code></pre>
+<p><img src="fig/instructors-15-1.png" title="plot of chunk 15" alt="plot of chunk 15" style="display: block; margin: auto;" /></p>
+<h2 id="controlling-the-plot-scales">16 Controlling the plot scales</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Modifying the scales</h2>
+</div>
+<div class="panel-body">
+<p>Update the plot to use a square root transformation instead of log10. Also color the points using the ColorBrewer palette “Accent”.</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount,
+                          <span class="dt">y =</span> wosCountThru2011)) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal)) +
+<span class="st">  </span><span class="kw">geom_smooth</span>() +
+<span class="st">  </span><span class="kw">scale_x_sqrt</span>() +
+<span class="st">  </span><span class="kw">scale_y_sqrt</span>() +
+<span class="st">  </span><span class="kw">scale_color_brewer</span>(<span class="dt">palette =</span> <span class="st">&quot;Accent&quot;</span>)
+p</code></pre>
+<p><img src="fig/instructors-16-1.png" title="plot of chunk 16" alt="plot of chunk 16" style="display: block; margin: auto;" /></p>
+<h2 id="creating-subplots-with-facets">17 Creating subplots with facets</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Using facets</h2>
+</div>
+<div class="panel-body">
+<p>Add another variable to <code>research</code> called <code>evolution</code>, which is a logical vector indicating if the article has the PLOS subject tag “Evolutionary Biology”. Use <code>facet_grid</code> to create subplots based on the variables <code>evolution</code> and <code>immuno</code>.</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># From earlier in the lesson</span>
+research &lt;-<span class="st"> </span><span class="kw">mutate</span>(research, <span class="dt">immuno =</span> <span class="kw">grepl</span>(<span class="st">&quot;Immunology&quot;</span>, plosSubjectTags))
+<span class="co"># Solution:</span>
+research &lt;-<span class="st"> </span><span class="kw">mutate</span>(research,
+                   <span class="dt">evolution =</span> <span class="kw">grepl</span>(<span class="st">&quot;Evolutionary Biology&quot;</span>,
+                                     plosSubjectTags))
+p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> <span class="kw">log10</span>(pdfDownloadsCount +<span class="st"> </span><span class="dv">1</span>),
+                          <span class="dt">y =</span> <span class="kw">log10</span>(wosCountThru2011 +<span class="st"> </span><span class="dv">1</span>))) +
+<span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal)) +
+<span class="st">  </span><span class="kw">geom_smooth</span>() +
+<span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">1000</span>)) +
+<span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">1000</span>)) +
+<span class="st">  </span><span class="kw">facet_grid</span>(evolution~immuno)
+p</code></pre>
+<p><img src="fig/instructors-17-1.png" title="plot of chunk 17" alt="plot of chunk 17" style="display: block; margin: auto;" /></p>
+<h2 id="creating-different-plots-with-geoms">18 Creating different plots with geoms</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Mean number of tweets per journal per year</h2>
+</div>
+<div class="panel-body">
+<p>Modify the dplyr code above to calculate the mean, SEM, and sample size of the number of article tweets per journal <em>and</em> per year. Use <code>facet_wrap</code> to make a separate subplot per year.</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r">tweets_per_journal_year &lt;-<span class="st"> </span>research %&gt;%
+<span class="st">  </span><span class="kw">group_by</span>(journal, year) %&gt;%
+<span class="st">  </span><span class="kw">summarize</span>(<span class="dt">num =</span> <span class="kw">n</span>(),
+            <span class="dt">mean =</span> <span class="kw">mean</span>(backtweetsCount),
+            <span class="dt">sem =</span> <span class="kw">sd</span>(backtweetsCount) /<span class="st"> </span><span class="kw">sqrt</span>(num))
+tweets_per_journal_year</code></pre>
+<pre class="output"><code>Source: local data frame [42 x 5]
+Groups: journal [?]
+
+   journal  year   num        mean         sem
+    &lt;fctr&gt; &lt;int&gt; &lt;int&gt;       &lt;dbl&gt;       &lt;dbl&gt;
+1     pbio  2003    33 0.000000000 0.000000000
+2     pbio  2004   174 0.000000000 0.000000000
+3     pbio  2005   176 0.011363636 0.008012313
+4     pbio  2006   184 0.010869565 0.007664915
+5     pbio  2007   203 0.004926108 0.004926108
+6     pbio  2008   197 0.030456853 0.018916893
+7     pbio  2009   181 0.005524862 0.005524862
+8     pbio  2010   177 0.367231638 0.146996329
+9     pcbi  2005    55 0.000000000 0.000000000
+10    pcbi  2006   136 0.000000000 0.000000000
+..     ...   ...   ...         ...         ...
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">ggplot</span>(tweets_per_journal_year, <span class="kw">aes</span>(<span class="dt">x =</span> journal, <span class="dt">y =</span> mean)) +
+<span class="st">  </span><span class="kw">geom_bar</span>(<span class="dt">stat =</span> <span class="st">&quot;identity&quot;</span>) +
+<span class="st">  </span><span class="kw">geom_errorbar</span>(<span class="kw">aes</span>(<span class="dt">ymin =</span> mean -<span class="st"> </span>sem, <span class="dt">ymax =</span> mean +<span class="st"> </span>sem), <span class="dt">width =</span> <span class="fl">0.1</span>) +
+<span class="st">  </span><span class="kw">geom_text</span>(<span class="kw">aes</span>(<span class="dt">label =</span> num), <span class="dt">hjust =</span> <span class="dv">0</span>, <span class="dt">vjust =</span> <span class="dv">0</span>) +
+<span class="st">  </span><span class="kw">facet_wrap</span>(~year)</code></pre>
+<p><img src="fig/instructors-18-01-1.png" title="plot of chunk 18-01" alt="plot of chunk 18-01" style="display: block; margin: auto;" /></p>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Visualizing a single distribution</h2>
+</div>
+<div class="panel-body">
+<p>The geoms <code>geom_histogram</code> and <code>geom_density</code> can be used to create histograms and density plots, respectively. Using these geoms, visualize the distribution of 2011 citations (<code>wosCountThru2011</code>). Compare the raw distribution to log10 and square root transformations.</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(research, <span class="kw">aes</span>(<span class="dt">x =</span> wosCountThru2011))
+p +<span class="st"> </span><span class="kw">geom_histogram</span>()</code></pre>
+<pre class="output"><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+</code></pre>
+<p><img src="fig/instructors-18-02-1.png" title="plot of chunk 18-02" alt="plot of chunk 18-02" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">geom_histogram</span>() +<span class="st"> </span><span class="kw">scale_x_log10</span>() </code></pre>
+<pre class="output"><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+</code></pre>
+<pre class="error"><code>Warning: Removed 1654 rows containing non-finite values (stat_bin).
+</code></pre>
+<p><img src="fig/instructors-18-02-2.png" title="plot of chunk 18-02" alt="plot of chunk 18-02" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">geom_histogram</span>() +<span class="st"> </span><span class="kw">scale_x_sqrt</span>()</code></pre>
+<pre class="output"><code>`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+</code></pre>
+<p><img src="fig/instructors-18-02-3.png" title="plot of chunk 18-02" alt="plot of chunk 18-02" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">geom_density</span>()</code></pre>
+<p><img src="fig/instructors-18-02-4.png" title="plot of chunk 18-02" alt="plot of chunk 18-02" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">geom_density</span>() +<span class="st"> </span><span class="kw">scale_x_log10</span>() </code></pre>
+<pre class="error"><code>Warning: Removed 1654 rows containing non-finite values (stat_density).
+</code></pre>
+<p><img src="fig/instructors-18-02-5.png" title="plot of chunk 18-02" alt="plot of chunk 18-02" style="display: block; margin: auto;" /></p>
+<pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">geom_density</span>() +<span class="st"> </span><span class="kw">scale_x_sqrt</span>()</code></pre>
+<p><img src="fig/instructors-18-02-6.png" title="plot of chunk 18-02" alt="plot of chunk 18-02" style="display: block; margin: auto;" /></p>
         </div>
       </div>
       </article>

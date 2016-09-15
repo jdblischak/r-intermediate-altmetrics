@@ -36,10 +36,20 @@ library("dplyr")
 
 Attaching package: 'dplyr'
 
+~~~
+
+
+
+~~~{.output}
 The following objects are masked from 'package:stats':
 
     filter, lag
 
+~~~
+
+
+
+~~~{.output}
 The following objects are masked from 'package:base':
 
     intersect, setdiff, setequal, union
@@ -396,8 +406,8 @@ Therefore we can use dplyr whether our subsetting operations are basic or comple
 
 > ## How much did altmetrics numbers change by 2009? {.challenge}
 >
-> How many articles were published in 2009?
-> How many of these had at least one Tweet or Facebook comment?
+> How many articles were published in 2009 (`year`)?
+> How many of these had at least one Tweet (`backtweetsCount`) or Facebook comment (`facebookCommentCount`)?
 > How many were in at least one Mendeley library (`mendeleyReadersCount`)?
 
 
@@ -407,7 +417,7 @@ Therefore we can use dplyr whether our subsetting operations are basic or comple
 > One potential use of altmetrics data is recognizing articles that are widely read among the scientific community but are not cited as highly as similarly influential papers.
 > Compile a data set named `low_cite` that contains the journal, title, and year of each research article that meets the following criteria:
 >
-> *  Published in 2008 or prior (`cite`)
+> *  Published in 2008 or prior (`year`)
 > *  Has more than 1,000 pdf downloads (`pdfDownloadsCount`)
 > *  Is contained in more than 15 Mendeley libraries (`mendeleyReadersCount`)
 > *  Has fewer than 10 citations as of 2011 (`wosCountThru2011`)

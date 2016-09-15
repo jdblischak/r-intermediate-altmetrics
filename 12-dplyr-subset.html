@@ -45,12 +45,12 @@
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;dplyr&quot;</span>)</code></pre>
 <pre class="output"><code>
 Attaching package: &#39;dplyr&#39;
-
-The following objects are masked from &#39;package:stats&#39;:
+</code></pre>
+<pre class="output"><code>The following objects are masked from &#39;package:stats&#39;:
 
     filter, lag
-
-The following objects are masked from &#39;package:base&#39;:
+</code></pre>
+<pre class="output"><code>The following objects are masked from &#39;package:base&#39;:
 
     intersect, setdiff, setequal, union
 </code></pre>
@@ -227,7 +227,7 @@ The following objects are masked from &#39;package:base&#39;:
 <h2><span class="glyphicon glyphicon-pencil"></span>How much did altmetrics numbers change by 2009?</h2>
 </div>
 <div class="panel-body">
-<p>How many articles were published in 2009? How many of these had at least one Tweet or Facebook comment? How many were in at least one Mendeley library (<code>mendeleyReadersCount</code>)?</p>
+<p>How many articles were published in 2009 (<code>year</code>)? How many of these had at least one Tweet (<code>backtweetsCount</code>) or Facebook comment (<code>facebookCommentCount</code>)? How many were in at least one Mendeley library (<code>mendeleyReadersCount</code>)?</p>
 </div>
 </section>
 <section class="challenge panel panel-success">
@@ -237,7 +237,7 @@ The following objects are masked from &#39;package:base&#39;:
 <div class="panel-body">
 <p>One potential use of altmetrics data is recognizing articles that are widely read among the scientific community but are not cited as highly as similarly influential papers. Compile a data set named <code>low_cite</code> that contains the journal, title, and year of each research article that meets the following criteria:</p>
 <ul>
-<li>Published in 2008 or prior (<code>cite</code>)</li>
+<li>Published in 2008 or prior (<code>year</code>)</li>
 <li>Has more than 1,000 pdf downloads (<code>pdfDownloadsCount</code>)</li>
 <li>Is contained in more than 15 Mendeley libraries (<code>mendeleyReadersCount</code>)</li>
 <li>Has fewer than 10 citations as of 2011 (<code>wosCountThru2011</code>)</li>

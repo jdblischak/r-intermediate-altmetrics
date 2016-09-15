@@ -187,6 +187,7 @@ research %>% group_by(journal) %>%
 Source: local data frame [7 x 2]
 
   journal tweets_mean
+   <fctr>       <dbl>
 1    pbio  0.05811321
 2    pcbi  0.12657291
 3    pgen  0.06547251
@@ -210,20 +211,21 @@ research %>% group_by(journal, year) %>%
 
 ~~~{.output}
 Source: local data frame [42 x 3]
-Groups: journal
+Groups: journal [?]
 
-   journal year tweets_mean
-1     pbio 2003 0.000000000
-2     pbio 2004 0.000000000
-3     pbio 2005 0.011363636
-4     pbio 2006 0.010869565
-5     pbio 2007 0.004926108
-6     pbio 2008 0.030456853
-7     pbio 2009 0.005524862
-8     pbio 2010 0.367231638
-9     pcbi 2005 0.000000000
-10    pcbi 2006 0.000000000
-..     ...  ...         ...
+   journal  year tweets_mean
+    <fctr> <int>       <dbl>
+1     pbio  2003 0.000000000
+2     pbio  2004 0.000000000
+3     pbio  2005 0.011363636
+4     pbio  2006 0.010869565
+5     pbio  2007 0.004926108
+6     pbio  2008 0.030456853
+7     pbio  2009 0.005524862
+8     pbio  2010 0.367231638
+9     pcbi  2005 0.000000000
+10    pcbi  2006 0.000000000
+..     ...   ...         ...
 
 ~~~
 
@@ -235,7 +237,7 @@ In the function we wrote to do this manually, we would have had to write another
 >
 > Create a new data frame, `tweets_per_journal`, that for each journal contains
 > the total number of articles,
-> the mean number of tweets received by articles in that journal,
+> the mean number of tweets (`backtweetsCount`) received by articles in that journal,
 > and the standard error of the mean (SEM) of the number of tweets.
 > The SEM is the standard deviation divided by the square root of the sample size (i.e. the number of articles).
 

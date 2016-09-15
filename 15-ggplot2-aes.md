@@ -32,13 +32,6 @@ We start by loading the package.
 library("ggplot2")
 ~~~
 
-
-
-~~~{.output}
-Loading required package: methods
-
-~~~
-
 In ggplot2, we map columns of a data frame to features of a plot, which are called aesthetics.
 The base function is `ggplot`, which we supply the data frame and also the mappings.
 We map the number of PDF downloads to the x variable and the number of 2011 citations to the y variable.
@@ -56,12 +49,7 @@ We plot by executing the plot object.
 p
 ~~~
 
-
-
-~~~{.error}
-Error: No layers in plot
-
-~~~
+<img src="fig/15-ggplot2-aes-unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" />
 
 However we get an error stating there are no layers in the plot.
 In addition to mapping aesthetics, this is the other big concept in ggplot2.
@@ -174,13 +162,6 @@ p <- ggplot(research, aes(x = pdfDownloadsCount,
 p
 ~~~
 
-
-
-~~~{.output}
-geom_smooth: method="auto" and size of largest group is >=1000, so using gam with formula: y ~ s(x, bs = "cs"). Use 'method = x' to change the smoothing method.
-
-~~~
-
 <img src="fig/15-ggplot2-aes-unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display: block; margin: auto;" />
 
 `geom_smooth` fits a loess curve to the data along with the 95% confidence interval.
@@ -197,13 +178,6 @@ p <- ggplot(research, aes(x = pdfDownloadsCount,
 p
 ~~~
 
-
-
-~~~{.output}
-geom_smooth: method="auto" and size of largest group is >=1000, so using gam with formula: y ~ s(x, bs = "cs"). Use 'method = x' to change the smoothing method.
-
-~~~
-
 <img src="fig/15-ggplot2-aes-unnamed-chunk-16-1.png" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" style="display: block; margin: auto;" />
 
 There are now 7 loess curves, one per journal.
@@ -215,7 +189,7 @@ Because the aesthetic color was defined in the base `ggplot` call, `geom_smooth`
 >
 > Create a scatter plot with `daysSincePublished` mapped to the x-axis and `wosCountThru2011` mapped to the y-axis.
 > Include a loess fit of the data.
-> Set the transparency level (alpha) of the points to 0.5 and color the points according to the journal where the article was published.
+> Set the transparency level (`alpha`) of the points to 0.5 and color the points according to the journal where the article was published.
 > Make the loess curve red.
 
 

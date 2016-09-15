@@ -45,15 +45,12 @@
 <h3 id="a-first-plot">A first plot</h3>
 <p>We start by loading the package.</p>
 <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;ggplot2&quot;</span>)</code></pre>
-<pre class="output"><code>Loading required package: methods
-</code></pre>
 <p>In ggplot2, we map columns of a data frame to features of a plot, which are called aesthetics. The base function is <code>ggplot</code>, which we supply the data frame and also the mappings. We map the number of PDF downloads to the x variable and the number of 2011 citations to the y variable.</p>
 <pre class="sourceCode r"><code class="sourceCode r">p &lt;-<span class="st"> </span><span class="kw">ggplot</span>(<span class="dt">data =</span> research, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> pdfDownloadsCount,
                                            <span class="dt">y =</span> wosCountThru2011))</code></pre>
 <p>We plot by executing the plot object.</p>
 <pre class="sourceCode r"><code class="sourceCode r">p</code></pre>
-<pre class="error"><code>Error: No layers in plot
-</code></pre>
+<p><img src="fig/15-ggplot2-aes-unnamed-chunk-7-1.png" title="plot of chunk unnamed-chunk-7" alt="plot of chunk unnamed-chunk-7" style="display: block; margin: auto;" /></p>
 <p>However we get an error stating there are no layers in the plot. In addition to mapping aesthetics, this is the other big concept in ggplot2. We can build a plot up in layers. To make a simple scatter plot, we add the layer <code>geom_point</code> to the base we had created.</p>
 <pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">geom_point</span>()</code></pre>
 <p><img src="fig/15-ggplot2-aes-unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" /></p>
@@ -99,8 +96,6 @@ p</code></pre>
 <span class="st">  </span><span class="kw">geom_point</span>(<span class="kw">aes</span>(<span class="dt">color =</span> journal)) +
 <span class="st">  </span><span class="kw">geom_smooth</span>()
 p</code></pre>
-<pre class="output"><code>geom_smooth: method=&quot;auto&quot; and size of largest group is &gt;=1000, so using gam with formula: y ~ s(x, bs = &quot;cs&quot;). Use &#39;method = x&#39; to change the smoothing method.
-</code></pre>
 <p><img src="fig/15-ggplot2-aes-unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display: block; margin: auto;" /></p>
 <p><code>geom_smooth</code> fits a loess curve to the data along with the 95% confidence interval.</p>
 <p>Now let’s change the aesthetics such that mapping the column <code>journal</code> to the color of the points is done in the base <code>ggplot</code> function call.</p>
@@ -110,8 +105,6 @@ p</code></pre>
 <span class="st">  </span><span class="kw">geom_point</span>() +
 <span class="st">  </span><span class="kw">geom_smooth</span>()
 p</code></pre>
-<pre class="output"><code>geom_smooth: method=&quot;auto&quot; and size of largest group is &gt;=1000, so using gam with formula: y ~ s(x, bs = &quot;cs&quot;). Use &#39;method = x&#39; to change the smoothing method.
-</code></pre>
 <p><img src="fig/15-ggplot2-aes-unnamed-chunk-16-1.png" title="plot of chunk unnamed-chunk-16" alt="plot of chunk unnamed-chunk-16" style="display: block; margin: auto;" /></p>
 <p>There are now 7 loess curves, one per journal. Because the aesthetic color was defined in the base <code>ggplot</code> call, <code>geom_smooth</code> inherited this aesthetic mapping and correspondingly split into 7 groups.</p>
 <h3 id="challenge">Challenge</h3>
@@ -120,7 +113,7 @@ p</code></pre>
 <h2><span class="glyphicon glyphicon-pencil"></span>Citations versus days since publication</h2>
 </div>
 <div class="panel-body">
-<p>Create a scatter plot with <code>daysSincePublished</code> mapped to the x-axis and <code>wosCountThru2011</code> mapped to the y-axis. Include a loess fit of the data. Set the transparency level (alpha) of the points to 0.5 and color the points according to the journal where the article was published. Make the loess curve red.</p>
+<p>Create a scatter plot with <code>daysSincePublished</code> mapped to the x-axis and <code>wosCountThru2011</code> mapped to the y-axis. Include a loess fit of the data. Set the transparency level (<code>alpha</code>) of the points to 0.5 and color the points according to the journal where the article was published. Make the loess curve red.</p>
 </div>
 </section>
         </div>

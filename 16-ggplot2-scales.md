@@ -39,13 +39,6 @@ p <- ggplot(research, aes(x = pdfDownloadsCount,
 p
 ~~~
 
-
-
-~~~{.output}
-geom_smooth: method="auto" and size of largest group is >=1000, so using gam with formula: y ~ s(x, bs = "cs"). Use 'method = x' to change the smoothing method.
-
-~~~
-
 <img src="fig/16-ggplot2-scales-unnamed-chunk-6-1.png" title="plot of chunk unnamed-chunk-6" alt="plot of chunk unnamed-chunk-6" style="display: block; margin: auto;" />
 
 This was not a very effective visualization because the majority of the points were clustered in the bottom left part of the graph.
@@ -59,8 +52,8 @@ p + scale_x_log10() + scale_y_log10()
 
 
 
-~~~{.output}
-geom_smooth: method="auto" and size of largest group is >=1000, so using gam with formula: y ~ s(x, bs = "cs"). Use 'method = x' to change the smoothing method.
+~~~{.error}
+Warning: Removed 1768 rows containing non-finite values (stat_smooth).
 
 ~~~
 
@@ -77,13 +70,6 @@ p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1),
   geom_point(aes(color = journal)) +
   geom_smooth()
 p
-~~~
-
-
-
-~~~{.output}
-geom_smooth: method="auto" and size of largest group is >=1000, so using gam with formula: y ~ s(x, bs = "cs"). Use 'method = x' to change the smoothing method.
-
 ~~~
 
 <img src="fig/16-ggplot2-scales-unnamed-chunk-8-1.png" title="plot of chunk unnamed-chunk-8" alt="plot of chunk unnamed-chunk-8" style="display: block; margin: auto;" />
@@ -104,13 +90,6 @@ p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1),
 p
 ~~~
 
-
-
-~~~{.output}
-geom_smooth: method="auto" and size of largest group is >=1000, so using gam with formula: y ~ s(x, bs = "cs"). Use 'method = x' to change the smoothing method.
-
-~~~
-
 <img src="fig/16-ggplot2-scales-unnamed-chunk-9-1.png" title="plot of chunk unnamed-chunk-9" alt="plot of chunk unnamed-chunk-9" style="display: block; margin: auto;" />
 
 And then we can do the same for the y-axis.
@@ -126,13 +105,6 @@ p <- ggplot(research, aes(x = log10(pdfDownloadsCount + 1),
 p
 ~~~
 
-
-
-~~~{.output}
-geom_smooth: method="auto" and size of largest group is >=1000, so using gam with formula: y ~ s(x, bs = "cs"). Use 'method = x' to change the smoothing method.
-
-~~~
-
 <img src="fig/16-ggplot2-scales-unnamed-chunk-10-1.png" title="plot of chunk unnamed-chunk-10" alt="plot of chunk unnamed-chunk-10" style="display: block; margin: auto;" />
 
 ### Scales that affect mapping to color
@@ -145,13 +117,6 @@ For example, we could use grayscale.
 
 ~~~{.r}
 p + scale_color_grey()
-~~~
-
-
-
-~~~{.output}
-geom_smooth: method="auto" and size of largest group is >=1000, so using gam with formula: y ~ s(x, bs = "cs"). Use 'method = x' to change the smoothing method.
-
 ~~~
 
 <img src="fig/16-ggplot2-scales-unnamed-chunk-11-1.png" title="plot of chunk unnamed-chunk-11" alt="plot of chunk unnamed-chunk-11" style="display: block; margin: auto;" />
@@ -179,13 +144,6 @@ p + scale_color_manual(values = c("red", "yellow", "orange",
                                   "pink"))
 ~~~
 
-
-
-~~~{.output}
-geom_smooth: method="auto" and size of largest group is >=1000, so using gam with formula: y ~ s(x, bs = "cs"). Use 'method = x' to change the smoothing method.
-
-~~~
-
 <img src="fig/16-ggplot2-scales-unnamed-chunk-12-1.png" title="plot of chunk unnamed-chunk-12" alt="plot of chunk unnamed-chunk-12" style="display: block; margin: auto;" />
 
 But as that example demonstrates, choosing good colors to aid visualization requires some thought.
@@ -210,13 +168,6 @@ Let's try the palette "Dark2".
 p + scale_color_brewer(palette = "Dark2")
 ~~~
 
-
-
-~~~{.output}
-geom_smooth: method="auto" and size of largest group is >=1000, so using gam with formula: y ~ s(x, bs = "cs"). Use 'method = x' to change the smoothing method.
-
-~~~
-
 <img src="fig/16-ggplot2-scales-unnamed-chunk-14-1.png" title="plot of chunk unnamed-chunk-14" alt="plot of chunk unnamed-chunk-14" style="display: block; margin: auto;" />
 
 Lastly, if we want the descriptions in the legend to be different than the shorthand we use for the raw data, we can do this via any of the `scale_color_*` functions using the arguments `labels` and `name`.
@@ -225,13 +176,6 @@ Here we'll just change the labels to the numbers 1 through 7 and the title to "t
 
 ~~~{.r}
 p + scale_color_brewer(palette = "Dark2", labels = 1:7, name = "title")
-~~~
-
-
-
-~~~{.output}
-geom_smooth: method="auto" and size of largest group is >=1000, so using gam with formula: y ~ s(x, bs = "cs"). Use 'method = x' to change the smoothing method.
-
 ~~~
 
 <img src="fig/16-ggplot2-scales-unnamed-chunk-15-1.png" title="plot of chunk unnamed-chunk-15" alt="plot of chunk unnamed-chunk-15" style="display: block; margin: auto;" />

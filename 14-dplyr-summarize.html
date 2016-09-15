@@ -115,6 +115,7 @@
 <pre class="output"><code>Source: local data frame [7 x 2]
 
   journal tweets_mean
+   &lt;fctr&gt;       &lt;dbl&gt;
 1    pbio  0.05811321
 2    pcbi  0.12657291
 3    pgen  0.06547251
@@ -127,20 +128,21 @@
 <pre class="sourceCode r"><code class="sourceCode r">research %&gt;%<span class="st"> </span><span class="kw">group_by</span>(journal, year) %&gt;%
 <span class="st">  </span><span class="kw">summarize</span>(<span class="dt">tweets_mean =</span> <span class="kw">mean</span>(backtweetsCount))</code></pre>
 <pre class="output"><code>Source: local data frame [42 x 3]
-Groups: journal
+Groups: journal [?]
 
-   journal year tweets_mean
-1     pbio 2003 0.000000000
-2     pbio 2004 0.000000000
-3     pbio 2005 0.011363636
-4     pbio 2006 0.010869565
-5     pbio 2007 0.004926108
-6     pbio 2008 0.030456853
-7     pbio 2009 0.005524862
-8     pbio 2010 0.367231638
-9     pcbi 2005 0.000000000
-10    pcbi 2006 0.000000000
-..     ...  ...         ...
+   journal  year tweets_mean
+    &lt;fctr&gt; &lt;int&gt;       &lt;dbl&gt;
+1     pbio  2003 0.000000000
+2     pbio  2004 0.000000000
+3     pbio  2005 0.011363636
+4     pbio  2006 0.010869565
+5     pbio  2007 0.004926108
+6     pbio  2008 0.030456853
+7     pbio  2009 0.005524862
+8     pbio  2010 0.367231638
+9     pcbi  2005 0.000000000
+10    pcbi  2006 0.000000000
+..     ...   ...         ...
 </code></pre>
 <p>In the function we wrote to do this manually, we would have had to write another <code>for</code> loop!</p>
 <h3 id="challenges">Challenges</h3>
@@ -149,7 +151,7 @@ Groups: journal
 <h2><span class="glyphicon glyphicon-pencil"></span>Summarizing the number of tweets per journal</h2>
 </div>
 <div class="panel-body">
-<p>Create a new data frame, <code>tweets_per_journal</code>, that for each journal contains the total number of articles, the mean number of tweets received by articles in that journal, and the standard error of the mean (SEM) of the number of tweets. The SEM is the standard deviation divided by the square root of the sample size (i.e. the number of articles).</p>
+<p>Create a new data frame, <code>tweets_per_journal</code>, that for each journal contains the total number of articles, the mean number of tweets (<code>backtweetsCount</code>) received by articles in that journal, and the standard error of the mean (SEM) of the number of tweets. The SEM is the standard deviation divided by the square root of the sample size (i.e. the number of articles).</p>
 </div>
 </section>
         </div>

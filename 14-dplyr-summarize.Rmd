@@ -137,7 +137,7 @@ In the function we wrote to do this manually, we would have had to write another
 >
 > Create a new data frame, `tweets_per_journal`, that for each journal contains
 > the total number of articles,
-> the mean number of tweets received by articles in that journal,
+> the mean number of tweets (`backtweetsCount`) received by articles in that journal,
 > and the standard error of the mean (SEM) of the number of tweets.
 > The SEM is the standard deviation divided by the square root of the sample size (i.e. the number of articles).
 

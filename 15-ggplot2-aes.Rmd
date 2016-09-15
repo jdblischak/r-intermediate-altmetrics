@@ -168,7 +168,7 @@ Because the aesthetic color was defined in the base `ggplot` call, `geom_smooth`
 >
 > Create a scatter plot with `daysSincePublished` mapped to the x-axis and `wosCountThru2011` mapped to the y-axis.
 > Include a loess fit of the data.
-> Set the transparency level (alpha) of the points to 0.5 and color the points according to the journal where the article was published.
+> Set the transparency level (`alpha`) of the points to 0.5 and color the points according to the journal where the article was published.
 > Make the loess curve red.
 
 ```{r include=FALSE}
