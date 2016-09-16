@@ -201,10 +201,10 @@ Is this different from the other journals?
 Let's check "pbio".
 
 ~~~ {.r}
-Browse[1]> unique(metric[variable == "pbio"])
+Browse[1]> anyNA(metric[variable == "pbio"])
 ~~~
 ~~~ {.output}
- [1]  0  1  2  3  4 12  8 39  7  5 10 45 11 18 44  6 14 13 43 19
+ [1]  FALSE
 ~~~
 
 It does not contain any `NA`s, so this is likely the problem.

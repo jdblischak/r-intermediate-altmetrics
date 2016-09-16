@@ -135,8 +135,8 @@
 [21]  11  19  18  13  21  49  15  41  50  17  51 104  23  20  26 151  30  39  NA  24
 [41]  95  44 109  66</code></pre>
 <p>Interestingly, at least one of the Facebook Like counts are NA. Is this different from the other journals? Let’s check “pbio”.</p>
-<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span><span class="kw">unique</span>(metric[variable ==<span class="st"> &quot;pbio&quot;</span>])</code></pre>
-<pre class="output"><code> [1]  0  1  2  3  4 12  8 39  7  5 10 45 11 18 44  6 14 13 43 19</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span><span class="kw">anyNA</span>(metric[variable ==<span class="st"> &quot;pbio&quot;</span>])</code></pre>
+<pre class="output"><code> [1]  FALSE</code></pre>
 <p>It does not contain any <code>NA</code>s, so this is likely the problem.</p>
 <p>Let’s first exit the debugging environment.</p>
 <pre class="sourceCode r"><code class="sourceCode r">Browse[<span class="dv">1</span>]&gt;<span class="st"> </span>Q</code></pre>

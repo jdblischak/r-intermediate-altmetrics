@@ -62,7 +62,7 @@ mean_metric_per_var(counts_raw$backtweetsCount, counts_raw$journal)
 ~~~
 
 However, what can we do if we obtain an unexpected result?
-For example, let's mean the number of tweets per year.
+For example, let's calculate the mean the number of tweets per year.
 
 
 ~~~{.r}

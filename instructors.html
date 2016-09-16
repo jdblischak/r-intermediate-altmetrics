@@ -29,7 +29,8 @@
                     <a href="index.html"><h1 class="title">Intermediate programming with R</h1></a>
           <h2 class="subtitle">Instructor’s Guide</h2>
           <pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;dplyr&quot;</span>)
-<span class="kw">library</span>(<span class="st">&quot;ggplot2&quot;</span>)</code></pre>
+<span class="kw">library</span>(<span class="st">&quot;ggplot2&quot;</span>)
+<span class="kw">library</span>(<span class="st">&quot;testit&quot;</span>)</code></pre>
 <p>This page contains the solutions to the exercises. Since most of the exercises use <code>counts-raw.txt.gz</code>, it is loaded here at the beginning. Also, many use <code>research</code>, the subset of the data that only includes research articles.</p>
 <pre class="sourceCode r"><code class="sourceCode r">counts_raw &lt;-<span class="st"> </span><span class="kw">read.delim</span>(<span class="st">&quot;data/counts-raw.txt.gz&quot;</span>)
 research &lt;-<span class="st"> </span><span class="kw">filter</span>(counts_raw, articleType ==<span class="st"> &quot;Research Article&quot;</span>)</code></pre>
@@ -405,6 +406,130 @@ p +<span class="st"> </span><span class="kw">geom_histogram</span>()</code></pre
 <p><img src="fig/instructors-18-02-5.png" title="plot of chunk 18-02" alt="plot of chunk 18-02" style="display: block; margin: auto;" /></p>
 <pre class="sourceCode r"><code class="sourceCode r">p +<span class="st"> </span><span class="kw">geom_density</span>() +<span class="st"> </span><span class="kw">scale_x_sqrt</span>()</code></pre>
 <p><img src="fig/instructors-18-02-6.png" title="plot of chunk 18-02" alt="plot of chunk 18-02" style="display: block; margin: auto;" /></p>
+<h2 id="debugging-with-debug">20 Debugging with debug</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Limit to a subset of levels</h2>
+</div>
+<div class="panel-body">
+<p>What if we were only interested in the mean of the number of tweets in the journals PLOS Biology (pbio) and PLOS One (pone)? We could subset to only pass values for these journals to the function <code>mean_metric_per_var</code>.</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount[counts_raw$journal %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pbio&quot;</span>, <span class="st">&quot;pone&quot;</span>)],
+                   counts_raw$journal[counts_raw$journal %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pbio&quot;</span>, <span class="st">&quot;pone&quot;</span>)])</code></pre>
+<pre class="output"><code>     pbio      pcbi      pgen      pmed      pntd      pone      ppat 
+0.0555770       NaN       NaN       NaN       NaN 0.4942194       NaN 
+</code></pre>
+<p>Unfortunately this still gives us results for the other journals. And their result is <code>NaN</code>, a special value indiciating “Not a Number”.</p>
+<p>Use <code>debug</code> to isolate and diagnose the problem.</p>
+<p>As an added challenge, can you fix the bug?</p>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Use droplevels</span>
+mean_metric_per_var &lt;-<span class="st"> </span>function(metric, variable) {
+  if (!<span class="kw">is.factor</span>(variable)) {
+    variable &lt;-<span class="st"> </span><span class="kw">as.factor</span>(variable)
+  }
+  variable &lt;-<span class="st"> </span><span class="kw">droplevels</span>(variable)
+  result &lt;-<span class="st"> </span><span class="kw">numeric</span>(<span class="dt">length =</span> <span class="kw">length</span>(<span class="kw">levels</span>(variable)))
+  <span class="kw">names</span>(result) &lt;-<span class="st"> </span><span class="kw">levels</span>(variable)
+  for (v in <span class="kw">levels</span>(variable)) {
+    result[v] &lt;-<span class="st"> </span><span class="kw">mean</span>(metric[variable ==<span class="st"> </span>v])
+  }
+  <span class="kw">return</span>(result)
+}
+<span class="kw">mean_metric_per_var</span>(counts_raw$backtweetsCount[counts_raw$journal %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pbio&quot;</span>, <span class="st">&quot;pone&quot;</span>)],
+                   counts_raw$journal[counts_raw$journal %in%<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;pbio&quot;</span>, <span class="st">&quot;pone&quot;</span>)])</code></pre>
+<pre class="output"><code>     pbio      pone 
+0.0555770 0.4942194 
+</code></pre>
+<h2 id="defensive-programming-with-stopifnot">23 Defensive programming with stopifnot</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Practice defensive programming</h2>
+</div>
+<div class="panel-body">
+<p>Use defensive programming techniques to make the function <code>calc_sum_stat</code> more robust.</p>
+<pre class="sourceCode r"><code class="sourceCode r">calc_sum_stat &lt;-<span class="st"> </span>function(df, cols) {
+  df_sub &lt;-<span class="st"> </span>df[, cols, drop =<span class="st"> </span><span class="ot">FALSE</span>]
+  sum_stat &lt;-<span class="st"> </span><span class="kw">apply</span>(df_sub, <span class="dv">1</span>, mean)
+  <span class="kw">return</span>(sum_stat)
+}</code></pre>
+<p>Some specific ideas:</p>
+<ul>
+<li>Assert that the input <code>df</code> is not empty (hint: use <code>dim</code>)</li>
+<li>Assert that <code>cols</code> is a character vector</li>
+<li>Assert that the columns listed in <code>cols</code> are in <code>df</code> (hint: use <code>%in%</code> and <code>colnames</code>)</li>
+<li>Assert that <code>df_sub</code> is a data frame (hint: use <code>is.data.frame</code>)</li>
+<li>Assert that <code>sum_stat</code> is not <code>NA</code></li>
+<li>Issue a warning if <code>cols</code> only contains one column (since taking the mean of one column isn’t very useful, the user may have made a mistake)</li>
+</ul>
+<p>After you add your assertion statements, test out the following inputs to <code>calc_sum_stat</code>. Do your assertion statements catch these errors? Should we update the function based on some of these results?</p>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Empty data frame</span>
+sum_stat &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(<span class="kw">data.frame</span>(), <span class="kw">c</span>(<span class="st">&quot;wosCountThru2010&quot;</span>, <span class="st">&quot;f1000Factor&quot;</span>))
+<span class="co"># Non-character cols</span>
+sum_stat &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="dv">1</span>:<span class="dv">3</span>)
+<span class="co"># Bad column names</span>
+sum_stat &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>))
+<span class="co"># Issue warning since only one column</span>
+sum_stat &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="st">&quot;mendeleyReadersCount&quot;</span>)
+<span class="co"># NA output</span>
+sum_stat &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2010&quot;</span>, <span class="st">&quot;facebookLikeCount&quot;</span>))</code></pre>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Because of the `NA` result, use `na.rm = TRUE` with `mean`</span>
+calc_sum_stat &lt;-<span class="st"> </span>function(df, cols) {
+  <span class="kw">stopifnot</span>(<span class="kw">dim</span>(df) &gt;<span class="st"> </span><span class="dv">0</span>,
+            <span class="kw">is.character</span>(cols),
+            cols %in%<span class="st"> </span><span class="kw">colnames</span>(df))
+  if (<span class="kw">length</span>(cols) ==<span class="st"> </span><span class="dv">1</span>) {
+    <span class="kw">warning</span>(<span class="st">&quot;Only one column specified. Calculating the mean will not change anything.&quot;</span>)
+  }
+  df_sub &lt;-<span class="st"> </span>df[, cols, drop =<span class="st"> </span><span class="ot">FALSE</span>]
+  <span class="kw">stopifnot</span>(<span class="kw">is.data.frame</span>(df_sub))
+  sum_stat &lt;-<span class="st"> </span><span class="kw">apply</span>(df_sub, <span class="dv">1</span>, mean, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>)
+  <span class="kw">stopifnot</span>(!<span class="kw">is.na</span>(sum_stat))
+  <span class="kw">return</span>(sum_stat)
+}
+<span class="co"># Proper</span>
+sum_stat &lt;-<span class="st"> </span><span class="kw">calc_sum_stat</span>(counts_raw, <span class="kw">c</span>(<span class="st">&quot;wosCountThru2010&quot;</span>, <span class="st">&quot;f1000Factor&quot;</span>))</code></pre>
+<h2 id="testing-with-testit">24 Testing with testit</h2>
+<section class="challenge panel panel-success">
+<div class="panel-heading">
+<h2><span class="glyphicon glyphicon-pencil"></span>Write some tests</h2>
+</div>
+<div class="panel-body">
+<p>Write unit tests for the function <code>my_mean</code> that you wrote in an earlier lesson. It should look something like this:</p>
+<pre class="sourceCode r"><code class="sourceCode r">my_mean &lt;-<span class="st"> </span>function(x) {
+  result &lt;-<span class="st"> </span><span class="kw">sum</span>(x) /<span class="st"> </span><span class="kw">length</span>(x)
+  <span class="kw">return</span>(result)
+}</code></pre>
+<p>The input <code>x</code> is a numeric vector, and the output is the mean of the vector of numbers. Some ideas to get started:</p>
+<ul>
+<li>Pass a vector where you know what the mean is, and assert that the result is correct.</li>
+<li>Add some assertion statments to check the input <code>x</code>. Use <code>has_error</code> to test that the function throws an error when given bad input.</li>
+<li>Issue a warning if the user passes a vector of length one. Test that the warning is properly issued using <code>has_warning</code>.</li>
+<li>Include an <code>NA</code> in the vector where you know the result to see what happens. Do you need to modify the code to pass the test?</li>
+</ul>
+</div>
+</section>
+<pre class="sourceCode r"><code class="sourceCode r">my_mean &lt;-<span class="st"> </span>function(x) {
+  <span class="kw">assert</span>(<span class="st">&quot;x is numeric&quot;</span>, <span class="kw">is.numeric</span>(x))
+  if (<span class="kw">length</span>(x) ==<span class="st"> </span><span class="dv">1</span>) {
+    <span class="kw">warning</span>(<span class="st">&quot;Input vector had only one element&quot;</span>)
+  }
+  result &lt;-<span class="st"> </span><span class="kw">sum</span>(x, <span class="dt">na.rm =</span> <span class="ot">TRUE</span>) /<span class="st"> </span><span class="kw">length</span>(x[!<span class="kw">is.na</span>(x)])
+  <span class="kw">return</span>(result)
+}
+
+<span class="kw">assert</span>(<span class="st">&quot;Mean is calculated correctly&quot;</span>,
+       <span class="kw">my_mean</span>(<span class="dv">1</span>:<span class="dv">3</span>) ==<span class="st"> </span><span class="dv">2</span>, <span class="kw">my_mean</span>(<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>)) ==<span class="st"> </span><span class="dv">4</span>)
+<span class="kw">assert</span>(<span class="st">&quot;Non-numeric input throws error&quot;</span>,
+       <span class="kw">has_error</span>(<span class="kw">my_mean</span>(<span class="st">&quot;hello&quot;</span>)))</code></pre>
+<pre class="output"><code>assertion failed: x is numeric
+</code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span class="kw">assert</span>(<span class="st">&quot;Input vector with one element issues warning&quot;</span>,
+       <span class="kw">has_warning</span>(<span class="kw">my_mean</span>(<span class="dv">5</span>)))
+<span class="kw">assert</span>(<span class="st">&quot;Mean is calculated correctly when given NAs&quot;</span>,
+       <span class="kw">my_mean</span>(<span class="kw">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="ot">NA</span>)) ==<span class="st"> </span><span class="dv">4</span>)</code></pre>
         </div>
       </div>
       </article>

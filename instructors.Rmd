@@ -12,6 +12,7 @@ opts_chunk$set(fig.path = "fig/instructors-")
 ```{r packages, message=FALSE}
 library("dplyr")
 library("ggplot2")
+library("testit")
 ```
 
 This page contains the solutions to the exercises.
@@ -373,3 +374,157 @@ p + geom_density()
 p + geom_density() + scale_x_log10() 
 p + geom_density() + scale_x_sqrt()
 ```
+
+## 20 Debugging with debug
+
+```{r mean_metric_per_var, include=FALSE}
+mean_metric_per_var <- function(metric, variable) {
+  result <- numeric(length = length(levels(variable)))
+  names(result) <- levels(variable)
+  for (v in levels(variable)) {
+    result[v] <- mean(metric[variable == v])
+  }
+  return(result)
+}
+```
+
+> ## Limit to a subset of levels {.challenge}
+>
+> What if we were only interested in the mean of the number of tweets in the journals PLOS Biology (pbio) and PLOS One (pone)?
+> We could subset to only pass values for these journals to the function `mean_metric_per_var`.
+> 
+> ```{r}
+> mean_metric_per_var(counts_raw$backtweetsCount[counts_raw$journal %in% c("pbio", "pone")],
+>                    counts_raw$journal[counts_raw$journal %in% c("pbio", "pone")])
+> ```
+>
+> Unfortunately this still gives us results for the other journals.
+> And their result is `NaN`, a special value indiciating "Not a Number".
+>
+> Use `debug` to isolate and diagnose the problem.
+> 
+> As an added challenge, can you fix the bug?
+
+```{r 20}
+# Use droplevels
+mean_metric_per_var <- function(metric, variable) {
+  if (!is.factor(variable)) {
+    variable <- as.factor(variable)
+  }
+  variable <- droplevels(variable)
+  result <- numeric(length = length(levels(variable)))
+  names(result) <- levels(variable)
+  for (v in levels(variable)) {
+    result[v] <- mean(metric[variable == v])
+  }
+  return(result)
+}
+mean_metric_per_var(counts_raw$backtweetsCount[counts_raw$journal %in% c("pbio", "pone")],
+                   counts_raw$journal[counts_raw$journal %in% c("pbio", "pone")])
+```
+
+## 23 Defensive programming with stopifnot
+
+> ## Practice defensive programming {.challenge}
+>
+> Use defensive programming techniques to make the function `calc_sum_stat` more robust.
+> 
+>
+> ```{r}
+> calc_sum_stat <- function(df, cols) {
+>   df_sub <- df[, cols, drop = FALSE]
+>   sum_stat <- apply(df_sub, 1, mean)
+>   return(sum_stat)
+> }
+> ```
+>
+> Some specific ideas:
+>
+> * Assert that the input `df` is not empty (hint: use `dim`)
+> * Assert that `cols` is a character vector
+> * Assert that the columns listed in `cols` are in `df` (hint: use `%in%` and `colnames`)
+> * Assert that `df_sub` is a data frame (hint: use `is.data.frame`)
+> * Assert that `sum_stat` is not `NA`
+> * Issue a warning if `cols` only contains one column (since taking the mean of one column isn't very useful, the user may have made a mistake)
+>
+> After you add your assertion statements, test out the following inputs to `calc_sum_stat`.
+> Do your assertion statements catch these errors?
+> Should we update the function based on some of these results?
+>
+> ```{r eval=FALSE}
+> # Empty data frame
+> sum_stat <- calc_sum_stat(data.frame(), c("wosCountThru2010", "f1000Factor"))
+> # Non-character cols
+> sum_stat <- calc_sum_stat(counts_raw, 1:3)
+> # Bad column names
+> sum_stat <- calc_sum_stat(counts_raw, c("a", "b"))
+> # Issue warning since only one column
+> sum_stat <- calc_sum_stat(counts_raw, "mendeleyReadersCount")
+> # NA output
+> sum_stat <- calc_sum_stat(counts_raw, c("wosCountThru2010", "facebookLikeCount"))
+> ```
+
+```{r 23}
+# Because of the `NA` result, use `na.rm = TRUE` with `mean`
+calc_sum_stat <- function(df, cols) {
+  stopifnot(dim(df) > 0,
+            is.character(cols),
+            cols %in% colnames(df))
+  if (length(cols) == 1) {
+    warning("Only one column specified. Calculating the mean will not change anything.")
+  }
+  df_sub <- df[, cols, drop = FALSE]
+  stopifnot(is.data.frame(df_sub))
+  sum_stat <- apply(df_sub, 1, mean, na.rm = TRUE)
+  stopifnot(!is.na(sum_stat))
+  return(sum_stat)
+}
+# Proper
+sum_stat <- calc_sum_stat(counts_raw, c("wosCountThru2010", "f1000Factor"))
+```
+
+## 24 Testing with testit
+
+> ## Write some tests {.challenge}
+>
+> Write unit tests for the function `my_mean` that you wrote in an earlier lesson.
+> It should look something like this:
+>
+> ```{r}
+> my_mean <- function(x) {
+>   result <- sum(x) / length(x)
+>   return(result)
+> }
+> ```
+> 
+> The input `x` is a numeric vector, and the output is the mean of the vector of numbers.
+> Some ideas to get started:
+>
+> * Pass a vector where you know what the mean is, and assert that the result is correct.
+> * Add some assertion statments to check the input `x`.
+> Use `has_error` to test that the function throws an error when given bad input.
+> * Issue a warning if the user passes a vector of length one.
+> Test that the warning is properly issued using `has_warning`.
+> * Include an `NA` in the vector where you know the result to see what happens.
+> Do you need to modify the code to pass the test?
+
+```{r 24}
+my_mean <- function(x) {
+  assert("x is numeric", is.numeric(x))
+  if (length(x) == 1) {
+    warning("Input vector had only one element")
+  }
+  result <- sum(x, na.rm = TRUE) / length(x[!is.na(x)])
+  return(result)
+}
+
+assert("Mean is calculated correctly",
+       my_mean(1:3) == 2, my_mean(c(2, 4, 6)) == 4)
+assert("Non-numeric input throws error",
+       has_error(my_mean("hello")))
+assert("Input vector with one element issues warning",
+       has_warning(my_mean(5)))
+assert("Mean is calculated correctly when given NAs",
+       my_mean(c(2, 4, 6, NA)) == 4)
+```
+
